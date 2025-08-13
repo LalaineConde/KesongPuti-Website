@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `admins` (
-  `a.id` int(11) NOT NULL,
+  `admin_id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
@@ -38,7 +38,7 @@ CREATE TABLE `admins` (
 -- Dumping data for table `admins`
 --
 
-INSERT INTO `admins` (`a.id`, `username`, `email`, `password`) VALUES
+INSERT INTO `admins` (`admin_id`, `username`, `email`, `password`) VALUES
 (1, 'lalaine conde', 'lalaineconde23@gmail.com', '$2y$10$9Dy/b9srwpwLGt6.BEbVGOZdWo4vY5SeUjaXuMTQ8Os09KOcHl7My');
 
 -- --------------------------------------------------------
@@ -83,7 +83,7 @@ INSERT INTO `super_admin` (`s.id`, `username`, `email`, `password`) VALUES
 -- Indexes for table `admins`
 --
 ALTER TABLE `admins`
-  ADD PRIMARY KEY (`a.id`);
+  ADD PRIMARY KEY (`admin_id`);
 
 --
 -- Indexes for table `customers`
