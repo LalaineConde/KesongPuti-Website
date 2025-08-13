@@ -193,7 +193,7 @@ $admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
       <!-- BOTTOM SIDEBAR -->
     </div>
 
-    <script src="../../includes/superadmin-dashboard.js"></script>
+    <script src="../../includes/dashboard.js"></script>
     
   </body>
 </html>
