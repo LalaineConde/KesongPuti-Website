@@ -21,7 +21,7 @@ $admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
     <title></title>
     <link rel="stylesheet" href="../css/admin.css" />
     <link rel="icon" href="../assets/NU logo.png" type="image/x-icon" />
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
   <body>
 
