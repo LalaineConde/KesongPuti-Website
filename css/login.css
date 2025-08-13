@@ -1,0 +1,131 @@
+@import url('colors.css');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Lilita+One&family=Londrina+Solid:wght@100;300;400;900&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-beige);
+    font-family: 'Fredoka', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-white);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.6s ease;
+}
+
+.auth-logo {
+    width: 150px;
+    margin-bottom: 30px;
+    border-radius: 50%;
+    border: 3px solid black;
+}
+
+.input-group-text {
+    background-color: #fff;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+}
+
+.input-group-text i {
+    font-size: 1.4rem;
+    font-weight: bolder;
+    filter: contrast(200%);
+}
+
+.form-control {
+    border-left: none;
+    color: #4B6F44;
+    border-radius: 0 10px 10px 0;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border: 1px solid #4B6F44;
+}
+
+.text-start p {
+    text-align: center;
+    font-size: 13px;
+}
+
+.login-btn {
+    background-color: #dabd1d;
+    border: 1px solid #000;
+    font-weight: bold;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-btn:hover {
+    background-color: #c7a900;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.form-toggle {
+    cursor: pointer;
+    color: #dabd1d;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: color 0.2s ease;
+}
+
+.form-toggle:hover {
+    color: #b59d1b;
+    text-decoration: none;
+}
+
+form {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 5% 2rem;
+        padding: 1.5rem;
+    }
+
+    .auth-logo {
+        width: 100px;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-container {
+        margin: 10% 1rem;
+        padding: 1rem;
+    }
+
+    .login-btn {
+        font-size: 14px;
+    }
+}

@@ -1,0 +1,22 @@
+:root {
+
+    /* Background Color */
+    --bg-white: #FFFCF6;
+    --bg-beige: #F4E3C1;
+    --bg-cocoa: #3B2F2F;
+
+    /* Text Color */
+    --brown: #5E503F;
+    --green: #A7C957;
+    --black: #000000;
+    --white: #FFFCF6;
+    --yellow: #FFD166;
+    --gray: #404040;
+    --cocoa: #3B2F2F;
+
+    /* Button Color */
+    --btn-yellow: #FFD166;
+    --btn-brown: #5E503F;
+    --btn-red: #A7C957;
+
+}
