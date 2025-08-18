@@ -2,21 +2,28 @@
 
     /* Background Color */
     --bg-white: #FFFCF6;
-    --bg-beige: #F4E3C1;
+    --bg-beige: #FFFBE6;
     --bg-cocoa: #3B2F2F;
+    --bg-green: #347928;
+    --bg-mint: #C0EBA6;
+    --bg-yellow: #FCCD2A;
 
-    /* Text Color */
-    --brown: #5E503F;
-    --green: #A7C957;
-    --black: #000000;
+    /* General Color */
+    --green: #347928;
+    --black: #0D0E0E;
     --white: #FFFCF6;
-    --yellow: #FFD166;
+    --yellow: #FCCD2A;
+    --beige: #FFFBE6;
+    --mint: #C0EBA6;
+    --brown: #5E503F;
     --gray: #404040;
     --cocoa: #3B2F2F;
 
     /* Button Color */
-    --btn-yellow: #FFD166;
-    --btn-brown: #5E503F;
+    --btn-yellow: #FCCD2A;
+    --btn-green: #347928;
     --btn-red: #A7C957;
 
 }
+
+
