@@ -3,13 +3,21 @@ $page_title = 'Inbox | Kesong Puti';
 require '../../connection.php';
 include ('../../includes/superadmin-dashboard.php');
 
-$toast_message = ''; // Initialize variable for toast message
+$toast_message = '';
 
 
-// Close the connection
-mysqli_close($connection);
+if ($_SESSION['role'] === 'admin') {
+    $recipient = "admin_" . $_SESSION['admin_id'];
+} elseif ($_SESSION['role'] === 'superadmin') {
+    $recipient = "super_" . $_SESSION['super_id'];
+}
 
+// Fetch inbox messages
+$sql = "SELECT * FROM inbox_messages 
+        WHERE recipient = '$recipient' 
+        ORDER BY created_at DESC";
 
+$result = mysqli_query($connection, $sql);
 ?>
 
 
@@ -57,39 +65,46 @@ mysqli_close($connection);
               </tr>
             </thead>
             <tbody id="contactTableBody">
-              <tr>
-                <td>Juan Dela Cruz</td>
-                <td>juan@example.com</td>
-                <td>09123456789</td>
-                <td>Do you ship nationwide?</td>
-                <td>Aug 5, 2025</td>
-                <td>
-                  <button class="view-btn">
-                    <i class="bi bi-eye-fill"></i>
-                  </button>
-                  <button class="delete-btn">
-                    <i class="bi bi-trash-fill"></i>
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>Maria Santos</td>
-                <td>maria.s@example.com</td>
-                <td>09123456789</td>
-                <td>I love your product!</td>
-                <td>Aug 3, 2025</td>
-                <td>
-                  <button class="view-btn">
-                    <i class="bi bi-eye-fill"></i>
-                  </button>
-                  <button class="delete-btn">
-                    <i class="bi bi-trash-fill"></i>
-                  </button>
-                </td>
-              </tr>
+              <?php if (mysqli_num_rows($result) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                  <tr>
+                    <td><?php echo htmlspecialchars($row['name']); ?></td>
+                    <td><?php echo htmlspecialchars($row['email']); ?></td>
+                    <td><?php echo htmlspecialchars($row['contact']); ?></td>
+                    <td class="contact-message"><span class="short-msg"><?php echo htmlspecialchars($row['message']); ?></span></td>
+                    <td><?php echo date("M j, Y", strtotime($row['created_at'])); ?></td>
+                    <td>
+                    <button
+                      class="view-btn view-more"
+                      data-message="<?php echo htmlspecialchars($row['message']); ?>"
+                      data-name="<?php echo htmlspecialchars($row['name']); ?>"
+                      title="View More"
+                    >
+                      <i class="bi bi-eye-fill"></i>
+                    </button>
+                    <button class="delete-btn" data-id="<?php echo $row['inbox_id']; ?>">
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  </td>
+                  </tr>
+                <?php endwhile; ?>
+              <?php else: ?>
+                <tr>
+                  <td colspan="6" style="text-align:center;">No messages found</td>
+                </tr>
+              <?php endif; ?>
             </tbody>
           </table>
         </div>
+
+              <!-- MODAL for full message -->
+              <div class="inbox-modal" id="inboxModal">
+                <div class="modal-content">
+                  <span class="close-modal">&times;</span>
+                  <h2 id="modalName"></h2>
+                  <p id="fullMessageText"></p>
+                </div>
+              </div>
       </div>
 </div>      
       <!-- INBOX -->
@@ -108,6 +123,76 @@ mysqli_close($connection);
         });
     }
     </script>   
+
+    <script>
+      const modal = document.getElementById("inboxModal");
+      const modalName = document.getElementById("modalName");
+      const fullMessageText = document.getElementById("fullMessageText");
+      const closeModalBtn = document.querySelector(".close-modal");
+
+      // Attach click to all "View More" buttons
+      document.querySelectorAll(".view-more").forEach((button) => {
+        button.addEventListener("click", () => {
+          modalName.textContent = button.getAttribute("data-name"); // sender's name
+          fullMessageText.textContent = button.getAttribute("data-message"); // full message
+          modal.style.display = "flex"; // show modal
+        });
+      });
+
+      // Close when clicking X
+      closeModalBtn.onclick = () => {
+        modal.style.display = "none";
+      };
+
+      // Close when clicking outside modal
+      window.onclick = (e) => {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+
+        deleteButtons.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const messageId = this.getAttribute("data-id");
+
+            Swal.fire({
+              title: "Are you sure?",
+              text: "This message will be deleted permanently!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#ff6b6b",
+              cancelButtonColor: "#6c757d",
+              confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                fetch("delete-message.php", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+                  body: "id=" + messageId,
+                })
+                  .then((response) => response.text())
+                  .then((data) => {
+                    data = data.trim(); // 🔑 remove spaces/newlines
+                    if (data === "success") {
+                      Swal.fire("Deleted!", "The message has been removed.", "success")
+                        .then(() => location.reload());
+                    } else {
+                      Swal.fire("Error!", data, "error"); // show actual error
+                    }
+                  });
+              }
+            });
+          });
+        });
+      });
+</script>
 
 <!-- FUNCTIONS -->
 </body>

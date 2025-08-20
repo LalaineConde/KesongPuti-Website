@@ -424,10 +424,14 @@ mysqli_close($connection);
             <img src="../../assets/logo.png" alt="Kesong Puti" />
             <div class="social-icons">
               <div class="social-circle facebook">
-                <i class="bi bi-facebook"></i>
+                <a href="https://www.facebook.com/AlohaKesorbetes" target="_blank" class="social-circle facebook">
+                  <i class="bi bi-facebook"></i>
+                </a>
               </div>
               <div class="social-circle instagram">
-                <i class="bi bi-instagram"></i>
+                <a href="https://www.instagram.com/arlene_macalinao_kesongputi/" target="_blank" class="social-circle instagram">
+                  <i class="bi bi-instagram"></i>
+                </a>
               </div>
             </div>
           </div>
@@ -439,21 +443,42 @@ mysqli_close($connection);
               We’d love to hear from you! Send us a message—we’ll get back to
               you as soon as we can!
             </p>
-            <form>
-              <input type="text" class="form-control" placeholder="Name" />
-              <input type="email" class="form-control" placeholder="Email" />
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Contact Number"
-              />
-              <textarea
-                class="form-control"
-                rows="3"
-                placeholder="Message"
-              ></textarea>
-              <button type="submit" class="submit-btn mt-2">Submit</button>
-            </form>
+<form action="contact.php" method="POST">
+  <input type="text" name="name" class="form-control" placeholder="Name" required />
+  <input type="email" name="email" class="form-control" placeholder="Email" required />
+  <input type="text" name="contact" class="form-control" placeholder="Contact Number" required />
+  
+  <select name="recipient" class="form-control" required>
+    <option value="">-- Select Recipient --</option>
+    <?php
+      require '../../connection.php';
+
+      // Fetch all super admins
+      $superQuery = "SELECT super_id, username FROM super_admin";
+      $superResult = mysqli_query($connection, $superQuery);
+
+      while ($row = mysqli_fetch_assoc($superResult)) {
+          echo '<option value="super_' . $row['super_id'] . '">'
+            . htmlspecialchars($row['username']) . ' (Super Admin)'
+            . '</option>';
+      }
+
+      // Fetch all admins
+      $adminQuery = "SELECT admin_id, username FROM admins";
+      $adminResult = mysqli_query($connection, $adminQuery);
+
+      while ($row = mysqli_fetch_assoc($adminResult)) {
+          echo '<option value="admin_' . $row['admin_id'] . '">'
+            . htmlspecialchars($row['username']) . ' (Admin)'
+            . '</option>';
+      }
+
+      
+    ?>
+  </select>
+  <textarea name="message" class="form-control" rows="3" placeholder="Message" required></textarea>
+  <button type="submit" class="submit-btn mt-2">Submit</button>
+</form>
           </div>
 
           <!-- Links & Info -->
@@ -467,12 +492,15 @@ mysqli_close($connection);
             </div>
             <div class="contact-info">
               <h6 class="footer-title mt-3">Contact Information</h6>
-              <p><i class="bi bi-envelope"></i> info@kesongputi.com</p>
-              <p><i class="bi bi-telephone"></i> +63 912 345 6789</p>
+              
+                <p><a href="https://www.instagram.com/arlene_macalinao_kesongputi/" target="_blank" class="contact-info"><i class="bi bi-envelope"></i> hernandezshy00@gmail.com </a></p>
+              
+              <p><a href="tel:+639997159226"><i class="bi bi-telephone"></i> +63 999 715 9226 </a></p>
               <p>
-                <i class="bi bi-geo-alt"></i> 123 Kesong St., Laguna,
-                Philippines
-              </p>
+                <a href="https://maps.app.goo.gl/XhDrJM3vM9fk9WPg9" target="_blank">
+                <i class="bi bi-geo-alt"></i> 4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009
+              </a>
+            </p>
             </div>
           </div>
         </div>

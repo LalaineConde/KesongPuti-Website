@@ -1,15 +1,29 @@
 <?php
-$page_title = 'Overview | Kesong Puti';
 require '../../connection.php'; 
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name    = mysqli_real_escape_string($connection, $_POST['name']);
+    $email   = mysqli_real_escape_string($connection, $_POST['email']);
+    $contact = mysqli_real_escape_string($connection, $_POST['contact']);
+    $message = mysqli_real_escape_string($connection, $_POST['message']);
+    $recipient = mysqli_real_escape_string($connection, $_POST['recipient']);
 
-$toast_message = ''; // Initialize variable for toast message
+$sql = "INSERT INTO inbox_messages (name, email, contact, message, recipient) 
+        VALUES ('$name', '$email', '$contact', '$message', '$recipient')";
 
 
-  
+    if (mysqli_query($connection, $sql)) {
+        $_SESSION['toast_message'] = "Message submitted successfully!";
+    } else {
+        $_SESSION['toast_message'] = "Error: " . mysqli_error($connection);
+    }
 
-// Close the connection
-mysqli_close($connection);
+    mysqli_close($connection);
+
+    // Redirect back to homepage or contact page
+    header("Location: products.php"); 
+    exit();
+}
 ?>
 
 
