@@ -109,7 +109,7 @@ $admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
           <li>
             <a
               href="../superadmin/create-admin.php"
-              class="main-tab single-tab"
+              class="bi bi-person-plus-fill"
               data-content="create-admin-content"
             >
               <i class="bi bi-envelope-fill"></i>

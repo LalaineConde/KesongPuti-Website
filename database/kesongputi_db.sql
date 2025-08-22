@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 22, 2025 at 12:47 PM
+-- Generation Time: Aug 22, 2025 at 05:11 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -41,8 +41,7 @@ CREATE TABLE `admins` (
 INSERT INTO `admins` (`admin_id`, `username`, `email`, `password`) VALUES
 (1, 'lalaine conde', 'lalaineconde23@gmail.com', '$2y$10$9Dy/b9srwpwLGt6.BEbVGOZdWo4vY5SeUjaXuMTQ8Os09KOcHl7My'),
 (3, 'lara danielle', 'larafremista21@gmail.com', '$2y$10$79rq0jOVXhyYsyvodZ7cO.iFhO5dTwadoMy97Bo6RiOsCr3PnWQFi'),
-(4, 'JB Alico', 'jaironbartalico@gmail.com', '$2y$10$bGTmtBqUpUxb/2.Zzh7CceGEHC4xYNWBxAPGpFW6NmyFvBLNU4A5q'),
-(5, 'arlene macalinao', 'lalaineconde22@gmail.com', '$2y$10$JZSDoE4983EQnbDab3jy5uvdUrzFfd5Krqhd854VxXHFxrWHucExe');
+(7, 'JB Alico', 'jaironbartalico@gmail.com', '$2y$10$RTJTk4ja/R7Agmm3ZBgAC.EmEadBa7p/XoKhGgxx3CwfYAawpFxcq');
 
 -- --------------------------------------------------------
 
@@ -202,7 +201,7 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `categories`

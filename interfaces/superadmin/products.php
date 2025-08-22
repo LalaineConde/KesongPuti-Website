@@ -104,8 +104,8 @@ if (isset($_POST['save_product'])) {
 
           <select id="categoryFilter">
             <option value="all">All Categories</option>
-            <option value="Cheese">Cheese</option>
-            <option value="Ice Cream">Ice Cream</option>
+            <option value="cheese">Cheese</option>
+            <option value="ice-cream">Ice Cream</option>
           </select>
 
           <h2 id="productCount">Total Products: <span id="totalProducts">0</span></h2>

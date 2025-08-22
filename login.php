@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $super_admin = mysqli_fetch_assoc($super_admin_result);
 
         if (password_verify($password, $super_admin['password'])) {
-            $_SESSION['s.id'] = $super_admin['s.id'];
+            $_SESSION['super_id'] = $super_admin['super_id'];
             $_SESSION['username'] = $super_admin['username'];
             $_SESSION['email'] = $super_admin['email'];
             $_SESSION['role'] = 'superadmin';

@@ -80,7 +80,6 @@ mysqli_close($connection);
 
 
 <!-- CREATE ADMIN -->
-
   <div class="main-content">
        <form id="loginForm" method="post">
       <div class="box" id="create-admin-content">
@@ -112,6 +111,56 @@ mysqli_close($connection);
       </div>
       </form>
 
+      <br>
+      <br>
+
+
+    <!-- ADMINS TABLE -->
+    <h2>Admin List</h2>
+    <table class="contact-table">
+        <thead>
+            <tr>
+                <th>Admin ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="contactTableBody">
+        <?php if (mysqli_num_rows($admins_result) > 0): ?>
+            <?php while ($row = mysqli_fetch_assoc($admins_result)): ?>
+                <tr>
+                    <td><?php echo $row['admin_id']; ?></td>
+                    <td><?php echo $row['username']; ?></td>
+                    <td><?php echo $row['email']; ?></td>
+              <td>
+                <!-- Update Button -->
+                <button 
+                  class="update-btn" 
+                  data-id="<?php echo $row['admin_id']; ?>"
+                  data-username="<?php echo htmlspecialchars($row['username']); ?>"
+                  data-email="<?php echo htmlspecialchars($row['email']); ?>"
+                  title="Update Admin"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+               <!-- Delete Button -->
+                <button 
+                  class="delete-btn" 
+                  data-id="<?php echo $row['admin_id']; ?>" 
+                  title="Delete Admin"
+                >
+                  <i class="bi bi-trash-fill"></i>
+                </button>
+              </td>
+                </tr>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <tr><td colspan="4">No admins found.</td></tr>
+        <?php endif; ?>
+        </tbody>
+    </table>
+
 </div>
       <!-- CREATE ADMIN -->
 
@@ -131,6 +180,80 @@ mysqli_close($connection);
         });
     }
     </script>   
+
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // DELETE ADMIN
+    document.querySelectorAll(".delete-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            let adminId = this.getAttribute("data-id");
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This admin will be deleted permanently.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("delete-admin.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "id=" + adminId
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        Swal.fire("Deleted!", data, "success")
+                            .then(() => location.reload());
+                    });
+                }
+            });
+        });
+    });
+
+    // UPDATE ADMIN
+    document.querySelectorAll(".update-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            let adminId = this.getAttribute("data-id");
+            let currentUsername = this.getAttribute("data-username");
+            let currentEmail = this.getAttribute("data-email");
+
+            Swal.fire({
+                title: "Update Admin",
+                html: `
+                    <input id="swal-username" class="swal2-input" placeholder="Username" value="${currentUsername}">
+                    <input id="swal-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}">
+                `,
+                confirmButtonText: "Update",
+                showCancelButton: true,
+                preConfirm: () => {
+                    return {
+                        username: document.getElementById("swal-username").value,
+                        email: document.getElementById("swal-email").value
+                    };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("update-admin.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        body: "id=" + adminId + "&username=" + encodeURIComponent(result.value.username) + "&email=" + encodeURIComponent(result.value.email)
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        Swal.fire("Updated!", data, "success")
+                            .then(() => location.reload());
+                    });
+                }
+            });
+        });
+    });
+
+});
+</script>
     
     <!-- FUNCTIONS -->
 </body>
