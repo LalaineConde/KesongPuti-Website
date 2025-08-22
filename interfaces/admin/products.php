@@ -1,618 +1,424 @@
 <?php
-$page_title = 'Overview | Kesong Puti';
-require '../../connection.php'; 
+$page_title = 'Products | Kesong Puti';
+require '../../connection.php';
+include ('../../includes/admin-dashboard.php'); // ✅ for admin
 
+$toast_message = '';
 
-$toast_message = ''; // Initialize variable for toast message
+if (isset($_SESSION['toast_message'])) {
+    $toast_message = $_SESSION['toast_message'];
+    unset($_SESSION['toast_message']);
+}
 
+// Fetch products (filter by role)
+if ($_SESSION['role'] === 'admin') {
+    $owner_id = $_SESSION['admin_id'];
+    $sql = "SELECT * FROM products WHERE owner_id = '$owner_id'"; // ✅ only their products
+} else {
+    $sql = "SELECT * FROM products"; // ✅ superadmin sees all
+}
+$result = mysqli_query($connection, $sql);
 
-  
+// ADD Product
+if (isset($_POST['save_product'])) {
+    $name = mysqli_real_escape_string($connection, $_POST['product_name']);
+    $desc = mysqli_real_escape_string($connection, $_POST['description']);
+    $category = mysqli_real_escape_string($connection, $_POST['category']);
+    $price = $_POST['price'];
+    $stock = $_POST['stock_qty'];
 
-// Close the connection
-mysqli_close($connection);
+    // Assign owner
+    if ($_SESSION['role'] === 'admin') {
+        $owner_id = $_SESSION['admin_id'];
+    } else {
+        $owner_id = $_SESSION['super_id'];
+    }
+
+    $target_dir = "../../assets/";
+    $target_file = $target_dir . basename($_FILES["product_image"]["name"]);
+    $image = "/assets/" . basename($_FILES["product_image"]["name"]);
+
+    if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
+        $insert = "INSERT INTO products 
+                   (product_name, description, price, stock_qty, category, product_image, owner_id)
+                   VALUES ('$name', '$desc', '$price', '$stock', '$category', '$image', '$owner_id')";
+        mysqli_query($connection, $insert);
+    }
+
+    $_SESSION['toast_message'] = "Product added successfully!";
+    echo "<script>location.href='products.php';</script>";
+    exit();
+}
+
+// UPDATE Product
+if (isset($_POST['update_product'])) {
+    $id = intval($_POST['product_id']);
+    $name = mysqli_real_escape_string($connection, $_POST['product_name']);
+    $desc = mysqli_real_escape_string($connection, $_POST['description']);
+    $category = mysqli_real_escape_string($connection, $_POST['category']);
+    $price = $_POST['price'];
+    $stock = $_POST['stock_qty'];
+
+    $imageSql = "";
+    if (!empty($_FILES["product_image"]["name"])) {
+        $target_dir = "../../assets/";
+        $target_file = $target_dir . basename($_FILES["product_image"]["name"]);
+        $image = "/assets/" . basename($_FILES["product_image"]["name"]);
+        if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
+            $imageSql = ", product_image='$image'";
+        }
+    }
+
+    // 🔹 Security: make sure admin can only update their products
+    if ($_SESSION['role'] === 'admin') {
+        $owner_id = $_SESSION['admin_id'];
+        $update = "UPDATE products 
+                   SET product_name='$name', description='$desc', price='$price', 
+                       stock_qty='$stock', category='$category' $imageSql 
+                   WHERE product_id='$id' AND owner_id='$owner_id'";
+    } else {
+        $update = "UPDATE products 
+                   SET product_name='$name', description='$desc', price='$price', 
+                       stock_qty='$stock', category='$category' $imageSql 
+                   WHERE product_id='$id'";
+    }
+
+    mysqli_query($connection, $update);
+
+    $_SESSION['toast_message'] = "Product updated successfully!";
+    echo "<script>location.href='products.php';</script>";
+    exit();
+}
 ?>
 
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" >
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
-    <title>Kesong Puti - Products</title>
+<head>
+  <meta charset="UTF-8">
+  <title>Products | Kesong Puti</title>
 
-    <!-- BOOTSTRAP -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
-      crossorigin="anonymous"
-    >
-
-    <!-- ICONS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-      rel="stylesheet"
-    >
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="../../css/styles.css" >
-  </head>
-
-  <body>
-    <!-- NAVBAR -->
-    <nav
-      class="navbar navbar-expand-lg fixed-top navbar-transparent navbar-hidden navbar-visible"
-      id="mainNavbar"
-    >
-      <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="#"
-          ><img 
-            src="../../assets/logo.png" 
-            alt="Kesong Puti" /></a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div
-          class="collapse navbar-collapse justify-content-center"
-          id="navbarNav"
-        >
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact Us</a>
-            </li>
-            <li class="nav-item"><a class="nav-link" href="#">Feedback</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Order Now</a></li>
-          </ul>
-        </div>
-
-        <!-- CART ICON -->
-        <div
-          class="cart-icon position-relative d-none d-lg-block"
-          id="cartBtn"
-          style="cursor: pointer"
-        >
-          <i class="bi bi-bag-fill fs-4"></i>
-          <span class="cart-badge" id="cartCount">2</span>
-        </div>
-        <!-- CART ICON -->
-      </div>
-    </nav>
-    <!-- NAVBAR -->
-
-    <!-- CART SIDEBAR -->
-    <div class="cart-sidebar" id="cartSidebar">
-      <div class="cart-header">
-        <h5>Your Cart</h5>
-        <button class="btn btn-sm btn-outline-secondary" id="closeCart">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-      <div class="cart-body">
-        <div class="cart-item">
-          <img src="https://picsum.photos/60" alt="Product" />
-          <div>
-            <h6>Product 1</h6>
-            <p class="mb-1">Qty: 1</p>
-            <strong>$25</strong>
-          </div>
-        </div>
-        <div class="cart-item">
-          <img src="https://picsum.photos/61" alt="Product" />
-          <div>
-            <h6>Product 2</h6>
-            <p class="mb-1">Qty: 2</p>
-            <strong>$40</strong>
-          </div>
-        </div>
-      </div>
-      <div class="cart-footer">
-        <button class="btn btn-dark w-100">Checkout</button>
-      </div>
-    </div>
-
-    <!-- CART OVERLAY -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- PRODUCTS PAGE HEADER -->
-    <section class="product-page">
-      <div>
-        <h1 class="mt-5">OUR PRODUCTS</h1>
-      </div>
-    </section>
-    <!-- PRODUCTS PAGE HEADER -->
-
-    <!-- PRODUCTS -->
-    <section class="product-section">
-      <div class="container product-contents">
-        <div class="pt-5 filter-bar">
-          <!-- filter -->
-          <div class="d-flex align-items-center filter-options">
-            <span class="filter-label">Filter:</span>
-
-            <!-- Type Dropdown -->
-            <div class="dropdown">
-              <button
-                class="dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Type <i class="bi bi-chevron-down"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Keso</a></li>
-                <li><a class="dropdown-item" href="#">Ice Cream</a></li>
-                <li><a class="dropdown-item" href="#">Kotse</a></li>
-              </ul>
-            </div>
-
-            <!-- Availability Dropdown -->
-            <div class="dropdown">
-              <button
-                class="dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Availability <i class="bi bi-chevron-down"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">In Stock</a></li>
-                <li><a class="dropdown-item" href="#">Out of Stock</a></li>
-              </ul>
-            </div>
-
-            <!-- Branches Dropdown -->
-            <div class="dropdown">
-              <button
-                class="dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Branches <i class="bi bi-chevron-down"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Branch 1</a></li>
-                <li><a class="dropdown-item" href="#">Branch 2</a></li>
-                <li><a class="dropdown-item" href="#">Branch 3</a></li>
-              </ul>
-            </div>
-          </div>
-          <!-- product number -->
-          <div class="product-count">50 products</div>
-        </div>
-
-        <!-- product list -->
-        <div class="row g-4 mt-2">
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img 
-                src="../../assets/banana-leaf.png" 
-                class="card-img-top" 
-                lt="Product Image" 
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Another Product</h5>
-                <p class="product-price">₱2,499.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-3 col-sm-6">
-            <div class="card product-card">
-              <img
-                src="../../assets/banana-leaf.png"
-                class="card-img-top"
-                alt="Product Image"
-              />
-              <div class="card-body">
-                <h5 class="card-title">Product Name</h5>
-                <p class="product-price">₱1,250.00</p>
-                <button class="btn btn-view">View</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- pagination -->
-        <nav>
-          <ul class="pagination pb-5">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">Previous</a>
-            </li>
-            <li class="page-item active">
-              <a class="page-link shadow-none" href="#">1</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link shadow-none" href="#">2</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link shadow-none" href="#">3</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link shadow-none" href="#">Next</a>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </section>
-    <!-- PRODUCTS -->
-
-    <!-- FOOTER -->
-    <footer>
-      <div class="container-fluid footer-container">
-        <div id="leaves">
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-          <i></i>
-        </div>
-        <div class="row gy-4">
-          <!-- Logo + Social -->
-          <div class="col-md-4 text-center footer-logo">
-            <img src="../../assets/logo.png" alt="Kesong Puti" />
-            <div class="social-icons">
-              <div class="social-circle facebook">
-                <a href="https://www.facebook.com/AlohaKesorbetes" target="_blank" class="social-circle facebook">
-                  <i class="bi bi-facebook"></i>
-                </a>
-              </div>
-              <div class="social-circle instagram">
-                <a href="https://www.instagram.com/arlene_macalinao_kesongputi/" target="_blank" class="social-circle instagram">
-                  <i class="bi bi-instagram"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Contact Form -->
-          <div class="col-md-4 contact-form">
-            <h5 class="fw-bold mb-3">Contact Us</h5>
-            <p class="small">
-              We’d love to hear from you! Send us a message—we’ll get back to
-              you as soon as we can!
-            </p>
-<form action="contact.php" method="POST">
-  <input type="text" name="name" class="form-control" placeholder="Name" required />
-  <input type="email" name="email" class="form-control" placeholder="Email" required />
-  <input type="text" name="contact" class="form-control" placeholder="Contact Number" required />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"/>
+  <link rel="stylesheet" href="../../css/admin.css"/>
+</head>
+<body>
   
-  <select name="recipient" class="form-control" required>
-    <option value="">-- Select Recipient --</option>
-    <?php
-      require '../../connection.php';
+      <!-- SHOP TAB -->
+      <!-- PRODUCTS -->
+ <div class="main-content">
 
-      // Fetch all super admins
-      $superQuery = "SELECT super_id, username FROM super_admin";
-      $superResult = mysqli_query($connection, $superQuery);
+      <div class="box content-shop" id="products-content" >
+        <h1>Products Management</h1>
 
-      while ($row = mysqli_fetch_assoc($superResult)) {
-          echo '<option value="super_' . $row['super_id'] . '">'
-            . htmlspecialchars($row['username']) . ' (Super Admin)'
-            . '</option>';
-      }
+        <div class="filter-bar">
+          <input
+            type="text"
+            id="productSearch"
+            placeholder="Search product by name..."
+          />
 
-      // Fetch all admins
-      $adminQuery = "SELECT admin_id, username FROM admins";
-      $adminResult = mysqli_query($connection, $adminQuery);
+          <select id="categoryFilter">
+            <option value="all">All Categories</option>
+            <option value="cheese">Cheese</option>
+            <option value="ice-cream">Ice Cream</option>
+          </select>
 
-      while ($row = mysqli_fetch_assoc($adminResult)) {
-          echo '<option value="admin_' . $row['admin_id'] . '">'
-            . htmlspecialchars($row['username']) . ' (Admin)'
-            . '</option>';
-      }
+          <h2 id="productCount">Total Products: <span id="totalProducts">0</span></h2>
 
-      
-    ?>
-  </select>
-  <textarea name="message" class="form-control" rows="3" placeholder="Message" required></textarea>
-  <button type="submit" class="submit-btn mt-2">Submit</button>
-</form>
-          </div>
-
-          <!-- Links & Info -->
-          <div class="col-md-4">
-            <div class="footer-links">
-              <h6 class="footer-title">Quick Links</h6>
-              <a href="#">Home</a>
-              <a href="#">Products</a>
-              <a href="#">About Us</a>
-              <a href="#">FAQ</a>
-            </div>
-            <div class="contact-info">
-              <h6 class="footer-title mt-3">Contact Information</h6>
-              
-                <p><a href="https://www.instagram.com/arlene_macalinao_kesongputi/" target="_blank" class="contact-info"><i class="bi bi-envelope"></i> hernandezshy00@gmail.com </a></p>
-              
-              <p><a href="tel:+639997159226"><i class="bi bi-telephone"></i> +63 999 715 9226 </a></p>
-              <p>
-                <a href="https://maps.app.goo.gl/XhDrJM3vM9fk9WPg9" target="_blank">
-                <i class="bi bi-geo-alt"></i> 4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009
-              </a>
-            </p>
-            </div>
-          </div>
+          <!-- Add Product Button -->
+          
         </div>
 
-        <!-- Bottom -->
-        <div class="footer-bottom">Kesong Puti © 2025 All Rights Reserved</div>
+        <button id="openAddProduct" class="btn-add">
+            <i class="bi bi-plus-circle"></i> Add Product
+          </button>
+    
+
+     <!-- PRODUCTS -->
+      <div class="product-grid" id="productGrid">
+        <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+          <div class="product-card" 
+            data-name="<?= htmlspecialchars($row['product_name']) ?>" 
+            data-category="<?= htmlspecialchars(strtolower($row['category'])) ?>">
+            <img src="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>" alt="Product Image">
+            <div class="product-info">
+            <h3 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h3>
+            <p>₱<?= number_format($row['price'], 2) ?></p>
+            
+            <button 
+              type="button" 
+              class="view-btn" 
+              data-id="<?= $row['product_id'] ?>" 
+              data-name="<?= htmlspecialchars($row['product_name']) ?>" 
+              data-desc="<?= htmlspecialchars($row['description']) ?>" 
+              data-price="<?= htmlspecialchars($row['price']) ?>" 
+              data-stock="<?= htmlspecialchars($row['stock_qty']) ?>" 
+              data-category="<?= htmlspecialchars($row['category']) ?>" 
+              data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>">
+              View Details
+            </button>
+
+               <!-- Delete Product -->
+              <form method="POST" action="delete-products.php" class="delete-form" style="display:inline;">
+                <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
+                <button type="button" class="delete-btn btn-delete">
+                  <i class="bi bi-trash"></i>
+                </button>
+            </form>
+            </div>
+          </div>
+        <?php } ?>
       </div>
-    </footer>
-    <!-- FOOTER -->
 
-    <!-- BOOTSTRAP JS -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
-      crossorigin="anonymous"
-    ></script>
+    <!-- MODAL Add/Edit Product -->
+      <div class="product-modal" id="productModal">
+        <div class="modal-content">
+          <span class="close-modal">&times;</span>
+          <h2 id="modalTitle">Add Product</h2>
 
-    <!-- SCROLL NAVBAR -->
-    <script>
-      (function () {
-        const navbar = document.getElementById("mainNavbar");
-        const hero = document.querySelector(".product-page");
+          <form method="POST" enctype="multipart/form-data" action="products.php">
+            <!-- Hidden ID (needed for edit) -->
+            <input type="hidden" name="product_id" id="product_id">
 
-        function setTopState() {
-          // At the very top: transparent + visible
-          navbar.classList.add("navbar-transparent", "navbar-visible");
-          navbar.classList.remove("navbar-scrolled", "navbar-hidden");
-        }
+            <div class="form-group">
+              <label>Product Name</label>
+              <input type="text" name="product_name" id="product_name" required>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <textarea name="description" id="description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Price</label>
+              <input type="number" name="price" id="price" step="0.01" required>
+            </div>
+            <div class="form-group">
+              <label>Stock Quantity</label>
+              <input type="number" name="stock_qty" id="stock_qty" min="0" required>
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select name="category" id="category" required>
+                <option value="" disabled selected>Select Category</option>
+                <option value="cheese">Cheese</option>
+                <option value="ice-cream">Ice Cream</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Image</label>
+              <input type="file" name="product_image" id="product_image">
+              <img id="previewImage" style="max-width:100px; margin-top:5px; display:none;">
+            </div>
+            <button type="submit" name="save_product" id="submitBtn" class="btn-save">Save</button>
+          </form>
+        </div>
+      </div>
+      
+      
+      <!-- View Product Modal -->
+      <div class="product-modal" id="viewProductModal" data-id="">
+        <div class="modal-content">
+          <span class="close-modal-view">&times;</span>
+          <h2>Product Details</h2>
+          <p><strong>Name:</strong> <span id="view_product_name"></span></p>
+          <p><strong>Description:</strong> <span id="view_description"></span></p>
+          <p><strong>Price:</strong> <span id="view_price"></span></p>
+          <p><strong>Stock:</strong> <span id="view_stock_qty"></span></p>
+          <p><strong>Category:</strong> <span id="view_category"></span></p>
+          <img id="view_image" src="" alt="Product Image" />
 
-        function setHiddenTransparent() {
-          // While scrolling inside hero: hide (slide up) + keep transparent
-          navbar.classList.add("navbar-hidden", "navbar-transparent");
-          navbar.classList.remove("navbar-visible", "navbar-scrolled");
-        }
+          <button id="editFromViewBtn">Edit</button>
+        </div>
+      </div>
 
-        function setVisibleColored() {
-          // After hero (second section and beyond): show (slide down) + colored background
-          navbar.classList.add("navbar-visible", "navbar-scrolled");
-          navbar.classList.remove("navbar-hidden", "navbar-transparent");
-        }
 
-        function updateNavbar() {
-          const y = window.scrollY;
-          const navH = navbar.offsetHeight || 0;
-          const heroH = (hero && hero.offsetHeight) || 0;
-          const heroBottom = Math.max(0, heroH - navH); // threshold to "second page"
+  <!-- FUNCTIONS -->
 
-          if (y <= 0) {
-            setTopState();
-            return;
-          }
+    <!--Search and Filter-->
 
-          if (y < heroBottom) {
-            // Still within the hero area → keep it hidden while scrolling down the hero
-            setHiddenTransparent();
+      <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("productSearch");
+        const categoryFilter = document.getElementById("categoryFilter");
+        const productCards = document.querySelectorAll(".product-card");
+        const productCountEl = document.getElementById("productCount");
+        const totalProductsEl = document.getElementById("totalProducts");
+
+        function filterProducts() {
+          const searchValue = searchInput.value.toLowerCase();
+          const categoryValue = categoryFilter.value.toLowerCase();
+
+          let visibleCount = 0;
+
+          productCards.forEach(card => {
+            const name = card.querySelector(".card-title").textContent.toLowerCase();
+            const category = card.getAttribute("data-category");
+
+            const matchesSearch = name.includes(searchValue);
+            const matchesCategory = (categoryValue === "all" || category === categoryValue);
+
+            if (matchesSearch && matchesCategory) {
+              card.style.display = "block";
+              visibleCount++;
+            } else {
+              card.style.display = "none";
+            }
+          });
+
+          // Update the counter or show "No products found"
+          if (visibleCount > 0) {
+            productCountEl.innerHTML = `Total Products: <span id="totalProducts">${visibleCount}</span>`;
           } else {
-            // Past the hero → show it with background color
-            setVisibleColored();
+            productCountEl.textContent = "No products found";
           }
         }
 
-        // Init + on scroll
-        window.addEventListener("scroll", updateNavbar, { passive: true });
-        window.addEventListener("load", updateNavbar);
-        document.addEventListener("DOMContentLoaded", updateNavbar);
-      })();
+        // Run filter initially (so it counts all products on load)
+        filterProducts();
+
+        // Run filter when typing or selecting
+        searchInput.addEventListener("input", filterProducts);
+        categoryFilter.addEventListener("change", filterProducts);
+      });
+
     </script>
 
-    <!-- CART SIDEBAR -->
-    <script>
-      // Cart functionality
-      const cartBtn = document.getElementById("cartBtn");
-      const cartSidebar = document.getElementById("cartSidebar");
-      const closeCart = document.getElementById("closeCart");
-      const overlay = document.getElementById("overlay");
 
-      cartBtn.addEventListener("click", () => {
-        cartSidebar.classList.add("active");
-        overlay.classList.add("active");
-      });
+    <!-- Add Product Modal -->
 
-      closeCart.addEventListener("click", () => {
-        cartSidebar.classList.remove("active");
-        overlay.classList.remove("active");
-      });
+      <script>
+        // Add/Edit Product Modal
+        const modal = document.getElementById("productModal");  
+        const openBtn = document.getElementById("openAddProduct");
+        const closeBtn = document.querySelector(".close-modal");
 
-      overlay.addEventListener("click", () => {
-        cartSidebar.classList.remove("active");
-        overlay.classList.remove("active");
-      });
-    </script>
+        openBtn.onclick = () => { 
+          // reset modal for adding
+          document.getElementById('modalTitle').innerText = "Add Product";
+          document.getElementById('submitBtn').name = "save_product";
+          document.getElementById('submitBtn').innerText = "Save";
 
-    <!-- PRODUCT FILTER FUNCTION -->
-    <script>
-      // Replace dropdown button text when option clicked
-      document
-        .querySelectorAll(".dropdown-menu .dropdown-item")
-        .forEach((item) => {
-          item.addEventListener("click", function (e) {
-            e.preventDefault();
+          // clear form fields
+          document.getElementById('product_id').value = "";
+          document.getElementById('product_name').value = "";
+          document.getElementById('description').value = "";
+          document.getElementById('price').value = "";
+          document.getElementById('stock_qty').value = "";
+          document.getElementById('category').value = "";
+          document.getElementById('product_image').value = "";
+          document.getElementById('previewImage').style.display = "none";
 
-            let dropdown = this.closest(".dropdown");
-            let button = dropdown.querySelector(".dropdown-toggle");
+          modal.style.display = "flex"; 
+        };
 
-            // Update button text with chosen option
-            button.innerHTML =
-              this.textContent + ' <i class="bi bi-chevron-down"></i>';
+        closeBtn.onclick = () => { modal.style.display = "none"; };
+        window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+      </script>
+
+       <!-- SweetAlert2 Library -->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+      <script>
+          var toastMessage = "<?php echo $toast_message; ?>";
+          if (toastMessage) {
+              Swal.fire({
+                  icon: 'info',
+                  text: toastMessage,
+                  confirmButtonColor: '#ff6b6b'
+              });
+          }
+      </script> 
+        
+        <script>
+          document.querySelectorAll('.delete-btn').forEach(btn => {
+              btn.addEventListener('click', function() {
+                  let form = this.closest('form');
+                  Swal.fire({
+                      title: 'Are you sure?',
+                      text: "This product will be permanently deleted.",
+                      icon: 'warning',
+                      showCancelButton: true,
+                      confirmButtonColor: '#d33',
+                      cancelButtonColor: '#6c757d',
+                      confirmButtonText: 'Yes, delete it!'
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          // Add hidden field to trigger PHP delete
+                          let input = document.createElement("input");
+                          input.type = "hidden";
+                          input.name = "delete_product";
+                          input.value = "1";
+                          form.appendChild(input);
+                          form.submit();
+                      }
+                  });
+              });
+          });
+        </script>
+
+     <!-- View Details Product Modal -->       
+      <script>
+        // View Modal
+        const viewModal = document.getElementById("viewProductModal");
+        const closeViewBtn = document.querySelector(".close-modal-view");
+
+        document.querySelectorAll(".view-btn").forEach(btn => {
+          btn.addEventListener("click", function() {
+            // Fill content
+            viewModal.dataset.id = this.dataset.id;
+            document.getElementById("view_product_name").textContent = this.dataset.name;
+            document.getElementById("view_description").textContent = this.dataset.desc;
+            document.getElementById("view_price").textContent = "₱" + parseFloat(this.dataset.price).toFixed(2);
+            document.getElementById("view_stock_qty").textContent = this.dataset.stock;
+            document.getElementById("view_category").textContent = this.dataset.category;
+            document.getElementById("view_image").src = this.dataset.image;
+
+            viewModal.style.display = "flex";
           });
         });
-    </script>
-  </body>
-</html>
 
+        closeViewBtn.onclick = () => { viewModal.style.display = "none"; };
+        window.onclick = (e) => { if (e.target === viewModal) viewModal.style.display = "none"; };
+
+      </script>
+
+     <!-- Edit Product Modal -->
+    <script>
+
+      // Edit button inside View Modal
+      document.getElementById('editFromViewBtn').addEventListener('click', function() {
+        // Close the view modal
+        document.getElementById('viewProductModal').style.display = "none";
+
+        // Switch modal title and button
+        document.getElementById('modalTitle').innerText = "Edit Product";
+        document.getElementById('submitBtn').name = "update_product"; 
+        document.getElementById('submitBtn').innerText = "Update Product";
+
+        // Fill the fields with View modal values
+        document.getElementById('product_id').value = document.getElementById('viewProductModal').dataset.id;
+        document.getElementById('product_name').value = document.getElementById('view_product_name').innerText;
+        document.getElementById('description').value = document.getElementById('view_description').innerText;
+        document.getElementById('price').value = document.getElementById('view_price').innerText.replace('₱','');
+        document.getElementById('stock_qty').value = document.getElementById('view_stock_qty').innerText;
+        document.getElementById('category').value = document.getElementById('view_category').innerText;
+
+        let imgSrc = document.getElementById('view_image').src;
+        if (imgSrc) {
+          document.getElementById('previewImage').src = imgSrc;
+          document.getElementById('previewImage').style.display = "block";
+        }
+
+        // Show Add/Edit modal
+        document.getElementById('productModal').style.display = "flex";
+      });
+
+      
+      </script>
+
+    </body>
+    </html>
 
 
