@@ -1,7 +1,8 @@
 <?php
-$page_title = 'Overview | Kesong Puti';
+$page_title = 'Products | Kesong Puti';
+$page_header = 'PRODUCTS';
 require '../../connection.php'; 
-
+include ('../../includes/customer-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
@@ -18,7 +19,7 @@ mysqli_close($connection);
   <head>
     <meta charset="utf-8" >
     <meta name="viewport" content="width=device-width, initial-scale=1.0" >
-    <title>Kesong Puti - Products</title>
+    <title>Products | Kesong Puti</title>
 
     <!-- BOOTSTRAP -->
     <link
@@ -39,95 +40,9 @@ mysqli_close($connection);
   </head>
 
   <body>
-    <!-- NAVBAR -->
-    <nav
-      class="navbar navbar-expand-lg fixed-top navbar-transparent navbar-hidden navbar-visible"
-      id="mainNavbar"
-    >
-      <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="#"
-          ><img 
-            src="../../assets/logo.png" 
-            alt="Kesong Puti" /></a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div
-          class="collapse navbar-collapse justify-content-center"
-          id="navbarNav"
-        >
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact Us</a>
-            </li>
-            <li class="nav-item"><a class="nav-link" href="#">Feedback</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Order Now</a></li>
-          </ul>
-        </div>
 
-        <!-- CART ICON -->
-        <div
-          class="cart-icon position-relative d-none d-lg-block"
-          id="cartBtn"
-          style="cursor: pointer"
-        >
-          <i class="bi bi-bag-fill fs-4"></i>
-          <span class="cart-badge" id="cartCount">2</span>
-        </div>
-        <!-- CART ICON -->
-      </div>
-    </nav>
-    <!-- NAVBAR -->
 
-    <!-- CART SIDEBAR -->
-    <div class="cart-sidebar" id="cartSidebar">
-      <div class="cart-header">
-        <h5>Your Cart</h5>
-        <button class="btn btn-sm btn-outline-secondary" id="closeCart">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-      <div class="cart-body">
-        <div class="cart-item">
-          <img src="https://picsum.photos/60" alt="Product" />
-          <div>
-            <h6>Product 1</h6>
-            <p class="mb-1">Qty: 1</p>
-            <strong>$25</strong>
-          </div>
-        </div>
-        <div class="cart-item">
-          <img src="https://picsum.photos/61" alt="Product" />
-          <div>
-            <h6>Product 2</h6>
-            <p class="mb-1">Qty: 2</p>
-            <strong>$40</strong>
-          </div>
-        </div>
-      </div>
-      <div class="cart-footer">
-        <button class="btn btn-dark w-100">Checkout</button>
-      </div>
-    </div>
 
-    <!-- CART OVERLAY -->
-    <div class="overlay" id="overlay"></div>
-
-    <!-- PRODUCTS PAGE HEADER -->
-    <section class="product-page">
-      <div>
-        <h1 class="mt-5">OUR PRODUCTS</h1>
-      </div>
-    </section>
-    <!-- PRODUCTS PAGE HEADER -->
 
     <!-- PRODUCTS -->
     <section class="product-section">
@@ -443,7 +358,7 @@ mysqli_close($connection);
               We’d love to hear from you! Send us a message—we’ll get back to
               you as soon as we can!
             </p>
-<form action="contact.php" method="POST">
+<form action="save-message.php" method="POST">
   <input type="text" name="name" class="form-control" placeholder="Name" required />
   <input type="email" name="email" class="form-control" placeholder="Email" required />
   <input type="text" name="contact" class="form-control" placeholder="Contact Number" required />
@@ -518,80 +433,6 @@ mysqli_close($connection);
       crossorigin="anonymous"
     ></script>
 
-    <!-- SCROLL NAVBAR -->
-    <script>
-      (function () {
-        const navbar = document.getElementById("mainNavbar");
-        const hero = document.querySelector(".product-page");
-
-        function setTopState() {
-          // At the very top: transparent + visible
-          navbar.classList.add("navbar-transparent", "navbar-visible");
-          navbar.classList.remove("navbar-scrolled", "navbar-hidden");
-        }
-
-        function setHiddenTransparent() {
-          // While scrolling inside hero: hide (slide up) + keep transparent
-          navbar.classList.add("navbar-hidden", "navbar-transparent");
-          navbar.classList.remove("navbar-visible", "navbar-scrolled");
-        }
-
-        function setVisibleColored() {
-          // After hero (second section and beyond): show (slide down) + colored background
-          navbar.classList.add("navbar-visible", "navbar-scrolled");
-          navbar.classList.remove("navbar-hidden", "navbar-transparent");
-        }
-
-        function updateNavbar() {
-          const y = window.scrollY;
-          const navH = navbar.offsetHeight || 0;
-          const heroH = (hero && hero.offsetHeight) || 0;
-          const heroBottom = Math.max(0, heroH - navH); // threshold to "second page"
-
-          if (y <= 0) {
-            setTopState();
-            return;
-          }
-
-          if (y < heroBottom) {
-            // Still within the hero area → keep it hidden while scrolling down the hero
-            setHiddenTransparent();
-          } else {
-            // Past the hero → show it with background color
-            setVisibleColored();
-          }
-        }
-
-        // Init + on scroll
-        window.addEventListener("scroll", updateNavbar, { passive: true });
-        window.addEventListener("load", updateNavbar);
-        document.addEventListener("DOMContentLoaded", updateNavbar);
-      })();
-    </script>
-
-    <!-- CART SIDEBAR -->
-    <script>
-      // Cart functionality
-      const cartBtn = document.getElementById("cartBtn");
-      const cartSidebar = document.getElementById("cartSidebar");
-      const closeCart = document.getElementById("closeCart");
-      const overlay = document.getElementById("overlay");
-
-      cartBtn.addEventListener("click", () => {
-        cartSidebar.classList.add("active");
-        overlay.classList.add("active");
-      });
-
-      closeCart.addEventListener("click", () => {
-        cartSidebar.classList.remove("active");
-        overlay.classList.remove("active");
-      });
-
-      overlay.addEventListener("click", () => {
-        cartSidebar.classList.remove("active");
-        overlay.classList.remove("active");
-      });
-    </script>
 
     <!-- PRODUCT FILTER FUNCTION -->
     <script>
@@ -611,6 +452,31 @@ mysqli_close($connection);
           });
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".contact-form form");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault(); // prevent immediate submit
+
+      Swal.fire({
+        title: "Send Message?",
+        text: "Do you want to send this message?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#064420",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Yes, send it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit(); // submit the form after confirmation
+        }
+      });
+    });
+  });
+</script>
   </body>
 </html>
 

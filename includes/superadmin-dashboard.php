@@ -35,13 +35,21 @@ $admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
         <i class="bi bi-three-dots" id="btn"></i>
       </div>
 
-      <div class="user">
-        <img src="../../assets/logo.png" alt="admin" class="profile-img" />
-        <div>
-          <p class="name">Arlene Macalinao</p>
-          <p class="type">Super Admin</p>
-        </div>
+    <div class="user">
+      <img src="../../assets/logo.png" alt="admin" class="profile-img" />
+      <div>
+        <p class="name">
+          <?php echo ucwords(htmlspecialchars($admin_name)); ?>
+        </p>
+        <p class="type">
+          <?php 
+            echo isset($_SESSION['role']) 
+              ? ucwords(htmlspecialchars($_SESSION['role'])) 
+              : 'Admin';
+          ?>
+        </p>
       </div>
+    </div>
       <!-- TOP SIDEBAR -->
 
       <!-- MIDDLE SIDEBAR -->

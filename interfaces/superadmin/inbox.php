@@ -125,6 +125,34 @@ $result = mysqli_query($connection, $sql);
     </script>   
 
     <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("contactSearch");
+        const tableBody = document.getElementById("contactTableBody");
+        const rows = tableBody.getElementsByTagName("tr");
+
+        searchInput.addEventListener("keyup", function () {
+          const filter = this.value.toLowerCase();
+
+          for (let i = 0; i < rows.length; i++) {
+            const nameCell = rows[i].getElementsByTagName("td")[0];
+            const emailCell = rows[i].getElementsByTagName("td")[1];
+
+            if (nameCell && emailCell) {
+              const nameText = nameCell.textContent.toLowerCase();
+              const emailText = emailCell.textContent.toLowerCase();
+
+              if (nameText.includes(filter) || emailText.includes(filter)) {
+                rows[i].style.display = "";
+              } else {
+                rows[i].style.display = "none";
+              }
+            }
+          }
+        });
+      });
+    </script>
+
+    <script>
       const modal = document.getElementById("inboxModal");
       const modalName = document.getElementById("modalName");
       const fullMessageText = document.getElementById("fullMessageText");
