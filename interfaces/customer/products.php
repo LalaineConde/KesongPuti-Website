@@ -2,6 +2,8 @@
 <?php
 $page_title = 'Customer Products | Kesong Puti';
 require '../../connection.php';
+$page_header = "PRODUCTS";
+include ('../../includes/customer-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
@@ -43,134 +45,6 @@ $result = mysqli_query($connection, $sql);
   </head>
 
   <body>
-    <!-- NAVBAR -->
-    <nav
-      class="navbar navbar-expand-lg fixed-top navbar-transparent navbar-hidden navbar-visible"
-      id="mainNavbar"
-    >
-      <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="#"
-          ><img src="../../assets/logo.png" alt="Kesong Puti"
-        /></a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div
-          class="collapse navbar-collapse justify-content-center"
-          id="navbarNav"
-        >
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Products</a></li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contact Us</a>
-            </li>
-            <li class="nav-item"><a class="nav-link" href="#">Feedback</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Order Now</a></li>
-          </ul>
-        </div>
-
-        <!-- CART ICON -->
-        <div
-          class="cart-icon position-relative d-none d-lg-block"
-          id="cartBtn"
-          style="cursor: pointer"
-        >
-          <i class="bi bi-bag-fill fs-4"></i>
-          <span class="cart-badge" id="cartCount">2</span>
-        </div>
-        <!-- CART ICON -->
-      </div>
-    </nav>
-    <!-- NAVBAR -->
-
-    <!-- CART SIDEBAR -->
-    <div class="cart-sidebar" id="cartSidebar">
-      <div
-        class="cart-header d-flex justify-content-between align-items-center p-3 border-bottom"
-      >
-        <h5 class="mb-0">My Cart</h5>
-        <button class="btn btn-md" id="closeCart">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-
-      <div class="cart-body p-3" id="cartItems">
-        <!-- Select All -->
-        <div class="d-flex align-items-center mb-2">
-          <input type="checkbox" id="selectAll" class="me-2" />
-          <label for="selectAll" class="mb-0 fw-bold">Select All</label>
-        </div>
-
-        <!-- Example Cart Item -->
-        <div class="cart-item d-flex align-items-center border-bottom py-2">
-          <input type="checkbox" class="cart-check me-2" checked />
-          <img
-            src="../../assets/kesong puti.png"
-            alt="Product"
-            class="cart-img me-2"
-          />
-          <div class="flex-grow-1">
-            <h6 class="mb-1">Kesong Puti Classic</h6>
-            <div class="d-flex align-items-center">
-              <button class="btn-qty minus">−</button>
-              <span class="qty mx-2">1</span>
-              <button class="btn-qty plus">+</button>
-            </div>
-            <strong class="item-price d-block mt-1" data-price="25">₱25</strong>
-            <span class="cart-branch">Branch 1</span>
-          </div>
-          <button class="btn-delete"><i class="bi bi-trash"></i></button>
-        </div>
-
-        <div class="cart-item d-flex align-items-center border-bottom py-2">
-          <input type="checkbox" class="cart-check me-2" checked />
-          <img
-            src="../../assets/kesong puti.png"
-            alt="Product"
-            class="cart-img me-2"
-          />
-          <div class="flex-grow-1">
-            <h6 class="mb-1">Kesong Puti Premium</h6>
-            <div class="d-flex align-items-center">
-              <button class="btn-qty minus">−</button>
-              <span class="qty mx-2">2</span>
-              <button class="btn-qty plus">+</button>
-            </div>
-            <strong class="item-price d-block mt-1" data-price="40">₱40</strong>
-          </div>
-          <button class="btn-delete"><i class="bi bi-trash"></i></button>
-        </div>
-      </div>
-
-      <!-- Footer -->
-      <div class="cart-footer p-3 border-top">
-        <div class="d-flex justify-content-between mb-2">
-          <strong>Total:</strong>
-          <span id="cartTotal">₱65</span>
-        </div>
-        <button class="btn btn-dark w-100">Checkout</button>
-      </div>
-    </div>
-    <!-- CART SIDEBAR -->
-
-    <!-- CART OVERLAY -->
-    <div class="overlay" id="overlay"></div>
-    <!-- CART OVERLAY -->
-
-    <!-- PRODUCTS PAGE HEADER -->
-    <section class="product-page">
-      <div>
-        <h1 class="mt-5">OUR PRODUCTS</h1>
-      </div>
-    </section>
-    <!-- PRODUCTS PAGE HEADER -->
 
     <!-- PRODUCTS -->
     <section class="product-section">
