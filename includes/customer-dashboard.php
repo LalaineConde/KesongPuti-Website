@@ -83,38 +83,77 @@
     
     <!-- CART SIDEBAR -->
     <div class="cart-sidebar" id="cartSidebar">
-      <div class="cart-header">
-        <h5>Your Cart</h5>
-        <button class="btn btn-sm btn-outline-secondary" id="closeCart">
+      <div
+        class="cart-header d-flex justify-content-between align-items-center p-3 border-bottom"
+      >
+        <h5 class="mb-0">My Cart</h5>
+        <button class="btn btn-md" id="closeCart">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
-      <div class="cart-body">
-        <div class="cart-item">
-          <img src="https://picsum.photos/60" alt="Product" />
-          <div>
-            <h6>Product 1</h6>
-            <p class="mb-1">Qty: 1</p>
-            <strong>$25</strong>
-          </div>
+
+      <div class="cart-body p-3" id="cartItems">
+        <!-- Select All -->
+        <div class="d-flex align-items-center mb-2">
+          <input type="checkbox" id="selectAll" class="me-2" />
+          <label for="selectAll" class="mb-0 fw-bold">Select All</label>
         </div>
-        <div class="cart-item">
-          <img src="https://picsum.photos/61" alt="Product" />
-          <div>
-            <h6>Product 2</h6>
-            <p class="mb-1">Qty: 2</p>
-            <strong>$40</strong>
+
+        <!-- Example Cart Item -->
+        <div class="cart-item d-flex align-items-center border-bottom py-2">
+          <input type="checkbox" class="cart-check me-2" checked />
+          <img
+            src="assets/kesong puti.png"
+            alt="Product"
+            class="cart-img me-2"
+          />
+          <div class="flex-grow-1">
+            <h6 class="mb-1">Kesong Puti Classic</h6>
+            <div class="d-flex align-items-center">
+              <button class="btn-qty minus">−</button>
+              <span class="qty mx-2">1</span>
+              <button class="btn-qty plus">+</button>
+            </div>
+            <strong class="item-price d-block mt-1" data-price="25">₱25</strong>
+            <span class="cart-branch">Branch 1</span>
           </div>
+          <button class="btn-delete"><i class="bi bi-trash"></i></button>
+        </div>
+
+        <div class="cart-item d-flex align-items-center border-bottom py-2">
+          <input type="checkbox" class="cart-check me-2" checked />
+          <img
+            src="assets/kesong puti.png"
+            alt="Product"
+            class="cart-img me-2"
+          />
+          <div class="flex-grow-1">
+            <h6 class="mb-1">Kesong Puti Premium</h6>
+            <div class="d-flex align-items-center">
+              <button class="btn-qty minus">−</button>
+              <span class="qty mx-2">2</span>
+              <button class="btn-qty plus">+</button>
+            </div>
+            <strong class="item-price d-block mt-1" data-price="40">₱40</strong>
+          </div>
+          <button class="btn-delete"><i class="bi bi-trash"></i></button>
         </div>
       </div>
-      <div class="cart-footer">
+
+      <!-- Footer -->
+      <div class="cart-footer p-3 border-top">
+        <div class="d-flex justify-content-between mb-2">
+          <strong>Total:</strong>
+          <span id="cartTotal">₱65</span>
+        </div>
         <button class="btn btn-dark w-100">Checkout</button>
       </div>
     </div>
+    <!-- CART SIDEBAR -->
 
     <!-- CART OVERLAY -->
     <div class="overlay" id="overlay"></div>
-
+    <!-- CART OVERLAY -->
 
 <!-- FUNCTIONS -->
   <!-- BOOTSTRAP JS -->
@@ -177,9 +216,13 @@
 
 
 
+
+
+
+
     <!-- CART SIDEBAR -->
     <script>
-      // Cart functionality
+      // Cart sidebar functionality
       const cartBtn = document.getElementById("cartBtn");
       const cartSidebar = document.getElementById("cartSidebar");
       const closeCart = document.getElementById("closeCart");
@@ -199,6 +242,84 @@
         cartSidebar.classList.remove("active");
         overlay.classList.remove("active");
       });
+
+      // Cart items functionality
+      function updateCartTotal() {
+        let total = 0;
+        document.querySelectorAll(".cart-item").forEach((item) => {
+          const checkbox = item.querySelector(".cart-check");
+          const priceEl = item.querySelector(".item-price");
+          const qty = parseInt(item.querySelector(".qty").textContent);
+          const pricePerItem =
+            parseFloat(priceEl.getAttribute("data-price")) / qty;
+
+          if (checkbox.checked) {
+            total += pricePerItem * qty;
+          }
+        });
+        document.getElementById("cartTotal").textContent = `₱${total}`;
+      }
+
+      // Quantity controls
+      document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("plus")) {
+          let qtyEl = e.target.previousElementSibling;
+          let qty = parseInt(qtyEl.textContent);
+          qty++;
+          qtyEl.textContent = qty;
+
+          let priceEl = e.target
+            .closest(".cart-item")
+            .querySelector(".item-price");
+          let pricePerItem =
+            parseFloat(priceEl.getAttribute("data-price")) / (qty - 1);
+          let newPrice = qty * pricePerItem;
+          priceEl.setAttribute("data-price", newPrice);
+          priceEl.textContent = `₱${newPrice}`;
+          updateCartTotal();
+        }
+
+        if (e.target.classList.contains("minus")) {
+          let qtyEl = e.target.nextElementSibling;
+          let qty = parseInt(qtyEl.textContent);
+          if (qty > 1) {
+            qty--;
+            qtyEl.textContent = qty;
+
+            let priceEl = e.target
+              .closest(".cart-item")
+              .querySelector(".item-price");
+            let pricePerItem =
+              parseFloat(priceEl.getAttribute("data-price")) / (qty + 1);
+            let newPrice = qty * pricePerItem;
+            priceEl.setAttribute("data-price", newPrice);
+            priceEl.textContent = `₱${newPrice}`;
+          }
+          updateCartTotal();
+        }
+
+        if (e.target.closest(".btn-delete")) {
+          e.target.closest(".cart-item").remove();
+          updateCartTotal();
+        }
+      });
+
+      // Checkbox updates
+      document.addEventListener("change", function (e) {
+        if (e.target.classList.contains("cart-check")) {
+          updateCartTotal();
+        }
+
+        if (e.target.id === "selectAll") {
+          let checked = e.target.checked;
+          document.querySelectorAll(".cart-check").forEach((cb) => {
+            cb.checked = checked;
+          });
+          updateCartTotal();
+        }
+      });
+
+      updateCartTotal();
     </script>
 <!-- FUNCTIONS -->
 </body>
