@@ -61,26 +61,26 @@ include ('../../includes/customer-dashboard.php');
       border-radius: 50%;
     }
 
-    .contact-form {
+    .contact-form-page {
       text-align: center;
       max-width: 420px;
       width: 100%;
     }
 
-    .contact-form h2 {
+    .contact-form-page h2 {
       font-size: 2.4rem;
       font-weight: bold;
       color: #000;
       margin-bottom: 10px;
     }
 
-    .contact-form p {
+    .contact-form-page p {
       font-size: 15px;
       color: #064420;
       margin-bottom: 25px;
     }
 
-    .contact-form form {
+    .contact-form-page form {
       display: flex;
       flex-direction: column;
       gap: 18px;
@@ -154,7 +154,7 @@ include ('../../includes/customer-dashboard.php');
 
 
    
-    .contact-form button {
+    .contact-form-page button {
       background-color: #f4c400;
       color: #000;
       font-weight: bold;
@@ -169,7 +169,7 @@ include ('../../includes/customer-dashboard.php');
       box-shadow: 2px 3px 6px rgba(0,0,0,0.3);
     }
 
-    .contact-form button:hover {
+    .contact-form-page button:hover {
       background-color: #e0b200;
     }
   </style>
@@ -189,7 +189,7 @@ include ('../../includes/customer-dashboard.php');
 
 
     <!-- Contact Form -->
-    <div class="contact-form">
+    <div class="contact-form-page">
       <h2>Contact Us</h2>
       <p>We’d love to hear from you! Send us a message—we’ll get back to you as soon as we can!</p>
       <form  action="save-message.php" method="POST">
@@ -243,6 +243,7 @@ include ('../../includes/customer-dashboard.php');
       </form>
     </div>
   </div>
+      <?php include('../../includes/footer.php'); ?>
 </body>
 
   <!-- BOOTSTRAP JS -->
