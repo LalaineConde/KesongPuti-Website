@@ -188,6 +188,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .filter-label {
@@ -241,12 +242,26 @@
 
 /* products */
 .product-card {
+    background: #fff;
     border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    width: 280px;
-    height: 320px;
+    transition: 0.3s ease;
+    width: 100%;              /* Flexible inside grid */
+    max-width: 280px;         /* Prevents overstretching */
+    height: 340px;            /* Fixed height */
+    display: flex;            /* Keep body aligned */
+    flex-direction: column;   /* Stack content */
+
+}
+
+.product-grid {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 20px;
+    gap: 20px;
+    flex-wrap: wrap;
+
 }
 
 .product-card:hover {
@@ -256,14 +271,18 @@
 
 .product-card img {
     width: 100%;
-    height: 180px;
-    object-fit: cover;
+    height: 160px;           /* Consistent image height */
+    object-fit: cover;       /* Crop to fit */
 }
 
 .product-card .card-body {
-    align-items: center;
+    flex: 1;                 
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: center;      /* Center items horizontally */
+    text-align: center;       /* Center text */
+    padding: 12px;
 }
 
 .product-price {
@@ -272,32 +291,37 @@
     color: var(--green);
 }
 
+/* buttons */
 .btn.view-btn {
     color: #000;
-    width: 50%;
+    width: 100%;
+    max-width: 160px;
     border-radius: 20px;
-    padding: 5px 20px;
-    background-color: #3eb489;
+    padding: 6px 20px;
+    background-color: #6dc3a3;
     border: none;
     font-weight: 600;
     margin-bottom: 8px;
+    transition: transform 0.2s ease;
 }
 
 .btn.view-btn:hover {
     transform: scale(1.05);
 }
 
-.btn.btn-dark.w-100 {
+.btn.btn-dark{
     color: #000;
-    width: 50%;
+    width: 100%;
+    max-width: 160px;
     border-radius: 20px;
-    padding: 5px 20px;
+    padding: 6px 30px;
     background-color: var(--btn-yellow);
     border: none;
     font-weight: 600;
+    transition: transform 0.2s ease;
 }
 
-.btn.btn-dark.w-100:hover {
+.btn.btn-dark:hover {
     transform: scale(1.05);
 }
 
@@ -322,6 +346,11 @@
   width: 90%;
   max-width: 500px;
   position: relative;
+
+  text-align: center;       /* Center all text */
+  display: flex;            /* Flex for alignment */
+  flex-direction: column;   /* Stack content vertically */
+  align-items: center;      /* Center items horizontally */
 }
 
 .product-modal .close-customer-view {

@@ -5,12 +5,12 @@ require '../../connection.php';
 $page_header = "PRODUCTS";
 include ('../../includes/customer-dashboard.php');
 
+
 $toast_message = ''; // Initialize variable for toast message
 
 // Fetch all products
 $sql = "SELECT * FROM products";
 $result = mysqli_query($connection, $sql);
-
 
 
 ?>
@@ -67,7 +67,6 @@ $result = mysqli_query($connection, $sql);
               <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="#">Keso</a></li>
                 <li><a class="dropdown-item" href="#">Ice Cream</a></li>
-                <li><a class="dropdown-item" href="#">Kotse</a></li>
               </ul>
             </div>
 
@@ -112,7 +111,7 @@ $result = mysqli_query($connection, $sql);
           <div class="row g-4 mt-2">
           <?php if (mysqli_num_rows($result) > 0) { ?>
             <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-              <div class="col-md-3 col-sm-6">
+              <div class="col-md-3 col-sm-6 d-flex justify-content-center">
                 <div class="card product-card h-100">
                   <img 
                     src="../../<?= htmlspecialchars($row['product_image'] ?: '/assets/default.png') ?>" 
@@ -135,6 +134,7 @@ $result = mysqli_query($connection, $sql);
                       data-stock="<?= htmlspecialchars($row['stock_qty']) ?>"
                       data-category="<?= htmlspecialchars($row['category']) ?>"
                       data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>">
+                      <i class="bi bi-eye-fill"></i>
                       View
                     </button>
 
@@ -142,7 +142,8 @@ $result = mysqli_query($connection, $sql);
                       <input type="hidden" name="product_id" value="<?= $row['product_id'] ?>">
 
                       <button type="submit" class="btn btn-dark w-100">
-                        <i class="bi bi-bag-plus"></i> Add to Bag
+                        <i class="bi bi-bag-plus"></i> 
+                        Add to Bag
                       </button>
                     </form>
                   </div>
