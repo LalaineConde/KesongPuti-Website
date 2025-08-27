@@ -27,11 +27,16 @@ if (isset($_POST['save_product'])) {
     $price = $_POST['price'];
     $stock = $_POST['stock_qty'];
 
-    // Assign owner
     if ($_SESSION['role'] === 'admin') {
         $owner_id = $_SESSION['admin_id'];
+
+        // fetch store id for this admin
+        $storeQuery = mysqli_query($connection, "SELECT store_id FROM store WHERE owner_id='$owner_id' LIMIT 1");
+        $storeRow = mysqli_fetch_assoc($storeQuery);
+        $store_id = $storeRow ? $storeRow['store_id'] : NULL;
     } else {
         $owner_id = $_SESSION['super_id'];
+        $store_id = NULL; // superadmin products not tied to a store
     }
 
     $target_dir = "../../assets/";
@@ -40,8 +45,9 @@ if (isset($_POST['save_product'])) {
 
     if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
         $insert = "INSERT INTO products 
-                   (product_name, description, price, stock_qty, category, product_image, owner_id)
-                   VALUES ('$name', '$desc', '$price', '$stock', '$category', '$image', '$owner_id')";
+                   (product_name, description, price, stock_qty, category, product_image, owner_id, store_id)
+                   VALUES ('$name', '$desc', '$price', '$stock', '$category', '$image', '$owner_id', " . 
+                   ($store_id ? "'$store_id'" : "NULL") . ")";
         mysqli_query($connection, $insert);
     }
 
@@ -403,7 +409,19 @@ if (isset($_POST['update_product'])) {
         document.getElementById('description').value = document.getElementById('view_description').innerText;
         document.getElementById('price').value = document.getElementById('view_price').innerText.replace('₱','');
         document.getElementById('stock_qty').value = document.getElementById('view_stock_qty').innerText;
-        document.getElementById('category').value = document.getElementById('view_category').innerText;
+        
+        // Get category text from View Modal
+        let categoryText = document.getElementById('view_category').innerText.trim().toLowerCase();
+
+        // Loop through select options and match
+        let categorySelect = document.getElementById('category');
+        for (let i = 0; i < categorySelect.options.length; i++) {
+          if (categorySelect.options[i].text.toLowerCase() === categoryText) {
+            categorySelect.selectedIndex = i;
+            break;
+          }
+        }
+
 
         let imgSrc = document.getElementById('view_image').src;
         if (imgSrc) {

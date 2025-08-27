@@ -387,13 +387,26 @@ if (isset($_POST['save_product'])) {
         document.getElementById('description').value = document.getElementById('view_description').innerText;
         document.getElementById('price').value = document.getElementById('view_price').innerText.replace('₱','');
         document.getElementById('stock_qty').value = document.getElementById('view_stock_qty').innerText;
-        document.getElementById('category').value = document.getElementById('view_category').innerText;
+
+        // Get category text from View Modal
+        let categoryText = document.getElementById('view_category').innerText.trim().toLowerCase();
+
+        // Loop through select options and match
+        let categorySelect = document.getElementById('category');
+        for (let i = 0; i < categorySelect.options.length; i++) {
+          if (categorySelect.options[i].text.toLowerCase() === categoryText) {
+            categorySelect.selectedIndex = i;
+            break;
+          }
+        }
+
 
         let imgSrc = document.getElementById('view_image').src;
         if (imgSrc) {
           document.getElementById('previewImage').src = imgSrc;
           document.getElementById('previewImage').style.display = "block";
         }
+
 
         // Show Add/Edit modal
         document.getElementById('productModal').style.display = "flex";
