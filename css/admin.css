@@ -958,7 +958,7 @@ body {
 }
 
 .contact-table td.contact-message {
-    display: flex;
+
     align-items: center;
     gap: 8px;
 }
@@ -1091,7 +1091,7 @@ body {
 }
 
 .feedback-table td.feedback-message {
-    display: flex;
+
     align-items: center;
     gap: 8px;
 }

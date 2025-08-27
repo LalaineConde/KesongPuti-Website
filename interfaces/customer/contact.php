@@ -66,6 +66,7 @@ include ('../../includes/customer-dashboard.php');
         <div class="input-group">
           <i class="fa-solid fa-user-circle"></i>
           <select name="recipient" required>
+            <option value="">-- Select Store --</option>
             <?php
                 require '../../connection.php';
 
@@ -75,8 +76,7 @@ include ('../../includes/customer-dashboard.php');
 
                 while ($row = mysqli_fetch_assoc($superResult)) {
                     echo '<option value="super_' . $row['super_id'] . '">'
-                        . htmlspecialchars($row['username']) . ' (Super Admin)'
-                        . '</option>';
+                        . htmlspecialchars($row['username']) . '</option>';
                 }
 
                 // Fetch all admins
@@ -85,8 +85,7 @@ include ('../../includes/customer-dashboard.php');
 
                 while ($row = mysqli_fetch_assoc($adminResult)) {
                     echo '<option value="admin_' . $row['admin_id'] . '">'
-                        . htmlspecialchars($row['username']) . ' (Admin)'
-                        . '</option>';
+                        . htmlspecialchars($row['username']) . '</option>';
                 }
 
                 

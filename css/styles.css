@@ -247,11 +247,11 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     transition: 0.3s ease;
-    width: 100%;              /* Flexible inside grid */
-    max-width: 280px;         /* Prevents overstretching */
-    height: 340px;            /* Fixed height */
-    display: flex;            /* Keep body aligned */
-    flex-direction: column;   /* Stack content */
+    width: 100%;              
+    max-width: 280px;         
+    height: 340px;            
+    display: flex;           
+    flex-direction: column;   
 
 }
 
@@ -271,8 +271,8 @@
 
 .product-card img {
     width: 100%;
-    height: 160px;           /* Consistent image height */
-    object-fit: cover;       /* Crop to fit */
+    height: 160px;           
+    object-fit: cover;       
 }
 
 .product-card .card-body {
@@ -280,8 +280,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    align-items: center;      /* Center items horizontally */
-    text-align: center;       /* Center text */
+    align-items: center;      
+    text-align: center;      
     padding: 12px;
 }
 
@@ -543,6 +543,162 @@
 }
 
 /* CONTACT PAGE */
+
+/* FEEDBACK PAGE */
+.feedback-page {
+  background-color: var(--green);
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.message {
+  font-size: 1.2rem;
+  color: #fdf5e6;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.feedback-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+  justify-content: center;
+  max-width: 1000px;
+  margin: 0 auto 30px auto;
+}
+
+.feedback-box {
+  background-color: #fdf5e6;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.feedback-name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #333;
+}
+
+.feedback-stars {
+  color: #f4c400; /* gold stars */
+  font-size: 1.1rem;
+}
+
+.feedback-text {
+  font-size: 0.9rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+.review-btn {
+  background-color: #3b2520;
+  color: var(--yellow);
+  font-weight: bold;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.review-btn:hover {
+  background-color: #241510;
+}
+
+
+/* REVIEW MODAL */
+.review-modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.review-modal-content {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.review-modal-content h3 {
+  margin-bottom: 15px;
+  color: var(--green);
+}
+
+.review-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.review-modal-content input,
+.review-modal-content select,
+.review-modal-content textarea {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.review-modal-content textarea {
+  resize: none;
+  height: 100px;
+}
+
+.review-modal-content input:focus,
+.review-modal-content select:focus,
+.review-modal-content textarea:focus {
+  border-color: var(--green);
+}
+
+.submit-review {
+  background-color: var(--yellow);
+  border: none;
+  padding: 10px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submit-review:hover {
+  background-color: #e0b200;
+}
+
+.close-modal {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+}
+/* FEEDBACK PAGE */
+
+
+
+
 
 /* FOOTER */
 footer {
