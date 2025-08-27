@@ -53,6 +53,7 @@ $result = mysqli_query($connection, $sql);
             placeholder="Search by name or email..."
           />
 
+        <div class="contact-table-wrapper">
           <table class="contact-table">
             <thead>
               <tr>
@@ -95,6 +96,7 @@ $result = mysqli_query($connection, $sql);
               <?php endif; ?>
             </tbody>
           </table>
+         </div>
         </div>
 
               <!-- MODAL for full message -->

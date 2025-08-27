@@ -61,6 +61,7 @@ mysqli_close($connection);
             </select>
           </div>
 
+        <div class="orders-table-wrapper">
           <table class="orders-table">
             <thead>
               <tr>
@@ -94,6 +95,7 @@ mysqli_close($connection);
               </tr>
             </tbody>
           </table>
+         </div>
         </div>
       </div>
 </div>

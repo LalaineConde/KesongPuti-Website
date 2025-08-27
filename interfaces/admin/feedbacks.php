@@ -54,7 +54,7 @@ mysqli_close($connection);
             <option value="1">⭐</option>
           </select>
         </div>
-
+      <div class="feedback-table-wrapper">
         <table class="feedback-table">
           <thead>
             <tr>
@@ -111,6 +111,7 @@ mysqli_close($connection);
             </tr>
           </tbody>
         </table>
+      </div>
 
         <!-- MODAL for full message -->
         <div class="feedback-modal" id="feedbackModal">

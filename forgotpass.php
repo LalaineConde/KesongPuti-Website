@@ -117,19 +117,32 @@ if (isset($_POST['set_password'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Forgot Password | Kesong Puti</title>
-    <link rel="stylesheet" href="forgot.css" />
-</head>
+    <!-- BOOTSTRAP -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/login.css"/>
+  </head>
 <body>
-<header class="logo-container">
-    <a href="login.php">
-        <img src="assets/logo.png" alt="NU Laguna Logo"/>
-    </a>
-    
-</header>
+
 <main>
     <section class="form-section">
+        
+    <a href="login.php">
+        <img src="assets/logo.png" alt="NU Laguna Logo" class="logo-container"/>
+    </a>
+    
+
         <div class="title-container">
-            <h1>KESONG PUTI</h1>
+            
+
             <p>
                 Please enter your registered email. We will send an OTP to your email so you can reset your password.
             </p>
@@ -139,13 +152,13 @@ if (isset($_POST['set_password'])) {
             <!-- Step 1: Request OTP -->
             <form action="" method="post">
                 <input type="email" name="email" placeholder="Email" required />
-                <button type="submit" name="send_otp" style="width: 160px;">Send OTP</button>
+                <button type="submit" name="send_otp" class="btn">Send OTP</button>
             </form>
             <?php elseif (!isset($_SESSION['otp_verified'])): ?>
             <!-- Step 2: Verify OTP -->
             <form action="" method="post">
                 <input type="text" name="otp" placeholder="Enter OTP" required maxlength="6" />
-                <button type="submit" name="verify_otp" style="width: 160px;">Verify OTP</button>
+                <button type="submit" name="verify_otp" class="btn">Verify OTP</button>
             </form>
             <?php else: ?>
             <!-- Step 3: Set New Password -->
@@ -153,7 +166,7 @@ if (isset($_POST['set_password'])) {
                 <input type="password" name="new_password" placeholder="New Password" required minlength="6" />
                 <input type="password" name="confirm_password" placeholder="Confirm Password" required minlength="6" />
                 <small>Password must be at least 6 characters and contain a lowercase letter, uppercase letter, number, and special character.</small>
-                <button type="submit" name="set_password" style="width: 160px;">Set Password</button>
+                <button type="submit" name="set_password" class="btn">Set Password</button>
             </form>
             <?php endif; ?>
             <p>

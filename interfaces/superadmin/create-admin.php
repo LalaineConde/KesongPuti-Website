@@ -116,7 +116,8 @@ mysqli_close($connection);
 
 
     <!-- ADMINS TABLE -->
-    <h2>Admin List</h2>
+    <h1>Admin List</h1>
+    <div class="admin-table-wrapper">
     <table class="contact-table">
         <thead>
             <tr>
@@ -160,6 +161,7 @@ mysqli_close($connection);
         <?php endif; ?>
         </tbody>
     </table>
+    </div>
 
 </div>
       <!-- CREATE ADMIN -->

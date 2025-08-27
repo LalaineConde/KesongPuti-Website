@@ -14,167 +14,25 @@ include ('../../includes/customer-dashboard.php');
   <title>Contact Us | Kesong Puti</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
+    <!-- BOOTSTRAP -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    >
 
-      margin: 0;
-      padding: 0;
+    <!-- ICONS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    >
 
-      justify-content: center;
-      align-items: center;
-      background-color: #fdfbe9;
-    }
-
-    .container {     
-      display: flex;
-      justify-content: center;
-      gap: 80px;
-      margin: 50px auto;
-    }
-
-    .logo {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      position: relative;
-    }
-
-    .logo img {
-      width: 590px;
-    }
-
-    .circles {
-      display: flex;
-      gap: 20px;
-      position: absolute;
-      bottom: 5px;   
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .circle {
-      width: 60px;
-      height: 60px;
-      background-color: #002d13; 
-      border-radius: 50%;
-    }
-
-    .contact-form-page {
-      text-align: center;
-      max-width: 420px;
-      width: 100%;
-    }
-
-    .contact-form-page h2 {
-      font-size: 2.4rem;
-      font-weight: bold;
-      color: #000;
-      margin-bottom: 10px;
-    }
-
-    .contact-form-page p {
-      font-size: 15px;
-      color: #064420;
-      margin-bottom: 25px;
-    }
-
-    .contact-form-page form {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .input-group {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-group i {
-      position: absolute;
-      left: 12px;
-      font-size: 16px;
-      color: #444;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-
-    .input-group input,
-    .input-group textarea {
-      width: 100%;
-      padding: 10px 12px 10px 40px;
-      border: 2px solid #000;
-      border-radius: 6px;
-      font-size: 15px;
-      outline: none;
-    }
-
-    .input-group input {
-      height: 45px;
-    }
-
-    .input-group textarea {
-      resize: none;
-      height: 100px;
-      padding-top: 12px;
-    }
-
-    
-    .input-group.textarea i {
-      top: 15px; 
-      transform: none;
-    }
-    
-    .input-group select {
-      width: 100%;
-      height: 45px;
-      padding: 10px 12px 10px 40px;
-      border: 2px solid #000;
-      border-radius: 6px;
-      font-size: 15px;
-      outline: none;
-      background-color: #fff;
-      color: #000;
-      appearance: none; 
-      cursor: pointer;
-   }
-
-   .input-group::after {
-      content: "\f078"; 
-      font-family: "Font Awesome 6 Free";
-      font-weight: 900;
-      position: absolute;
-      right: 12px;
-      pointer-events: none;
-      color: #444;
-      font-size: 12px;
-    }
-
-
-   
-    .contact-form-page button {
-      background-color: #f4c400;
-      color: #000;
-      font-weight: bold;
-      border: 2px solid #000;
-      border-radius: 25px;
-      padding: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      width: 200px;
-      margin: 15px auto 0 auto;
-      transition: 0.3s;
-      box-shadow: 2px 3px 6px rgba(0,0,0,0.3);
-    }
-
-    .contact-form-page button:hover {
-      background-color: #e0b200;
-    }
-  </style>
-</head>
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../css/styles.css" >
+  </head>
 <body>
+  <div class="contact-page">
   <div class="container">
     <!-- Logo + Circles -->
     <div class="logo">
@@ -242,6 +100,7 @@ include ('../../includes/customer-dashboard.php');
         <button type="submit" class="submit-btn mt-2">Submit</button>
       </form>
     </div>
+     </div>
   </div>
       <?php include('../../includes/footer.php'); ?>
 </body>

@@ -95,18 +95,14 @@ if (isset($_POST['save_product'])) {
       <div class="box content-shop" id="products-content" >
         <h1>Products Management</h1>
 
-        <div class="filter-bar">
+        <div class="filter-bar 1">
           <input
             type="text"
             id="productSearch"
             placeholder="Search product by name..."
           />
 
-          <select id="categoryFilter">
-            <option value="all">All Categories</option>
-            <option value="cheese">Cheese</option>
-            <option value="ice-cream">Ice Cream</option>
-          </select>
+
 
           <h2 id="productCount">Total Products: <span id="totalProducts">0</span></h2>
 
@@ -114,10 +110,18 @@ if (isset($_POST['save_product'])) {
           
         </div>
 
+        
+<div class="filter-bar 2">
+          <select id="categoryFilter">
+            <option value="all">All Categories</option>
+            <option value="cheese">Cheese</option>
+            <option value="ice-cream">Ice Cream</option>
+          </select>
+
         <button id="openAddProduct" class="btn-add">
             <i class="bi bi-plus-circle"></i> Add Product
           </button>
-    
+</div>    
 
      <!-- PRODUCTS -->
       <div class="product-grid" id="productGrid">
@@ -147,7 +151,7 @@ if (isset($_POST['save_product'])) {
               <form method="POST" action="delete-products.php" class="delete-form" style="display:inline;">
                 <input type="hidden" name="id" value="<?= $row['product_id'] ?>">
                 <button type="button" class="delete-btn btn-delete">
-                  <i class="bi bi-trash"></i>
+                  <i class="bi bi-trash-fill"></i>
                 </button>
             </form>
             </div>

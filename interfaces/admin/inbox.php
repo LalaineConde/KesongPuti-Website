@@ -46,6 +46,7 @@ $result = mysqli_query($connection, $sql);
       <div class="box" id="inbox-content">
         <h1>Inbox Messages</h1>
 
+      <div class="contact-table-wrapper">
         <div class="contact-table-container">
           <input
             type="text"
@@ -95,6 +96,7 @@ $result = mysqli_query($connection, $sql);
               <?php endif; ?>
             </tbody>
           </table>
+        </div>
         </div>
 
               <!-- MODAL for full message -->
