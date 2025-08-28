@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 22, 2025 at 05:11 PM
+-- Generation Time: Aug 28, 2025 at 04:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -94,9 +94,9 @@ CREATE TABLE `inbox_messages` (
 
 INSERT INTO `inbox_messages` (`inbox_id`, `name`, `email`, `contact`, `message`, `created_at`, `recipient`) VALUES
 (8, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 07:18:35', 'super_1'),
-(9, 'Lara Danielle', 'larafremista21@gmail.com', '09123456789', 'SARAP!!!', '2025-08-20 07:22:46', 'admin_3'),
 (10, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'SHHHHH HAHAHHAHAHAH', '2025-08-20 08:06:02', 'admin_3'),
-(11, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 08:06:39', 'admin_3');
+(11, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 08:06:39', 'admin_3'),
+(12, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'sample', '2025-08-26 07:03:29', 'super_1');
 
 -- --------------------------------------------------------
 
@@ -129,8 +129,34 @@ INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `s
 (17, 'Kesorbetes', 'ice cream', 115.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, 'admin', '2025-08-22 04:37:29', '2025-08-22 04:37:29', 'available'),
 (19, 'Kesorbetes (1 Gallon)', 'ice cream', 650.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, 'admin', '2025-08-22 04:42:13', '2025-08-22 04:42:13', 'available'),
 (20, 'Kesorbetes (1 Tub)', 'ice creamm', 550.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, 'admin', '2025-08-22 10:19:46', '2025-08-22 10:19:46', 'available'),
-(21, 'Kesong Puti', 'cheese', 110.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, 'admin', '2025-08-22 10:20:16', '2025-08-22 10:27:12', 'available'),
 (22, 'Kesorbetes (Small)', 'ice cream', 50.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, 'admin', '2025-08-22 10:31:19', '2025-08-22 10:31:19', 'available');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `review_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `rating` varchar(10) NOT NULL,
+  `feedback` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `recipient` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `reviews`
+--
+
+INSERT INTO `reviews` (`review_id`, `name`, `email`, `rating`, `feedback`, `created_at`, `recipient`) VALUES
+(8, 'Lalaine Conde', 'lalaineconde11@gmail.com', '★★★★★', 'Hello, this is just a sample feedback message!', '2025-08-27 15:46:48', 'super_1'),
+(10, 'Lara Fremista', 'larafremista21@gmail.com', '★★★★☆', 'Hello, this is just a sample feedback message!', '2025-08-27 16:26:54', 'admin_3'),
+(11, 'JB Alico', 'jaironbartalico@gmail.com', '★★★☆☆', 'Hello this is just a sample feedback message!!', '2025-08-27 16:27:40', 'admin_3'),
+(12, 'Russell Garcia', 'jonrussell@gmail.com', '★★★☆☆', 'Hello, sample feedback message!', '2025-08-28 02:22:14', 'admin_1'),
+(13, 'Jaira Bautista', 'jairared@gmail.com', '★★★★☆', 'sample feedback!', '2025-08-28 02:31:34', 'super_1');
 
 -- --------------------------------------------------------
 
@@ -188,6 +214,12 @@ ALTER TABLE `products`
   ADD KEY `fk_category` (`category_id`);
 
 --
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`review_id`);
+
+--
 -- Indexes for table `super_admin`
 --
 ALTER TABLE `super_admin`
@@ -219,13 +251,19 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `inbox_messages`
 --
 ALTER TABLE `inbox_messages`
-  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
   MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `super_admin`

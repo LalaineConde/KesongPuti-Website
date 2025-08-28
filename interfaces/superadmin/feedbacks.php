@@ -141,51 +141,53 @@ mysqli_close($connection);
     </script>
 
     <script>
-      const feedbackSearch = document.getElementById("feedbackSearch");
-      const ratingFilter = document.getElementById("ratingFilter");
-      const feedbackRows = document.querySelectorAll("#feedbackTableBody tr");
+const feedbackSearch = document.getElementById("feedbackSearch");
+const ratingFilter = document.getElementById("ratingFilter");
+const feedbackRows = document.querySelectorAll("#feedbackTableBody tr");
 
-      const modal = document.getElementById("feedbackModal");
-      const fullMessageText = document.getElementById("fullMessageText");
-      const closeModalBtn = document.querySelector(".close-modal");
+const modal = document.getElementById("feedbackModal");
+const fullMessageText = document.getElementById("fullMessageText");
+const closeModalBtn = document.querySelector(".close-modal");
 
-      function filterFeedback() {
-        const searchTerm = feedbackSearch.value.toLowerCase();
-        const selectedRating = ratingFilter.value;
+function filterFeedback() {
+    const searchTerm = feedbackSearch.value.toLowerCase();
+    const selectedRating = ratingFilter.value;
 
-        feedbackRows.forEach((row) => {
-          const name = row.children[0].textContent.toLowerCase();
-          const email = row.children[1].textContent.toLowerCase();
-          const message = row.children[3].textContent.toLowerCase();
-          const rating = row.children[2].textContent.length;
+    feedbackRows.forEach((row) => {
+        const name = row.children[0].textContent.toLowerCase();
+        const email = row.children[1].textContent.toLowerCase();
+        const message = row.children[3].textContent.toLowerCase();
+        const rating = row.children[2].textContent.trim();
 
-          const matchesSearch =
+        const matchesSearch =
             name.includes(searchTerm) ||
             email.includes(searchTerm) ||
             message.includes(searchTerm);
-const matchesRating =
-    selectedRating === "all" || row.children[2].textContent === selectedRating;
 
-          row.style.display = matchesSearch && matchesRating ? "" : "none";
-        });
-      }
+        const matchesRating =
+            selectedRating === "all" || rating === selectedRating;
 
-      feedbackSearch.addEventListener("input", filterFeedback);
-      ratingFilter.addEventListener("change", filterFeedback);
+        row.style.display = matchesSearch && matchesRating ? "" : "none";
+    });
+}
 
-      // View More modal
-      document.querySelectorAll(".view-more").forEach((button) => {
-        button.addEventListener("click", () => {
-          fullMessageText.textContent = button.getAttribute("data-message");
-          modal.style.display = "flex";
-        });
-      });
+// Event listeners
+feedbackSearch.addEventListener("input", filterFeedback);
+ratingFilter.addEventListener("change", filterFeedback);
 
-      closeModalBtn.onclick = () => (modal.style.display = "none");
-      window.onclick = (e) => {
-        if (e.target === modal) modal.style.display = "none";
-      };
-    </script>
+// View More modal
+document.querySelectorAll(".view-more").forEach((button) => {
+    button.addEventListener("click", () => {
+        fullMessageText.textContent = button.getAttribute("data-message");
+        modal.style.display = "flex";
+    });
+});
+
+closeModalBtn.onclick = () => (modal.style.display = "none");
+window.onclick = (e) => {
+    if (e.target === modal) modal.style.display = "none";
+};
+</script>
     
 <!-- FUNCTIONS -->
  <!-- SweetAlert2 Library -->
