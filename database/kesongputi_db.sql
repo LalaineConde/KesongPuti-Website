@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 28, 2025 at 04:34 AM
+-- Generation Time: Aug 28, 2025 at 04:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -94,9 +94,9 @@ CREATE TABLE `inbox_messages` (
 
 INSERT INTO `inbox_messages` (`inbox_id`, `name`, `email`, `contact`, `message`, `created_at`, `recipient`) VALUES
 (8, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 07:18:35', 'super_1'),
+(9, 'Lara Danielle', 'larafremista21@gmail.com', '09123456789', 'SARAP!!!', '2025-08-20 07:22:46', 'admin_3'),
 (10, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'SHHHHH HAHAHHAHAHAH', '2025-08-20 08:06:02', 'admin_3'),
-(11, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 08:06:39', 'admin_3'),
-(12, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'sample', '2025-08-26 07:03:29', 'super_1');
+(11, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 08:06:39', 'admin_3');
 
 -- --------------------------------------------------------
 
@@ -114,6 +114,7 @@ CREATE TABLE `products` (
   `product_image` varchar(255) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
   `owner_id` int(11) NOT NULL,
+  `store_id` int(11) DEFAULT NULL,
   `owner_type` enum('admin','superadmin') NOT NULL,
   `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -124,12 +125,14 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `stock_qty`, `category`, `product_image`, `category_id`, `owner_id`, `owner_type`, `date_added`, `updated_at`, `status`) VALUES
-(9, 'Kesong Puti', 'Cheese wrapped in banana leaf', 150.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, 'admin', '2025-08-21 23:52:50', '2025-08-22 10:16:19', 'available'),
-(17, 'Kesorbetes', 'ice cream', 115.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, 'admin', '2025-08-22 04:37:29', '2025-08-22 04:37:29', 'available'),
-(19, 'Kesorbetes (1 Gallon)', 'ice cream', 650.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, 'admin', '2025-08-22 04:42:13', '2025-08-22 04:42:13', 'available'),
-(20, 'Kesorbetes (1 Tub)', 'ice creamm', 550.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, 'admin', '2025-08-22 10:19:46', '2025-08-22 10:19:46', 'available'),
-(22, 'Kesorbetes (Small)', 'ice cream', 50.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, 'admin', '2025-08-22 10:31:19', '2025-08-22 10:31:19', 'available');
+INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `stock_qty`, `category`, `product_image`, `category_id`, `owner_id`, `store_id`, `owner_type`, `date_added`, `updated_at`, `status`) VALUES
+(9, 'Kesong Puti', 'Cheese wrapped in banana leaf', 140.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-08-21 23:52:50', '2025-08-27 15:07:59', 'available'),
+(17, 'Kesorbetes', 'ice cream', 115.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 04:37:29', '2025-08-22 04:37:29', 'available'),
+(19, 'Kesorbetes (1 Gallon)', 'ice cream', 650.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 04:42:13', '2025-08-22 04:42:13', 'available'),
+(20, 'Kesorbetes (1 Tub)', 'ice creamm', 550.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-08-22 10:19:46', 'available'),
+(21, 'Kesong Puti', 'cheese', 110.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:20:16', '2025-08-22 10:27:12', 'available'),
+(22, 'Kesorbetes (Small)', 'ice cream', 50.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:31:19', '2025-08-22 10:31:19', 'available'),
+(23, 'Kesorbetes (1 Tub)', 'ice cream', 500.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, 2, 'admin', '2025-08-27 18:27:49', '2025-08-27 18:27:49', 'available');
 
 -- --------------------------------------------------------
 
@@ -152,11 +155,34 @@ CREATE TABLE `reviews` (
 --
 
 INSERT INTO `reviews` (`review_id`, `name`, `email`, `rating`, `feedback`, `created_at`, `recipient`) VALUES
-(8, 'Lalaine Conde', 'lalaineconde11@gmail.com', '★★★★★', 'Hello, this is just a sample feedback message!', '2025-08-27 15:46:48', 'super_1'),
-(10, 'Lara Fremista', 'larafremista21@gmail.com', '★★★★☆', 'Hello, this is just a sample feedback message!', '2025-08-27 16:26:54', 'admin_3'),
-(11, 'JB Alico', 'jaironbartalico@gmail.com', '★★★☆☆', 'Hello this is just a sample feedback message!!', '2025-08-27 16:27:40', 'admin_3'),
-(12, 'Russell Garcia', 'jonrussell@gmail.com', '★★★☆☆', 'Hello, sample feedback message!', '2025-08-28 02:22:14', 'admin_1'),
-(13, 'Jaira Bautista', 'jairared@gmail.com', '★★★★☆', 'sample feedback!', '2025-08-28 02:31:34', 'super_1');
+(8, 'Lalaine Conde', 'lalaineconde11@gmail.com', '★★★★★', 'Hello, this is just a sample feedback message!', '2025-08-27 07:46:48', 'super_1'),
+(10, 'Lara Fremista', 'larafremista21@gmail.com', '★★★★☆', 'Hello, this is just a sample feedback message!', '2025-08-27 08:26:54', 'admin_3'),
+(11, 'JB Alico', 'jaironbartalico@gmail.com', '★★★☆☆', 'Hello this is just a sample feedback message!!', '2025-08-27 08:27:40', 'admin_3'),
+(12, 'Russell Garcia', 'jonrussell@gmail.com', '★★★☆☆', 'Hello, sample feedback message!', '2025-08-27 18:22:14', 'admin_1'),
+(13, 'Jaira Bautista', 'jairared@gmail.com', '★★★★☆', 'sample feedback!', '2025-08-27 18:31:34', 'super_1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `store`
+--
+
+CREATE TABLE `store` (
+  `store_id` int(11) NOT NULL,
+  `store_name` varchar(255) NOT NULL,
+  `owner_id` int(11) DEFAULT NULL,
+  `super_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `store`
+--
+
+INSERT INTO `store` (`store_id`, `store_name`, `owner_id`, `super_id`) VALUES
+(1, 'Arlene Macalinao Kesong Puti', NULL, 1),
+(2, 'Noel Lucena Kesong Puti', 1, NULL),
+(3, 'Garin Kesong Puti', 3, NULL),
+(4, 'Mommy Lodie Kesong Puti', 7, NULL);
 
 -- --------------------------------------------------------
 
@@ -211,13 +237,22 @@ ALTER TABLE `inbox_messages`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`),
-  ADD KEY `fk_category` (`category_id`);
+  ADD KEY `fk_category` (`category_id`),
+  ADD KEY `fk_store` (`store_id`);
 
 --
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
   ADD PRIMARY KEY (`review_id`);
+
+--
+-- Indexes for table `store`
+--
+ALTER TABLE `store`
+  ADD PRIMARY KEY (`store_id`),
+  ADD KEY `owner_id` (`owner_id`),
+  ADD KEY `super_id` (`super_id`);
 
 --
 -- Indexes for table `super_admin`
@@ -251,19 +286,25 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `inbox_messages`
 --
 ALTER TABLE `inbox_messages`
-  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
   MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `store`
+--
+ALTER TABLE `store`
+  MODIFY `store_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `super_admin`
@@ -279,7 +320,15 @@ ALTER TABLE `super_admin`
 -- Constraints for table `products`
 --
 ALTER TABLE `products`
-  ADD CONSTRAINT `fk_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE SET NULL ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_category` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `store`
+--
+ALTER TABLE `store`
+  ADD CONSTRAINT `store_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `admins` (`admin_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `store_ibfk_2` FOREIGN KEY (`super_id`) REFERENCES `super_admin` (`super_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
