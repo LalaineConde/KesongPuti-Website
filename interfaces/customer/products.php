@@ -141,9 +141,16 @@ $result = mysqli_query($connection, $sql);
                     <form method="POST" action="add-to-cart.php">
                       <input type="hidden" name="product_id" value="<?= $row['product_id'] ?>">
 
-                      <button type="submit" class="btn btn-dark w-100">
+                      <button 
+                        type="button" 
+                        class="btn btn-dark w-100 add-to-cart"
+                        data-id="<?= $row['product_id'] ?>"
+                        data-name="<?= htmlspecialchars($row['product_name']) ?>"
+                        data-price="<?= htmlspecialchars($row['price']) ?>"
+                        data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>">
                         <i class="bi bi-bag-plus"></i> Add to Bag
                       </button>
+
                     </form>
                   </div>
                 </div>
@@ -168,30 +175,35 @@ $result = mysqli_query($connection, $sql);
 
           <form method="POST" action="add-to-cart.php">
             <input type="hidden" name="product_id" id="modalProductId">
-            <button type="submit" class="btn btn-dark w-100 mt-2">
+            <button type="submit" class="btn btn-dark w-100 mt-2"
+              data-id="<?= $row['product_id'] ?>"
+              data-name="<?= htmlspecialchars($row['product_name']) ?>"
+              data-price="<?= htmlspecialchars($row['price']) ?>"
+              data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>">
               <i class="bi bi-bag-plus"></i> Add to Bag
-            </button>
+            </button> 
           </form>
         </div>
       </div>
 
         <!-- pagination -->
         <nav>
-          <ul class="pagination pb-5">
-            <li class="page-item disabled">
-              <a class="page-link" href="#" tabindex="-1">Previous</a>
+          <ul class="pagination pb-5 justify-content-center">
+            <!-- Previous -->
+            <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+              <a class="page-link shadow-none" href="?page=<?= max(1, $page - 1) ?>">Previous</a>
             </li>
-            <li class="page-item active">
-              <a class="page-link shadow-none" href="#">1</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link shadow-none" href="#">2</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link shadow-none" href="#">3</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link shadow-none" href="#">Next</a>
+
+            <!-- Page Numbers -->
+            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+              <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                <a class="page-link shadow-none" href="?page=<?= $i ?>"><?= $i ?></a>
+              </li>
+            <?php endfor; ?>
+
+            <!-- Next -->
+            <li class="page-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
+              <a class="page-link shadow-none" href="?page=<?= min($total_pages, $page + 1) ?>">Next</a>
             </li>
           </ul>
         </nav>
@@ -227,6 +239,7 @@ $result = mysqli_query($connection, $sql);
           });
         });
     </script>
+    
 
 
     <!-- VIEW DETAILS -->
@@ -253,6 +266,22 @@ $result = mysqli_query($connection, $sql);
       closeCustomerModal.onclick = () => { customerModal.style.display = "none"; };
       window.onclick = (e) => { if (e.target === customerModal) customerModal.style.display = "none"; };
     </script>
+
+
+      <!-- ADD TO CART -->
+       <script>
+        document.querySelectorAll(".add-to-cart").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const product = {
+              id: btn.dataset.id,
+              name: btn.dataset.name,
+              price: parseFloat(btn.dataset.price),
+              image: btn.dataset.image
+            };
+            addToCart(product); 
+          });
+        });
+      </script>
 
     <?php include('../../includes/footer.php'); ?>
   </body>

@@ -99,52 +99,14 @@
           <label for="selectAll" class="mb-0 fw-bold">Select All</label>
         </div>
 
-        <!-- Example Cart Item -->
-        <div class="cart-item d-flex align-items-center border-bottom py-2">
-          <input type="checkbox" class="cart-check me-2" checked />
-          <img
-            src="assets/kesong puti.png"
-            alt="Product"
-            class="cart-img me-2"
-          />
-          <div class="flex-grow-1">
-            <h6 class="mb-1">Kesong Puti Classic</h6>
-            <div class="d-flex align-items-center">
-              <button class="btn-qty minus">−</button>
-              <span class="qty mx-2">1</span>
-              <button class="btn-qty plus">+</button>
-            </div>
-            <strong class="item-price d-block mt-1" data-price="25">₱25</strong>
-            <span class="cart-branch">Branch 1</span>
-          </div>
-          <button class="btn-delete"><i class="bi bi-trash"></i></button>
+         
         </div>
 
-        <div class="cart-item d-flex align-items-center border-bottom py-2">
-          <input type="checkbox" class="cart-check me-2" checked />
-          <img
-            src="assets/kesong puti.png"
-            alt="Product"
-            class="cart-img me-2"
-          />
-          <div class="flex-grow-1">
-            <h6 class="mb-1">Kesong Puti Premium</h6>
-            <div class="d-flex align-items-center">
-              <button class="btn-qty minus">−</button>
-              <span class="qty mx-2">2</span>
-              <button class="btn-qty plus">+</button>
-            </div>
-            <strong class="item-price d-block mt-1" data-price="40">₱40</strong>
-          </div>
-          <button class="btn-delete"><i class="bi bi-trash"></i></button>
-        </div>
-      </div>
 
       <!-- Footer -->
       <div class="cart-footer p-3 border-top">
         <div class="d-flex justify-content-between mb-2">
-          <strong>Total:</strong>
-          <span id="cartTotal">₱65</span>
+          <strong>Total: </strong><span id="cartTotal">₱0.00</span>
         </div>
         <button class="btn btn-dark w-100">Checkout</button>
       </div>
@@ -321,6 +283,111 @@
 
       updateCartTotal();
     </script>
+
+
+      <script>
+        const cartContainer = document.getElementById("cartItems");
+
+        function updateCartTotal() {
+          let total = 0;
+          document.querySelectorAll(".cart-item").forEach(item => {
+            const qty = parseInt(item.querySelector(".qty").textContent);
+            const price = parseFloat(item.querySelector(".item-price").dataset.price);
+            total += qty * price;
+          });
+          document.getElementById("cartTotal").textContent = `₱${total.toFixed(2)}`;
+        }
+
+        function addToCart(product) {
+          let existingItem = cartContainer.querySelector(`.cart-item[data-id="${product.id}"]`);
+          if (existingItem) {
+            let qtyEl = existingItem.querySelector(".qty");
+            qtyEl.textContent = parseInt(qtyEl.textContent) + 1;
+          } else {
+            const item = document.createElement("div");
+            item.classList.add("cart-item", "d-flex", "align-items-center", "border-bottom", "py-2");
+            item.setAttribute("data-id", product.id);
+            item.innerHTML = `
+              <input type="checkbox" class="cart-check me-2" checked />
+              <img src="${product.image}" alt="${product.name}" class="cart-img me-2" />
+              <div class="flex-grow-1">
+                <h6 class="mb-1">${product.name}</h6>
+                <div class="d-flex align-items-center">
+                  <button class="btn-qty minus">−</button>
+                  <span class="qty mx-2">1</span>
+                  <button class="btn-qty plus">+</button>
+                </div>
+                <strong class="item-price d-block mt-1" data-price="${product.price}">₱${product.price}</strong>
+              </div>
+              <button class="btn-delete"><i class="bi bi-trash"></i></button>
+            `;
+            cartContainer.appendChild(item);
+          }
+          updateCartTotal();
+        }
+
+        // Event delegation for + / - / delete
+        document.addEventListener("click", e => {
+          if (e.target.classList.contains("plus")) {
+            let qtyEl = e.target.previousElementSibling;
+            qtyEl.textContent = parseInt(qtyEl.textContent) + 1;
+            updateCartTotal();
+          }
+          if (e.target.classList.contains("minus")) {
+            let qtyEl = e.target.nextElementSibling;
+            let qty = parseInt(qtyEl.textContent);
+            if (qty > 1) qtyEl.textContent = qty - 1;
+            updateCartTotal();
+          }
+          if (e.target.closest(".btn-delete")) {
+            e.target.closest(".cart-item").remove();
+            updateCartTotal();
+          }
+        });
+
+      </script>
+
+      <!-- EMPTY CART -->
+      <script>
+        function addToCart(product) {
+        let emptyMsg = cartContainer.querySelector(".empty-message");
+        if (emptyMsg) emptyMsg.remove(); // remove "empty" text once item is added
+
+        let existingItem = cartContainer.querySelector(`.cart-item[data-id="${product.id}"]`);
+        if (existingItem) {
+          let qtyEl = existingItem.querySelector(".qty");
+          qtyEl.textContent = parseInt(qtyEl.textContent) + 1;
+        } else {
+          const item = document.createElement("div");
+          item.classList.add("cart-item", "d-flex", "align-items-center", "border-bottom", "py-2");
+          item.setAttribute("data-id", product.id);
+          item.innerHTML = `
+            <input type="checkbox" class="cart-check me-2" checked />
+            <img src="${product.image}" alt="${product.name}" class="cart-img me-2" />
+            <div class="flex-grow-1">
+              <h6 class="mb-1">${product.name}</h6>
+              <div class="d-flex align-items-center">
+                <button class="btn-qty minus">−</button>
+                <span class="qty mx-2">1</span>
+                <button class="btn-qty plus">+</button>
+              </div>
+              <strong class="item-price d-block mt-1" data-price="${product.price}">₱${product.price}</strong>
+            </div>
+            <button class="btn-delete"><i class="bi bi-trash"></i></button>
+          `;
+          cartContainer.appendChild(item);
+        }
+        updateCartTotal();
+      }
+
+      if (!cartContainer.querySelector(".cart-item")) {
+        cartContainer.innerHTML += `<p class="text-muted empty-message">Your cart is empty.</p>`;
+      }
+
+
+        </script>
+
+      <!--  -->
 <!-- FUNCTIONS -->
 </body>
 </html>
