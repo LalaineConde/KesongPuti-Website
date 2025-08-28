@@ -52,7 +52,6 @@ $result = mysqli_query($connection, $sql);
             id="contactSearch"
             placeholder="Search by name or email..."
           />
-
         <div class="contact-table-wrapper">
           <table class="contact-table">
             <thead>

@@ -53,7 +53,7 @@
             <li class="nav-item">
               <a class="nav-link" href="contact.php">Contact Us</a>
             </li>
-            <li class="nav-item"><a class="nav-link" href="#">Feedback</a></li>
+            <li class="nav-item"><a class="nav-link" href="feedback.php">Feedback</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Order Now</a></li>
           </ul>
         </div>

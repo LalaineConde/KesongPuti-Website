@@ -5,11 +5,22 @@ include ('../../includes/superadmin-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
+if ($_SESSION['role'] === 'admin') {
+    $recipient = "admin_" . $_SESSION['admin_id'];
+} elseif ($_SESSION['role'] === 'superadmin') {
+    $recipient = "super_" . $_SESSION['super_id'];
+}
 
-// Close the connection
+// Fetch inbox messages
+$sql = "SELECT * FROM reviews 
+        WHERE recipient = '$recipient' 
+        ORDER BY created_at DESC";
+
+$result = mysqli_query($connection, $sql);
+
+
+// Close connection
 mysqli_close($connection);
-
-
 ?>
 
 
@@ -47,15 +58,14 @@ mysqli_close($connection);
           />
           <select id="ratingFilter">
             <option value="all">All Ratings</option>
-            <option value="5">⭐⭐⭐⭐⭐</option>
-            <option value="4">⭐⭐⭐⭐</option>
-            <option value="3">⭐⭐⭐</option>
-            <option value="2">⭐⭐</option>
-            <option value="1">⭐</option>
+            <option value="★★★★★">⭐⭐⭐⭐⭐</option>
+            <option value="★★★★☆">⭐⭐⭐⭐</option>
+            <option value="★★★☆☆">⭐⭐⭐</option>
+            <option value="★★☆☆☆">⭐⭐</option>
+            <option value="★☆☆☆☆">⭐</option>
           </select>
         </div>
-
-       <div class="feedback-table-wrapper">
+      <div class="feedback-table-wrapper">
         <table class="feedback-table">
           <thead>
             <tr>
@@ -67,50 +77,36 @@ mysqli_close($connection);
               <th>Action</th>
             </tr>
           </thead>
-          <tbody id="feedbackTableBody">
-            <tr>
-              <td>Juan Dela Cruz</td>
-              <td>juan@example.com</td>
-              <td>⭐⭐⭐⭐⭐</td>
-              <td class="feedback-message">
-                <span class="short-msg">The product quality is amazing!</span>
-                <button
-                  class="view-btn view-more"
-                  data-message="The product quality is amazing! Will definitely order again. Fast delivery and well-packaged."
-                  title="View More"
-                >
-                  <i class="bi bi-eye-fill"></i>
-                </button>
-              </td>
-              <td>2025-08-05</td>
-              <td>
-                <button class="delete-btn">
-                  <i class="bi bi-trash-fill"></i>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Maria Santos</td>
-              <td>maria.s@example.com</td>
-              <td>⭐⭐⭐</td>
-              <td class="feedback-message">
-                <span class="short-msg">It was okay.</span>
-                <button
-                  class="view-btn view-more"
-                  data-message="It was okay, but packaging could be better. I hope to see improvements next time."
-                  title="View More"
-                >
-                  <i class="bi bi-eye-fill"></i>
-                </button>
-              </td>
-              <td>2025-08-03</td>
-              <td>
-                <button class="delete-btn">
-                  <i class="bi bi-trash-fill"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
+            <tbody id="feedbackTableBody">
+              <?php if (mysqli_num_rows($result) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                  <tr>
+                    <td><?php echo htmlspecialchars($row['name']); ?></td>
+                    <td><?php echo htmlspecialchars($row['email']); ?></td>
+                    <td><?php echo htmlspecialchars($row['rating']); ?></td>
+                    <td class="contact-message"><span class="short-msg"><?php echo htmlspecialchars($row['feedback']); ?></span></td>
+                    <td><?php echo date("M j, Y", strtotime($row['created_at'])); ?></td>
+                    <td>
+                    <button
+                      class="view-btn view-more"
+                      data-message="<?php echo htmlspecialchars($row['feedback']); ?>"
+
+                      title="View More"
+                    >
+                      <i class="bi bi-eye-fill"></i>
+                    </button>
+                    <button class="delete-btn" data-id="<?php echo $row['review_id']; ?>">
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  </td>
+                  </tr>
+                <?php endwhile; ?>
+              <?php else: ?>
+                <tr>
+                  <td colspan="6" style="text-align:center;">No messages found</td>
+                </tr>
+              <?php endif; ?>
+            </tbody>
         </table>
       </div>
 
@@ -167,8 +163,8 @@ mysqli_close($connection);
             name.includes(searchTerm) ||
             email.includes(searchTerm) ||
             message.includes(searchTerm);
-          const matchesRating =
-            selectedRating === "all" || rating == selectedRating;
+const matchesRating =
+    selectedRating === "all" || row.children[2].textContent === selectedRating;
 
           row.style.display = matchesSearch && matchesRating ? "" : "none";
         });
@@ -204,7 +200,51 @@ mysqli_close($connection);
             confirmButtonColor: '#ff6b6b'
         });
     }
-    </script>   
+    </script>  
+    
+    
+ 
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const deleteButtons = document.querySelectorAll(".delete-btn");
+
+        deleteButtons.forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const messageId = this.getAttribute("data-id");
+
+            Swal.fire({
+              title: "Are you sure?",
+              text: "This message will be deleted permanently!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#ff6b6b",
+              cancelButtonColor: "#6c757d",
+              confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                fetch("delete-feedback.php", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+                  body: "id=" + messageId,
+                })
+                  .then((response) => response.text())
+                  .then((data) => {
+                    data = data.trim(); // 🔑 remove spaces/newlines
+                    if (data === "success") {
+                      Swal.fire("Deleted!", "The message has been removed.", "success")
+                        .then(() => location.reload());
+                    } else {
+                      Swal.fire("Error!", data, "error"); // show actual error
+                    }
+                  });
+              }
+            });
+          });
+        });
+      });
+</script>
 
 <!-- FUNCTIONS -->
 </body>
