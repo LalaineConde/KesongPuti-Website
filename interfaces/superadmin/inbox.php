@@ -17,6 +17,8 @@ $sql = "SELECT * FROM inbox_messages
         WHERE recipient = '$recipient' 
         ORDER BY created_at DESC";
 
+
+
 $result = mysqli_query($connection, $sql);
 ?>
 
@@ -67,9 +69,48 @@ $result = mysqli_query($connection, $sql);
             <tbody id="contactTableBody">
               <?php if (mysqli_num_rows($result) > 0): ?>
                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                  <?php
+                    $to = htmlspecialchars($row['email']);
+                    $subject = rawurlencode('Response to your message');
+                    
+                    // Use admin name from DB (recipient column stores "admin_1" or "super_2")
+                    $recipient = $row['recipient']; 
+                    $adminName = "Our Team"; // fallback
+                    
+                    if (strpos($recipient, 'admin_') === 0) {
+                        $adminId = str_replace('admin_', '', $recipient);
+                        $query = mysqli_query($connection, "SELECT username FROM admins WHERE admin_id='$adminId'");
+                        if ($query && $adminRow = mysqli_fetch_assoc($query)) {
+                            $adminName = $adminRow['username'];
+
+                        }
+                    } elseif (strpos($recipient, 'super_') === 0) {
+                        $superId = str_replace('super_', '', $recipient);
+                        $query = mysqli_query($connection, "SELECT username FROM super_admin WHERE super_id='$superId'");
+                        if ($query && $superRow = mysqli_fetch_assoc($query)) {
+                            $adminName = $superRow['username'];
+
+                        }
+                    }
+
+                    $body = rawurlencode(
+                      "Hi {$row['name']},\r\n\r\n".
+                      "Thank you for contacting us.\r\n\r\n".
+                      "Your Message:\r\n\"{$row['message']}\"\r\n\r\n".
+                      "[Insert your response here]\r\n\r\n".
+                      "Best regards,\r\n".
+                      "$adminName\r\n".
+                      "[Your Contact Information]"
+                    );
+                  ?>
                   <tr>
                     <td><?php echo htmlspecialchars($row['name']); ?></td>
-                    <td><?php echo htmlspecialchars($row['email']); ?></td>
+                    <td>
+                      <a href="mailto:<?= $to ?>?subject=<?= $subject ?>&body=<?= $body ?>" target="_blank">
+                        <?= $to ?>
+                      </a>
+                    </td>
+
                     <td><?php echo htmlspecialchars($row['contact']); ?></td>
                     <td class="contact-message"><span class="short-msg"><?php echo htmlspecialchars($row['message']); ?></span></td>
                     <td><?php echo date("M j, Y", strtotime($row['created_at'])); ?></td>
