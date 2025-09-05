@@ -61,7 +61,12 @@
         </div>
         <div class="contact-info mt-4">
           <h6 class="footer-title mt-3">Contact Information</h6>
-          <p><a href="https://mail.google.com/mail/u/0/#inbox?compose=GTvVlcRzDCttwRNWCwlNpgGbQKpxBZrgCtRFCGdGjMFchRBStFpxmsqqzbwsmphHhxRPrWMJnsGjv" target="_blank" class="contact-info"><i class="bi bi-envelope"></i> hernandezshy00@gmail.com </a></p>
+          <p>
+            <a href="mailto:hernandezshy00@gmail.com?subject=Kesong%20Puti%20Customer%20Inquiry&body=Good%20day,%0D%0A%0D%0AI%20would%20like%20to%20inquire%20about..." 
+              class="contact-info">
+              <i class="bi bi-envelope"></i>hernandezshy00@gmail.com
+            </a>
+          </p>
           <p><a href="tel:+639997159226"><i class="bi bi-telephone"></i> +63 999 715 9226 </a></p>
           <p><a href="https://maps.app.goo.gl/XhDrJM3vM9fk9WPg9" target="_blank">
               <i class="bi bi-geo-alt"></i> 4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009
