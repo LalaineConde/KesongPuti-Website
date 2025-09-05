@@ -7,6 +7,7 @@ $toast_message = ''; // Initialize variable for toast message
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $username = isset($_POST['username']) ? mysqli_real_escape_string($connection, $_POST['username']) : '';
+$store_name = isset($_POST['store_name']) ? mysqli_real_escape_string($connection, $_POST['store_name']) : '';
 $email = isset($_POST['email']) ? mysqli_real_escape_string($connection, $_POST['email']) : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
@@ -32,8 +33,8 @@ $loggedInAdminId = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
 
         } else {
             // Insert the new admin into the database
-            $sql = "INSERT INTO admins (username, email, password)
-                    VALUES ('$username', '$email', '$hashed_password')";
+            $sql = "INSERT INTO admins (username, email, password, store_name)
+                    VALUES ('$username', '$email', '$hashed_password', '$store_name')";
 
             if (mysqli_query($connection, $sql)) {
                 $toast_message = "Admin added successfully!";
@@ -47,7 +48,7 @@ $loggedInAdminId = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
 }
 
 // Fetch all admins
-$admins_query = "SELECT admin_id, username, email FROM admins";
+$admins_query = "SELECT admin_id, username, store_name, email FROM admins";
 $admins_result = mysqli_query($connection, $admins_query);
 
 // Close the connection
@@ -91,6 +92,11 @@ mysqli_close($connection);
         </div>
 
         <div class="form-group">
+            <label for="adminStoreName">Store Name</label>
+            <input type="text" id="adminStoreName" name="store_name" placeholder="Enter store name" />
+        </div>
+
+        <div class="form-group">
           <label for="adminEmail">Email</label>
           <input type="email" id="adminEmail" name="email" placeholder="Enter admin email" />
         </div>
@@ -123,6 +129,7 @@ mysqli_close($connection);
             <tr>
                 <th>Admin ID</th>
                 <th>Username</th>
+                <th>Store Name</th>
                 <th>Email</th>
                 <th>Actions</th>
             </tr>
@@ -133,6 +140,7 @@ mysqli_close($connection);
                 <tr>
                     <td><?php echo $row['admin_id']; ?></td>
                     <td><?php echo $row['username']; ?></td>
+                    <td><?php echo $row['store_name']; ?></td>
                     <td><?php echo $row['email']; ?></td>
               <td>
                 <!-- Update Button -->
@@ -140,6 +148,7 @@ mysqli_close($connection);
                   class="update-btn" 
                   data-id="<?php echo $row['admin_id']; ?>"
                   data-username="<?php echo htmlspecialchars($row['username']); ?>"
+                  data-store="<?php echo htmlspecialchars($row['store_name']); ?>"
                   data-email="<?php echo htmlspecialchars($row['email']); ?>"
                   title="Update Admin"
                 >
@@ -222,11 +231,13 @@ document.addEventListener("DOMContentLoaded", function() {
             let adminId = this.getAttribute("data-id");
             let currentUsername = this.getAttribute("data-username");
             let currentEmail = this.getAttribute("data-email");
+            let currentStore = this.getAttribute("data-store");
 
             Swal.fire({
                 title: "Update Admin",
                 html: `
                     <input id="swal-username" class="swal2-input" placeholder="Username" value="${currentUsername}">
+                    <input id="swal-store" class="swal2-input" placeholder="Store Name" value="${currentStore}">
                     <input id="swal-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}">
                 `,
                 confirmButtonText: "Update",
@@ -234,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 preConfirm: () => {
                     return {
                         username: document.getElementById("swal-username").value,
+                        store: document.getElementById("swal-store").value,
                         email: document.getElementById("swal-email").value
                     };
                 }
@@ -242,7 +254,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     fetch("update-admin.php", {
                         method: "POST",
                         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                        body: "id=" + adminId + "&username=" + encodeURIComponent(result.value.username) + "&email=" + encodeURIComponent(result.value.email)
+                        body: "id=" + adminId + 
+                            "&username=" + encodeURIComponent(result.value.username) + 
+                            "&store_name=" + encodeURIComponent(result.value.store) + 
+                            "&email=" + encodeURIComponent(result.value.email)
                     })
                     .then(response => response.text())
                     .then(data => {

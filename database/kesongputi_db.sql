@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 05, 2025 at 11:14 AM
+-- Generation Time: Sep 05, 2025 at 03:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -30,6 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `admins` (
   `admin_id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
+  `store_name` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -38,10 +39,10 @@ CREATE TABLE `admins` (
 -- Dumping data for table `admins`
 --
 
-INSERT INTO `admins` (`admin_id`, `username`, `email`, `password`) VALUES
-(1, 'lalaine conde', 'lalaineconde23@gmail.com', '$2y$10$9Dy/b9srwpwLGt6.BEbVGOZdWo4vY5SeUjaXuMTQ8Os09KOcHl7My'),
-(3, 'lara danielle', 'larafremista21@gmail.com', '$2y$10$79rq0jOVXhyYsyvodZ7cO.iFhO5dTwadoMy97Bo6RiOsCr3PnWQFi'),
-(7, 'JB Alico', 'jaironbartalico@gmail.com', '$2y$10$RTJTk4ja/R7Agmm3ZBgAC.EmEadBa7p/XoKhGgxx3CwfYAawpFxcq');
+INSERT INTO `admins` (`admin_id`, `username`, `store_name`, `email`, `password`) VALUES
+(1, 'lalaine conde', 'Noel Lucena Kesong Puti', 'lalaineconde23@gmail.com', '$2y$10$9Dy/b9srwpwLGt6.BEbVGOZdWo4vY5SeUjaXuMTQ8Os09KOcHl7My'),
+(3, 'lara danielle', 'Garin Kesong Puti', 'larafremista21@gmail.com', '$2y$10$79rq0jOVXhyYsyvodZ7cO.iFhO5dTwadoMy97Bo6RiOsCr3PnWQFi'),
+(7, 'JB Alico', 'Mommy Lodie Kesong Puti', 'jaironbartalico@gmail.com', '$2y$10$RTJTk4ja/R7Agmm3ZBgAC.EmEadBa7p/XoKhGgxx3CwfYAawpFxcq');
 
 -- --------------------------------------------------------
 
@@ -147,7 +148,7 @@ INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `s
 (9, 'Kesong Puti', 'Cheese wrapped in banana leaf', 140.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-08-21 23:52:50', '2025-08-27 15:07:59', 'available'),
 (17, 'Kesorbetes', 'ice cream', 115.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 04:37:29', '2025-08-22 04:37:29', 'available'),
 (19, 'Kesorbetes (1 Gallon)', 'ice cream', 650.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 04:42:13', '2025-08-22 04:42:13', 'available'),
-(20, 'Kesorbetes (1 Tub)', 'ice creamm', 550.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-08-22 10:19:46', 'available'),
+(20, 'Kesorbetes (1 Tub)', 'ice cream', 550.00, 15, 'Ice Cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-09-05 12:04:05', 'available'),
 (21, 'Kesong Puti', 'cheese', 110.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:20:16', '2025-08-22 10:27:12', 'available'),
 (22, 'Kesorbetes (Small)', 'ice cream', 50.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:31:19', '2025-08-22 10:31:19', 'available'),
 (30, 'Kesorbetes (1 Gallon)', 'ice cream', 750.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 06:20:19', '2025-09-03 06:20:19', 'available'),
@@ -216,6 +217,7 @@ INSERT INTO `store` (`store_id`, `store_name`, `recipient`, `owner_id`, `super_i
 CREATE TABLE `super_admin` (
   `super_id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
+  `store_name` varchar(255) DEFAULT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -224,8 +226,8 @@ CREATE TABLE `super_admin` (
 -- Dumping data for table `super_admin`
 --
 
-INSERT INTO `super_admin` (`super_id`, `username`, `email`, `password`) VALUES
-(1, 'arlene macalinao', 'lalaineconde22@gmail.com', '$2y$10$qirbMehtP/lX3wHhZbPBbOekAx0Vq/S09tBWDlzXavFsZsIZA22oy');
+INSERT INTO `super_admin` (`super_id`, `username`, `store_name`, `email`, `password`) VALUES
+(1, 'arlene macalinao', 'Arlene Macalinao Kesong Puti', 'lalaineconde22@gmail.com', '$2y$10$qirbMehtP/lX3wHhZbPBbOekAx0Vq/S09tBWDlzXavFsZsIZA22oy');
 
 --
 -- Indexes for dumped tables
@@ -297,7 +299,7 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -333,7 +335,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `store`
