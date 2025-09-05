@@ -250,13 +250,16 @@ $store_result = mysqli_query($connection, $store_sql);
           <p><strong>Category:</strong> <span id="modalProductCategory"></span></p>
 
           <form method="POST" action="add-to-cart.php">
-            <input type="hidden" name="product_id" id="modalProductId">
-            <button type="submit" class="btn btn-dark w-100 mt-2"
-              data-id="<?= $row['product_id'] ?>"
-              data-name="<?= htmlspecialchars($row['product_name']) ?>"
-              data-price="<?= htmlspecialchars($row['price']) ?>"
-              data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
-              data-store="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
+          <input type="hidden" name="product_id" id="modalProductId">
+          <button 
+            type="button"
+            class="btn btn-dark w-100 mt-2 add-to-cart" 
+            
+              data-id=""
+              data-name=""
+              data-price=""
+              data-image=""
+              data-store="">
               <i class="bi bi-bag-plus"></i> Add to Bag
             </button> 
           </form>
@@ -393,6 +396,13 @@ $store_result = mysqli_query($connection, $store_sql);
           document.getElementById("modalProductCategory").textContent = this.dataset.category;
           document.getElementById("modalProductImage").src = this.dataset.image;
           document.getElementById("view_recipient").textContent = this.dataset.admin;
+
+          const modalAddBtn = customerModal.querySelector(".add-to-cart");
+          modalAddBtn.dataset.id = this.dataset.id;
+          modalAddBtn.dataset.name = this.dataset.name;
+          modalAddBtn.dataset.price = this.dataset.price;
+          modalAddBtn.dataset.image = this.dataset.image;
+          modalAddBtn.dataset.store = this.dataset.admin;
 
           customerModal.style.display = "flex";
         });
