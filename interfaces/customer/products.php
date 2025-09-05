@@ -222,7 +222,7 @@ $store_result = mysqli_query($connection, $store_sql);
                         data-name="<?= htmlspecialchars($row['product_name']) ?>"
                         data-price="<?= htmlspecialchars($row['price']) ?>"
                         data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
-                        data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
+                        data-store="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
                         <i class="bi bi-bag-plus"></i> Add to Bag
                       </button>
 
@@ -256,7 +256,7 @@ $store_result = mysqli_query($connection, $store_sql);
               data-name="<?= htmlspecialchars($row['product_name']) ?>"
               data-price="<?= htmlspecialchars($row['price']) ?>"
               data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
-              data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
+              data-store="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
               <i class="bi bi-bag-plus"></i> Add to Bag
             </button> 
           </form>
@@ -412,7 +412,8 @@ $store_result = mysqli_query($connection, $store_sql);
               id: btn.dataset.id,
               name: btn.dataset.name,
               price: parseFloat(btn.dataset.price),
-              image: btn.dataset.image
+              image: btn.dataset.image,
+              store: btn.dataset.store
             };
             addToCart(product); 
           });

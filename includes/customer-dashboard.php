@@ -321,6 +321,7 @@
                 <strong class="item-price d-block mt-1" data-price="${product.price}">
                   ₱${(product.price * product.qty).toFixed(2)}
                 </strong>
+                <span class="cart-branch">${product.store}</span>
               </div>
               <button class="btn-delete"><i class="bi bi-trash"></i></button>
             `;
