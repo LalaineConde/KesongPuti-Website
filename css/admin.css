@@ -1205,4 +1205,16 @@ body {
     cursor: pointer;
 }
 
+.filter-star {
+  font-size: 22px;
+  cursor: pointer;
+  color: #ccc; /* default gray */
+  transition: color 0.2s;
+}
+
+.filter-star.hover,
+.filter-star.active {
+  color: gold; /* highlight */
+}
+
 /* FEEDBACK */

@@ -114,14 +114,15 @@ $result = mysqli_query($connection, $sql);
     <form method="POST" action="">
     <input type="text" name="reviewName" placeholder="Your Name" required>
     <input type="email" name="reviewEmail" placeholder="Your Email" required>
-    <select name="reviewRating" required>
-        <option value="" disabled selected>Rate Us</option>
-        <option value="★★★★★">⭐⭐⭐⭐⭐</option>
-        <option value="★★★★☆">⭐⭐⭐⭐</option>
-        <option value="★★★☆☆">⭐⭐⭐</option>
-        <option value="★★☆☆☆">⭐⭐</option>
-        <option value="★☆☆☆☆">⭐</option>
-    </select>
+    <!-- Star Rating -->
+    <div class="star-rating">
+      <input type="hidden" name="reviewRating" id="reviewRating" required>
+      <span class="star" data-value="1">★</span>
+      <span class="star" data-value="2">★</span>
+      <span class="star" data-value="3">★</span>
+      <span class="star" data-value="4">★</span>
+      <span class="star" data-value="5">★</span>
+    </div>
     <select name="reviewRecipient" required>
           <option value="">-- Select Store --</option>
           <?php
@@ -154,25 +155,49 @@ $result = mysqli_query($connection, $sql);
     <!-- FEEDBACK -->
 
     <!-- FUNCTIONS -->
+
+
+
 <script>
-  // Review Modal Script
-  const reviewModal = document.getElementById("reviewModal");
-  const openReviewBtn = document.getElementById("openReviewModal");
-  const closeReviewBtn = document.getElementById("closeReviewModal");
+// Review Modal Script
+const reviewModal = document.getElementById("reviewModal");
+const openReviewBtn = document.getElementById("openReviewModal");
+const closeReviewBtn = document.getElementById("closeReviewModal");
 
-  openReviewBtn.addEventListener("click", () => {
-    reviewModal.style.display = "flex";
-  });
+openReviewBtn.addEventListener("click", () => {
+  reviewModal.style.display = "flex";
+});
 
-  closeReviewBtn.addEventListener("click", () => {
+closeReviewBtn.addEventListener("click", () => {
+  reviewModal.style.display = "none";
+});
+
+window.addEventListener("click", (e) => {
+  if (e.target === reviewModal) {
     reviewModal.style.display = "none";
+  }
+});
+
+// ⭐ Star Rating Logic
+const stars = document.querySelectorAll(".star-rating .star");
+const reviewRatingInput = document.getElementById("reviewRating");
+
+stars.forEach(star => {
+  star.addEventListener("mouseover", () => {
+    const val = star.dataset.value;
+    stars.forEach(s => s.classList.toggle("hover", s.dataset.value <= val));
   });
 
-  window.addEventListener("click", (e) => {
-    if (e.target === reviewModal) {
-      reviewModal.style.display = "none";
-    }
+  star.addEventListener("mouseout", () => {
+    stars.forEach(s => s.classList.remove("hover"));
   });
+
+  star.addEventListener("click", () => {
+    const val = star.dataset.value;
+    reviewRatingInput.value = "★".repeat(val) + "☆".repeat(5 - val);
+    stars.forEach(s => s.classList.toggle("selected", s.dataset.value <= val));
+  });
+});
 </script>
     <!-- FUNCTIONS -->
 

@@ -5,7 +5,6 @@ include ('../../includes/admin-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
-
 if ($_SESSION['role'] === 'admin') {
     $recipient = "admin_" . $_SESSION['admin_id'];
 } elseif ($_SESSION['role'] === 'superadmin') {
@@ -23,7 +22,6 @@ $result = mysqli_query($connection, $sql);
 // Close connection
 mysqli_close($connection);
 ?>
-
 
 
 
@@ -58,14 +56,14 @@ mysqli_close($connection);
             id="feedbackSearch"
             placeholder="Search by name, email, or message..."
           />
-          <select id="ratingFilter">
-            <option value="all">All Ratings</option>
-            <option value="★★★★★">⭐⭐⭐⭐⭐</option>
-            <option value="★★★★☆">⭐⭐⭐⭐</option>
-            <option value="★★★☆☆">⭐⭐⭐</option>
-            <option value="★★☆☆☆">⭐⭐</option>
-            <option value="★☆☆☆☆">⭐</option>
-          </select>
+<div class="star-filter">
+  <span class="filter-star active" data-value="all">All</span>
+  <span class="filter-star" data-value="1">★</span>
+  <span class="filter-star" data-value="2">★</span>
+  <span class="filter-star" data-value="3">★</span>
+  <span class="filter-star" data-value="4">★</span>
+  <span class="filter-star" data-value="5">★</span>
+</div>
         </div>
       <div class="feedback-table-wrapper">
         <table class="feedback-table">
@@ -144,50 +142,89 @@ mysqli_close($connection);
 
 <script>
 const feedbackSearch = document.getElementById("feedbackSearch");
-const ratingFilter = document.getElementById("ratingFilter");
 const feedbackRows = document.querySelectorAll("#feedbackTableBody tr");
+const stars = document.querySelectorAll(".filter-star");
 
+let selectedRating = "all";
+
+// ✅ Convert "★★★★★" to 5, "★★★☆☆" to 3, etc.
+function getStarCount(starString) {
+  return (starString.match(/★/g) || []).length;
+}
+
+// Filter function
+function filterFeedback() {
+  const searchTerm = feedbackSearch.value.toLowerCase();
+
+  feedbackRows.forEach((row) => {
+    const name = row.children[0].textContent.toLowerCase();
+    const email = row.children[1].textContent.toLowerCase();
+    const message = row.children[3].textContent.toLowerCase();
+    const ratingText = row.children[2].textContent.trim();
+    const rowRating = getStarCount(ratingText);
+
+    const matchesSearch =
+      name.includes(searchTerm) ||
+      email.includes(searchTerm) ||
+      message.includes(searchTerm);
+
+    const matchesRating =
+      selectedRating === "all" || rowRating == selectedRating;
+
+    row.style.display = matchesSearch && matchesRating ? "" : "none";
+  });
+}
+
+// Search input event
+feedbackSearch.addEventListener("input", filterFeedback);
+
+// ⭐ Star click + hover
+stars.forEach((star, index) => {
+  // Click → select rating
+  star.addEventListener("click", () => {
+    stars.forEach(s => s.classList.remove("active"));
+
+    if (star.dataset.value === "all") {
+      selectedRating = "all";
+      star.classList.add("active");
+    } else {
+      selectedRating = parseInt(star.dataset.value);
+      for (let i = 1; i <= index; i++) stars[i].classList.add("active"); // start from 1 because 0 = All
+    }
+
+    filterFeedback();
+  });
+
+  // Hover effect only for numbered stars
+  if (star.dataset.value !== "all") {
+    star.addEventListener("mouseover", () => {
+      stars.forEach(s => s.classList.remove("hover"));
+      for (let i = 1; i <= index; i++) stars[i].classList.add("hover");
+    });
+
+    star.addEventListener("mouseout", () => {
+      stars.forEach(s => s.classList.remove("hover"));
+    });
+  }
+});
+</script>
+
+<script>
+// 👁️ View More modal
 const modal = document.getElementById("feedbackModal");
 const fullMessageText = document.getElementById("fullMessageText");
 const closeModalBtn = document.querySelector(".close-modal");
 
-function filterFeedback() {
-    const searchTerm = feedbackSearch.value.toLowerCase();
-    const selectedRating = ratingFilter.value;
-
-    feedbackRows.forEach((row) => {
-        const name = row.children[0].textContent.toLowerCase();
-        const email = row.children[1].textContent.toLowerCase();
-        const message = row.children[3].textContent.toLowerCase();
-        const rating = row.children[2].textContent.trim();
-
-        const matchesSearch =
-            name.includes(searchTerm) ||
-            email.includes(searchTerm) ||
-            message.includes(searchTerm);
-
-        const matchesRating =
-            selectedRating === "all" || rating === selectedRating;
-
-        row.style.display = matchesSearch && matchesRating ? "" : "none";
-    });
-}
-
-// Event listeners
-feedbackSearch.addEventListener("input", filterFeedback);
-ratingFilter.addEventListener("change", filterFeedback);
-
-// View More modal
 document.querySelectorAll(".view-more").forEach((button) => {
-    button.addEventListener("click", () => {
-        fullMessageText.textContent = button.getAttribute("data-message");
-        modal.style.display = "flex";
-    });
+  button.addEventListener("click", () => {
+    fullMessageText.textContent = button.getAttribute("data-message");
+    modal.style.display = "flex";
+  });
 });
 
 closeModalBtn.onclick = () => (modal.style.display = "none");
 window.onclick = (e) => {
-    if (e.target === modal) modal.style.display = "none";
+  if (e.target === modal) modal.style.display = "none";
 };
 </script>
     
@@ -204,9 +241,10 @@ window.onclick = (e) => {
             confirmButtonColor: '#ff6b6b'
         });
     }
-    </script>   
-
-
+    </script>  
+    
+    
+ 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const deleteButtons = document.querySelectorAll(".delete-btn");
