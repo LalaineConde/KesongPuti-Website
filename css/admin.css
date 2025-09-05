@@ -398,6 +398,17 @@ body {
     min-width: 180px;
 }
 
+/* Store dropdown */
+#storeFilter {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    width: 280px;
+    min-width: 180px;
+}
+
+
 /* Add button */
 .btn-add {
     background: var(--yellow);

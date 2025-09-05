@@ -124,24 +124,41 @@ if (isset($_POST['update_product'])) {
         </div>
 
         
-<div class="filter-bar 2">
-          <select id="categoryFilter">
-            <option value="all">All Categories</option>
-            <option value="cheese">Cheese</option>
-            <option value="ice-cream">Ice Cream</option>
-          </select>
+        <div class="filter-bar 2">
+                  <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="cheese">Cheese</option>
+                    <option value="ice-cream">Ice Cream</option>
+                  </select>
 
-        <button id="openAddProduct" class="btn-add">
-            <i class="bi bi-plus-circle"></i> Add Product
-          </button>
-</div>    
+
+        <div class="filter-bar 3">
+          <select id="storeFilter">
+            <option value="all">All Stores</option>
+            <?php
+              $storeQuery = "SELECT store_name FROM store ORDER BY store_name ASC";
+              $storeResult = mysqli_query($connection, $storeQuery);
+              while ($storeRow = mysqli_fetch_assoc($storeResult)) {
+                  echo '<option value="' . htmlspecialchars(strtolower($storeRow['store_name'])) . '">' 
+                      . htmlspecialchars($storeRow['store_name']) . 
+                      '</option>';
+              }
+            ?>
+          </select>
+        </div>
+
+                <button id="openAddProduct" class="btn-add">
+                    <i class="bi bi-plus-circle"></i> Add Product
+                  </button>
+        </div>    
 
      <!-- PRODUCTS -->
       <div class="product-grid" id="productGrid">
         <?php while ($row = mysqli_fetch_assoc($result)) { ?>
           <div class="product-card" 
             data-name="<?= htmlspecialchars($row['product_name']) ?>" 
-            data-category="<?= htmlspecialchars(strtolower($row['category'])) ?>">
+            data-category="<?= htmlspecialchars(strtolower($row['category'])) ?>"
+            data-store="<?= htmlspecialchars(strtolower($row['recipient'])) ?>">
             <img src="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>" alt="Product Image">
             <div class="product-info">
             <h3 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h3>
@@ -252,17 +269,20 @@ if (isset($_POST['update_product'])) {
         function filterProducts() {
           const searchValue = searchInput.value.toLowerCase();
           const categoryValue = categoryFilter.value.toLowerCase();
+          const storeValue = storeFilter.value.toLowerCase();
 
           let visibleCount = 0;
 
           productCards.forEach(card => {
             const name = card.querySelector(".card-title").textContent.toLowerCase();
             const category = card.getAttribute("data-category");
+            const store = card.getAttribute("data-store");
 
             const matchesSearch = name.includes(searchValue);
             const matchesCategory = (categoryValue === "all" || category === categoryValue);
+            const matchesStore = (storeValue === "all" || store === storeValue);
 
-            if (matchesSearch && matchesCategory) {
+            if (matchesSearch && matchesCategory && matchesStore) {
               card.style.display = "block";
               visibleCount++;
             } else {
@@ -284,6 +304,7 @@ if (isset($_POST['update_product'])) {
         // Run filter when typing or selecting
         searchInput.addEventListener("input", filterProducts);
         categoryFilter.addEventListener("change", filterProducts);
+        storeFilter.addEventListener("change", filterProducts);
       });
 
     </script>
