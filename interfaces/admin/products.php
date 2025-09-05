@@ -1,7 +1,7 @@
 <?php
 $page_title = 'Products | Kesong Puti';
 require '../../connection.php';
-include ('../../includes/admin-dashboard.php'); // ✅ for admin
+include ('../../includes/admin-dashboard.php'); 
 
 $toast_message = '';
 
@@ -13,10 +13,21 @@ if (isset($_SESSION['toast_message'])) {
 // Fetch products (filter by role)
 if ($_SESSION['role'] === 'admin') {
     $owner_id = $_SESSION['admin_id'];
-    $sql = "SELECT * FROM products WHERE owner_id = '$owner_id'"; // ✅ only their products
+    $sql = "SELECT p.*, 
+                   COALESCE(a.username, s.username) AS owner_username
+            FROM products p
+            LEFT JOIN admins a ON p.owner_id = a.admin_id
+            LEFT JOIN super_admin s ON p.owner_id = s.super_id
+            WHERE p.owner_id = '$owner_id'";
 } else {
-    $sql = "SELECT * FROM products"; // ✅ superadmin sees all
+    // superadmin can see all
+    $sql = "SELECT p.*, 
+                   COALESCE(a.username, s.username) AS owner_username
+            FROM products p
+            LEFT JOIN admins a ON p.owner_id = a.admin_id
+            LEFT JOIN super_admin s ON p.owner_id = s.super_id";
 }
+
 $result = mysqli_query($connection, $sql);
 
 // ADD Product
@@ -29,14 +40,8 @@ if (isset($_POST['save_product'])) {
 
     if ($_SESSION['role'] === 'admin') {
         $owner_id = $_SESSION['admin_id'];
-
-        // fetch store id for this admin
-        $storeQuery = mysqli_query($connection, "SELECT store_id FROM store WHERE owner_id='$owner_id' LIMIT 1");
-        $storeRow = mysqli_fetch_assoc($storeQuery);
-        $store_id = $storeRow ? $storeRow['store_id'] : NULL;
     } else {
         $owner_id = $_SESSION['super_id'];
-        $store_id = NULL; // superadmin products not tied to a store
     }
 
     $target_dir = "../../assets/";
@@ -45,9 +50,8 @@ if (isset($_POST['save_product'])) {
 
     if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
         $insert = "INSERT INTO products 
-                   (product_name, description, price, stock_qty, category, product_image, owner_id, store_id)
-                   VALUES ('$name', '$desc', '$price', '$stock', '$category', '$image', '$owner_id', " . 
-                   ($store_id ? "'$store_id'" : "NULL") . ")";
+                   (product_name, description, price, stock_qty, category, product_image, owner_id)
+                   VALUES ('$name', '$desc', '$price', '$stock', '$category', '$image', '$owner_id')";
         mysqli_query($connection, $insert);
     }
 
@@ -75,7 +79,6 @@ if (isset($_POST['update_product'])) {
         }
     }
 
-    // 🔹 Security: make sure admin can only update their products
     if ($_SESSION['role'] === 'admin') {
         $owner_id = $_SESSION['admin_id'];
         $update = "UPDATE products 

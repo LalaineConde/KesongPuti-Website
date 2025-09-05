@@ -432,7 +432,10 @@ body {
     overflow: hidden;
     transition: 0.3s;
     width: 280px;
-    height: 320px;
+    height: 370px;
+     display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .product-card:hover {

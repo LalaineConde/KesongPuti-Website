@@ -205,22 +205,6 @@
         overlay.classList.remove("active");
       });
 
-      // Cart items functionality
-      function updateCartTotal() {
-        let total = 0;
-        document.querySelectorAll(".cart-item").forEach((item) => {
-          const checkbox = item.querySelector(".cart-check");
-          const priceEl = item.querySelector(".item-price");
-          const qty = parseInt(item.querySelector(".qty").textContent);
-          const pricePerItem =
-            parseFloat(priceEl.getAttribute("data-price")) / qty;
-
-          if (checkbox.checked) {
-            total += pricePerItem * qty;
-          }
-        });
-        document.getElementById("cartTotal").textContent = `₱${total}`;
-      }
 
       // Quantity controls
       document.addEventListener("click", function (e) {
@@ -287,107 +271,118 @@
 
       <script>
         const cartContainer = document.getElementById("cartItems");
+        const cartTotalEl = document.getElementById("cartTotal");
+        const cartBadge = document.getElementById("cartCount");
 
-        function updateCartTotal() {
-          let total = 0;
-          document.querySelectorAll(".cart-item").forEach(item => {
-            const qty = parseInt(item.querySelector(".qty").textContent);
-            const price = parseFloat(item.querySelector(".item-price").dataset.price);
-            total += qty * price;
-          });
-          document.getElementById("cartTotal").textContent = `₱${total.toFixed(2)}`;
+        // Load cart from localStorage or empty array
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // Save to localStorage
+        function saveCart() {
+          localStorage.setItem("cart", JSON.stringify(cart));
         }
 
-        function addToCart(product) {
-          let existingItem = cartContainer.querySelector(`.cart-item[data-id="${product.id}"]`);
-          if (existingItem) {
-            let qtyEl = existingItem.querySelector(".qty");
-            qtyEl.textContent = parseInt(qtyEl.textContent) + 1;
-          } else {
+        // Update cart badge (icon number)
+        function updateCartBadge() {
+          let totalQty = cart.reduce((sum, p) => sum + p.qty, 0);
+          cartBadge.textContent = totalQty;
+        }
+
+        // Render cart items
+        function renderCart() {
+          cartContainer.innerHTML = `
+            <div class="d-flex align-items-center mb-2">
+              <input type="checkbox" id="selectAll" class="me-2" />
+              <label for="selectAll" class="mb-0 fw-bold">Select All</label>
+            </div>
+          `;
+
+          if (cart.length === 0) {
+            cartContainer.innerHTML += `<p class="text-muted empty-message">Your cart is empty.</p>`;
+            cartTotalEl.textContent = "₱0.00";
+            updateCartBadge();
+            return;
+          }
+
+          cart.forEach(product => {
             const item = document.createElement("div");
             item.classList.add("cart-item", "d-flex", "align-items-center", "border-bottom", "py-2");
             item.setAttribute("data-id", product.id);
             item.innerHTML = `
               <input type="checkbox" class="cart-check me-2" checked />
-              <img src="${product.image}" alt="${product.name}" class="cart-img me-2" />
+              <img src="${product.image}" alt="${product.name}" class="cart-img me-2" width="50"/>
               <div class="flex-grow-1">
                 <h6 class="mb-1">${product.name}</h6>
                 <div class="d-flex align-items-center">
                   <button class="btn-qty minus">−</button>
-                  <span class="qty mx-2">1</span>
+                  <span class="qty mx-2">${product.qty}</span>
                   <button class="btn-qty plus">+</button>
                 </div>
-                <strong class="item-price d-block mt-1" data-price="${product.price}">₱${product.price}</strong>
+                <strong class="item-price d-block mt-1" data-price="${product.price}">
+                  ₱${(product.price * product.qty).toFixed(2)}
+                </strong>
               </div>
               <button class="btn-delete"><i class="bi bi-trash"></i></button>
             `;
             cartContainer.appendChild(item);
-          }
+          });
+
           updateCartTotal();
+          updateCartBadge();
         }
 
-        // Event delegation for + / - / delete
+        // Update total
+        function updateCartTotal() {
+          let total = cart.reduce((sum, p) => sum + (p.price * p.qty), 0);
+          cartTotalEl.textContent = `₱${total.toFixed(2)}`;
+        }
+
+        // Add to cart
+        function addToCart(product) {
+          let existing = cart.find(p => p.id === product.id);
+          if (existing) {
+            existing.qty++;
+          } else {
+            cart.push({ ...product, qty: 1 });
+          }
+          saveCart();
+          renderCart();
+        }
+
+        // Event delegation for plus/minus/delete
         document.addEventListener("click", e => {
+          let itemEl = e.target.closest(".cart-item");
+          if (!itemEl) return;
+          let id = itemEl.dataset.id;
+          let product = cart.find(p => p.id === id);
+
           if (e.target.classList.contains("plus")) {
-            let qtyEl = e.target.previousElementSibling;
-            qtyEl.textContent = parseInt(qtyEl.textContent) + 1;
-            updateCartTotal();
+            product.qty++;
           }
+
           if (e.target.classList.contains("minus")) {
-            let qtyEl = e.target.nextElementSibling;
-            let qty = parseInt(qtyEl.textContent);
-            if (qty > 1) qtyEl.textContent = qty - 1;
-            updateCartTotal();
+            if (product.qty > 1) {
+              product.qty--;
+            } else {
+              cart = cart.filter(p => p.id !== id);
+            }
           }
+
           if (e.target.closest(".btn-delete")) {
-            e.target.closest(".cart-item").remove();
-            updateCartTotal();
+            cart = cart.filter(p => p.id !== id);
           }
+
+          saveCart();
+          renderCart();
         });
 
+        // Restore cart on page load
+        renderCart();
       </script>
 
-      <!-- EMPTY CART -->
-      <script>
-        function addToCart(product) {
-        let emptyMsg = cartContainer.querySelector(".empty-message");
-        if (emptyMsg) emptyMsg.remove(); // remove "empty" text once item is added
 
-        let existingItem = cartContainer.querySelector(`.cart-item[data-id="${product.id}"]`);
-        if (existingItem) {
-          let qtyEl = existingItem.querySelector(".qty");
-          qtyEl.textContent = parseInt(qtyEl.textContent) + 1;
-        } else {
-          const item = document.createElement("div");
-          item.classList.add("cart-item", "d-flex", "align-items-center", "border-bottom", "py-2");
-          item.setAttribute("data-id", product.id);
-          item.innerHTML = `
-            <input type="checkbox" class="cart-check me-2" checked />
-            <img src="${product.image}" alt="${product.name}" class="cart-img me-2" />
-            <div class="flex-grow-1">
-              <h6 class="mb-1">${product.name}</h6>
-              <div class="d-flex align-items-center">
-                <button class="btn-qty minus">−</button>
-                <span class="qty mx-2">1</span>
-                <button class="btn-qty plus">+</button>
-              </div>
-              <strong class="item-price d-block mt-1" data-price="${product.price}">₱${product.price}</strong>
-            </div>
-            <button class="btn-delete"><i class="bi bi-trash"></i></button>
-          `;
-          cartContainer.appendChild(item);
-        }
-        updateCartTotal();
-      }
+     
 
-      if (!cartContainer.querySelector(".cart-item")) {
-        cartContainer.innerHTML += `<p class="text-muted empty-message">Your cart is empty.</p>`;
-      }
-
-
-        </script>
-
-      <!--  -->
 <!-- FUNCTIONS -->
 </body>
 </html>

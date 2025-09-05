@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 28, 2025 at 04:46 AM
+-- Generation Time: Sep 05, 2025 at 06:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -132,7 +132,11 @@ INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `s
 (20, 'Kesorbetes (1 Tub)', 'ice creamm', 550.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-08-22 10:19:46', 'available'),
 (21, 'Kesong Puti', 'cheese', 110.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:20:16', '2025-08-22 10:27:12', 'available'),
 (22, 'Kesorbetes (Small)', 'ice cream', 50.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:31:19', '2025-08-22 10:31:19', 'available'),
-(23, 'Kesorbetes (1 Tub)', 'ice cream', 500.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, 2, 'admin', '2025-08-27 18:27:49', '2025-08-27 18:27:49', 'available');
+(30, 'Kesorbetes (1 Gallon)', 'ice cream', 750.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 06:20:19', '2025-09-03 06:20:19', 'available'),
+(31, 'Kesorbetes (1 Tub)', 'ice cream', 550.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 06:22:07', '2025-09-03 06:22:07', 'available'),
+(34, 'Kesong Puti', 'cheese', 190.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-09-03 07:18:17', '2025-09-03 07:18:17', 'available'),
+(35, 'Kesong Puti', 'cheese', 180.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 07:23:18', '2025-09-03 07:23:18', 'available'),
+(36, 'Kesong Puti', 'cheese', 200.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 11:12:51', '2025-09-03 11:12:51', 'available');
 
 -- --------------------------------------------------------
 
@@ -170,6 +174,7 @@ INSERT INTO `reviews` (`review_id`, `name`, `email`, `rating`, `feedback`, `crea
 CREATE TABLE `store` (
   `store_id` int(11) NOT NULL,
   `store_name` varchar(255) NOT NULL,
+  `recipient` varchar(100) NOT NULL,
   `owner_id` int(11) DEFAULT NULL,
   `super_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -178,11 +183,11 @@ CREATE TABLE `store` (
 -- Dumping data for table `store`
 --
 
-INSERT INTO `store` (`store_id`, `store_name`, `owner_id`, `super_id`) VALUES
-(1, 'Arlene Macalinao Kesong Puti', NULL, 1),
-(2, 'Noel Lucena Kesong Puti', 1, NULL),
-(3, 'Garin Kesong Puti', 3, NULL),
-(4, 'Mommy Lodie Kesong Puti', 7, NULL);
+INSERT INTO `store` (`store_id`, `store_name`, `recipient`, `owner_id`, `super_id`) VALUES
+(1, 'Arlene Macalinao Kesong Puti', 'super_1', NULL, 1),
+(2, 'Noel Lucena Kesong Puti', 'admin_1', 1, NULL),
+(3, 'Garin Kesong Puti', 'admin_3', 3, NULL),
+(4, 'Mommy Lodie Kesong Puti', 'admin_7', 7, NULL);
 
 -- --------------------------------------------------------
 
@@ -292,7 +297,7 @@ ALTER TABLE `inbox_messages`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `reviews`

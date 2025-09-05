@@ -7,12 +7,74 @@ include ('../../includes/customer-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
-// Fetch all products
-$sql = "SELECT * FROM products";
+$where = [];
+
+if (!empty($_GET['type'])) {
+    $type = strtolower($_GET['type']); 
+    $type = mysqli_real_escape_string($connection, $type);
+
+    $where[] = "LOWER(p.category) = '$type'";
+}
+
+
+if (!empty($_GET['availability'])) {
+    if ($_GET['availability'] === "Available") {
+        $where[] = "p.stock_qty > 0";
+    } elseif ($_GET['availability'] === "Out of Stock") {
+        $where[] = "p.stock_qty = 0";
+    }
+}
+
+if (!empty($_GET['store'])) {
+    $store_id = (int) $_GET['store'];
+    $where[] = "st.store_id = $store_id";
+}
+
+$where_sql = !empty($where) ? "WHERE " . implode(" AND ", $where) : "";
+
+// Pagination 
+$limit = 8;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
+// Count total filtered products
+$count_sql = "
+    SELECT COUNT(*) AS total
+    FROM products p
+    LEFT JOIN store st 
+      ON p.owner_id = st.owner_id OR p.owner_id = st.super_id
+    $where_sql
+";
+
+
+
+
+$count_result = mysqli_query($connection, $count_sql);
+$total_products = mysqli_fetch_assoc($count_result)['total'];
+$total_pages = ceil($total_products / $limit);
+
+// Fetch filtered products
+$sql = "
+    SELECT p.*, COALESCE(st.store_name, 'Superadmin') AS recipient
+    FROM products p
+    LEFT JOIN store st 
+      ON p.owner_id = st.owner_id OR p.owner_id = st.super_id
+    $where_sql
+    ORDER BY p.product_id DESC
+    LIMIT $limit OFFSET $offset
+";
+
+
 $result = mysqli_query($connection, $sql);
 
 
+$query_params = $_GET;
+unset($query_params['page']);
+$base_url = '?' . http_build_query($query_params);
 
+// Fetch all stores for Store dropdown
+$store_sql = "SELECT store_id, store_name FROM store";
+$store_result = mysqli_query($connection, $store_sql);
 ?>
 
 
@@ -51,61 +113,71 @@ $result = mysqli_query($connection, $sql);
       <div class="container product-contents">
         <div class="pt-5 filter-bar">
           <!-- filter -->
-          <div class="d-flex align-items-center filter-options">
-            <span class="filter-label">Filter:</span>
 
-            <!-- Type Dropdown -->
-            <div class="dropdown">
-              <button
-                class="dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Type <i class="bi bi-chevron-down"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Keso</a></li>
-                <li><a class="dropdown-item" href="#">Ice Cream</a></li>
-                <li><a class="dropdown-item" href="#">Kotse</a></li>
-              </ul>
-            </div>
+          <!-- filter -->
+        <div class="d-flex align-items-center filter-options">
+          <span class="filter-label">Filter:</span>
 
-            <!-- Availability Dropdown -->
-            <div class="dropdown">
-              <button
-                class="dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Availability <i class="bi bi-chevron-down"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">In Stock</a></li>
-                <li><a class="dropdown-item" href="#">Out of Stock</a></li>
-              </ul>
-            </div>
-
-            <!-- Branches Dropdown -->
-            <div class="dropdown">
-              <button
-                class="dropdown-toggle"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Branches <i class="bi bi-chevron-down"></i>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Branch 1</a></li>
-                <li><a class="dropdown-item" href="#">Branch 2</a></li>
-                <li><a class="dropdown-item" href="#">Branch 3</a></li>
-              </ul>
-            </div>
+          <!-- Type Dropdown -->
+          <div class="dropdown">
+            <button id="typeDropdown" 
+            class="dropdown-toggle" 
+            type="button" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
+              Type <i class="bi bi-chevron-down"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><button class="dropdown-item type-option" data-type="">All Categories</button></li>
+              <li><button class="dropdown-item type-option" data-type="cheese">Cheese</button></li>
+              <li><button class="dropdown-item type-option" data-type="ice-cream">Ice Cream</button></li>
+            </ul>
           </div>
+
+          <!-- Availability Dropdown -->
+          <div class="dropdown">
+            <button id="availabilityDropdown" 
+            class="dropdown-toggle" 
+            type="button" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
+              Availability <i class="bi bi-chevron-down"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item availability-option" data-availability="">All Availability</button></li>
+                <li><button class="dropdown-item availability-option" data-availability="Available">In Stock</button></li>
+                <li><button class="dropdown-item availability-option" data-availability="Out of Stock">Out of Stock</button></li>
+            </ul> 
+          </div>
+
+          <!-- Stores Dropdown -->
+          <div class="dropdown">
+            <button id="storeDropdown" 
+            class="dropdown-toggle" 
+            type="button" 
+            data-bs-toggle="dropdown" 
+            aria-expanded="false">
+              Stores <i class="bi bi-chevron-down"></i>
+            </button>
+            <ul class="dropdown-menu">
+              <li><button class="dropdown-item store-option" data-store="">All Stores</button></li>
+              <?php while ($store = mysqli_fetch_assoc($store_result)) { ?>
+                <li>
+                  <button class="dropdown-item store-option" data-store="<?= $store['store_id'] ?>">
+                    <?= htmlspecialchars($store['store_name']) ?>
+                  </button>
+                </li>
+              <?php } ?>
+            </ul>
+          </div>
+              
+        </div>
+
+
           <!-- product number -->
-          <div class="product-count">50 products</div>
+          <div class="product-count">
+            <?= $total_products ?> products
+          </div>
         </div>
 
         <!-- product list -->
@@ -120,6 +192,7 @@ $result = mysqli_query($connection, $sql);
                     alt="<?= htmlspecialchars($row['product_name']) ?>"
                   >
                   <div class="card-body d-flex flex-column">
+                    <p class="admin-label"><strong>Store: <?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?> </strong></p>
                     <h5 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h5>
                     <p class="product-price">₱<?= number_format($row['price'], 2) ?></p>
                     <p class="small text-muted flex-grow-1"><?= htmlspecialchars($row['description']) ?></p>
@@ -134,7 +207,8 @@ $result = mysqli_query($connection, $sql);
                       data-price="<?= htmlspecialchars($row['price']) ?>"
                       data-stock="<?= htmlspecialchars($row['stock_qty']) ?>"
                       data-category="<?= htmlspecialchars($row['category']) ?>"
-                      data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>">
+                      data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
+                      data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
                       View
                     </button>
 
@@ -147,7 +221,8 @@ $result = mysqli_query($connection, $sql);
                         data-id="<?= $row['product_id'] ?>"
                         data-name="<?= htmlspecialchars($row['product_name']) ?>"
                         data-price="<?= htmlspecialchars($row['price']) ?>"
-                        data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>">
+                        data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
+                        data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
                         <i class="bi bi-bag-plus"></i> Add to Bag
                       </button>
 
@@ -168,6 +243,7 @@ $result = mysqli_query($connection, $sql);
           <span class="close-customer-view">&times;</span>
           <h2 id="modalProductName"></h2>
           <img id="modalProductImage" src="" alt="Product Image" style="max-width:200px; display:block; margin-bottom:10px;">
+          <p><strong>Store:</strong> <span id="view_recipient"></span></p>
           <p><strong>Description:</strong> <span id="modalProductDesc"></span></p>
           <p><strong>Price:</strong> ₱<span id="modalProductPrice"></span></p>
           <p><strong>Availability:</strong> <span id="modalProductStock"></span></p>
@@ -179,7 +255,8 @@ $result = mysqli_query($connection, $sql);
               data-id="<?= $row['product_id'] ?>"
               data-name="<?= htmlspecialchars($row['product_name']) ?>"
               data-price="<?= htmlspecialchars($row['price']) ?>"
-              data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>">
+              data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
+              data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
               <i class="bi bi-bag-plus"></i> Add to Bag
             </button> 
           </form>
@@ -191,19 +268,19 @@ $result = mysqli_query($connection, $sql);
           <ul class="pagination pb-5 justify-content-center">
             <!-- Previous -->
             <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-              <a class="page-link shadow-none" href="?page=<?= max(1, $page - 1) ?>">Previous</a>
+              <a class="page-link shadow-none" href="<?= $base_url ?>&page=<?= max(1, $page - 1) ?>">Previous</a>
             </li>
 
             <!-- Page Numbers -->
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
               <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                <a class="page-link shadow-none" href="?page=<?= $i ?>"><?= $i ?></a>
+                <a class="page-link shadow-none" href="<?= $base_url ?>&page=<?= $i ?>"><?= $i ?></a>
               </li>
             <?php endfor; ?>
 
             <!-- Next -->
             <li class="page-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
-              <a class="page-link shadow-none" href="?page=<?= min($total_pages, $page + 1) ?>">Next</a>
+              <a class="page-link shadow-none" href="<?= $base_url ?>&page=<?= min($total_pages, $page + 1) ?>">Next</a>
             </li>
           </ul>
         </nav>
@@ -213,7 +290,7 @@ $result = mysqli_query($connection, $sql);
 
     <!-- BOOTSTRAP JS -->
     <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+      src="hhttps://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
       crossorigin="anonymous"
     ></script>
@@ -223,22 +300,80 @@ $result = mysqli_query($connection, $sql);
 
     <!-- PRODUCT FILTER FUNCTION -->
     <script>
-      // Replace dropdown button text when option clicked
-      document
-        .querySelectorAll(".dropdown-menu .dropdown-item")
-        .forEach((item) => {
-          item.addEventListener("click", function (e) {
-            e.preventDefault();
+      function updateFilters(param, value) {
+        const urlParams = new URLSearchParams(window.location.search);
 
-            let dropdown = this.closest(".dropdown");
-            let button = dropdown.querySelector(".dropdown-toggle");
+        // Always reset to page 1 when changing filters
+        urlParams.set("page", 1);
 
-            // Update button text with chosen option
-            button.innerHTML =
-              this.textContent + ' <i class="bi bi-chevron-down"></i>';
-          });
+        if (value && value !== "") {
+          urlParams.set(param, value);
+        } else {
+          urlParams.delete(param); // Remove filter if "All" selected
+        }
+
+        window.location.search = urlParams.toString();
+      }
+
+      // Apply event listeners
+      document.querySelectorAll(".type-option").forEach(item => {
+        item.addEventListener("click", () => {
+          updateFilters("type", item.dataset.type);
         });
+      });
+
+      document.querySelectorAll(".availability-option").forEach(item => {
+        item.addEventListener("click", () => {
+          updateFilters("availability", item.dataset.availability);
+        });
+      });
+
+      document.querySelectorAll(".store-option").forEach(item => {
+        item.addEventListener("click", () => {
+          updateFilters("store", item.dataset.store);
+        });
+      });
+
+      // Set dropdown labels based on current filters
+      const urlParams = new URLSearchParams(window.location.search);
+
+      // Type
+      const typeParam = urlParams.get("type");
+      if (typeParam && typeParam !== "") {
+        let displayType = typeParam.replace("-", " "); 
+        displayType = displayType.replace(/\b\w/g, l => l.toUpperCase()); 
+        document.getElementById("typeDropdown").innerHTML =
+          displayType + ' <i class="bi bi-chevron-down"></i>';
+      } else {
+        document.getElementById("typeDropdown").innerHTML =
+          'All Categories <i class="bi bi-chevron-down"></i>';
+      }
+
+      // Availability
+      const availParam = urlParams.get("availability");
+      let availLabel = "All Availability";
+      if (availParam === "Available") availLabel = "In Stock";
+      else if (availParam === "Out of Stock") availLabel = "Out of Stock";
+      document.getElementById("availabilityDropdown").innerHTML =
+        availLabel + ' <i class="bi bi-chevron-down"></i>';
+
+      // Store
+      const storeParam = urlParams.get("store");
+      if (storeParam && storeParam !== "") {
+        const selectedStore = document.querySelector(
+          `.store-option[data-store="${storeParam}"]`
+        );
+        if (selectedStore) {
+          document.getElementById("storeDropdown").innerHTML =
+            selectedStore.textContent + ' <i class="bi bi-chevron-down"></i>';
+        }
+      } else {
+        document.getElementById("storeDropdown").innerHTML =
+          'All Stores <i class="bi bi-chevron-down"></i>';
+      }
     </script>
+
+
     
 
 
@@ -257,6 +392,7 @@ $result = mysqli_query($connection, $sql);
           document.getElementById("modalProductStock").textContent = this.dataset.stock > 0 ? "In Stock" : "Out of Stock";
           document.getElementById("modalProductCategory").textContent = this.dataset.category;
           document.getElementById("modalProductImage").src = this.dataset.image;
+          document.getElementById("view_recipient").textContent = this.dataset.admin;
 
           customerModal.style.display = "flex";
         });

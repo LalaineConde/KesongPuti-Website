@@ -4,48 +4,60 @@ require '../../connection.php';
 include ('../../includes/superadmin-dashboard.php');
 
 $toast_message = '';
-
 if (isset($_SESSION['toast_message'])) {
     $toast_message = $_SESSION['toast_message'];
-    unset($_SESSION['toast_message']); // clear it immediately
+    unset($_SESSION['toast_message']);
 }
 
-// Fetch products
-$sql = "SELECT * FROM products";
+if ($_SESSION['role'] === 'admin') {
+    $owner_id = $_SESSION['admin_id'];
+    // Admin: show only their own products
+    $sql = "
+        SELECT p.*, st.store_name AS recipient
+        FROM products p
+        LEFT JOIN store st ON p.owner_id = st.owner_id
+        WHERE p.owner_id = '$owner_id'
+        ORDER BY p.product_id DESC
+    ";
+} else {
+    // Superadmin: show all products
+    $sql = "
+        SELECT p.*, COALESCE(st.store_name, 'Unknown Store') AS recipient
+        FROM products p
+        LEFT JOIN store st ON p.owner_id = st.owner_id OR p.owner_id = st.super_id
+        ORDER BY p.product_id DESC
+    ";
+}
+
 $result = mysqli_query($connection, $sql);
 
-
+// ADD Product
 if (isset($_POST['save_product'])) {
     $name = mysqli_real_escape_string($connection, $_POST['product_name']);
     $desc = mysqli_real_escape_string($connection, $_POST['description']);
     $category = mysqli_real_escape_string($connection, $_POST['category']);
     $price = $_POST['price'];
     $stock = $_POST['stock_qty'];
-    
 
-    // Set owner (admin or superadmin) FIRST
-    if ($_SESSION['role'] === 'admin') {
-        $owner_id = $_SESSION['admin_id'];
-    } else {
-        $owner_id = $_SESSION['super_id'];
-    }
+    $owner_id = ($_SESSION['role'] === 'admin') ? $_SESSION['admin_id'] : $_SESSION['super_id'];
 
     $target_dir = "../../assets/";
     $target_file = $target_dir . basename($_FILES["product_image"]["name"]);
-    $image = "/assets/" . basename($_FILES["product_image"]["name"]); // relative path for DB
+    $image = "/assets/" . basename($_FILES["product_image"]["name"]);
 
     if (move_uploaded_file($_FILES["product_image"]["tmp_name"], $target_file)) {
-        $insert = "INSERT INTO products (product_name, description, price, stock_qty, category, product_image, owner_id)
-           VALUES ('$name', '$desc', '$price', '$stock', '$category', '$image', '$owner_id')";
+        $insert = "INSERT INTO products 
+                   (product_name, description, price, stock_qty, category, product_image, owner_id)
+                   VALUES ('$name', '$desc', '$price', '$stock', '$category', '$image', '$owner_id')";
         mysqli_query($connection, $insert);
     }
 
     echo "<script>location.href='products.php';</script>";
-  }
+    exit();
+}
 
-  // Update Product Details
-
-  if (isset($_POST['update_product'])) {
+// UPDATE Product
+if (isset($_POST['update_product'])) {
     $id = intval($_POST['product_id']);
     $name = mysqli_real_escape_string($connection, $_POST['product_name']);
     $desc = mysqli_real_escape_string($connection, $_POST['description']);
@@ -73,8 +85,9 @@ if (isset($_POST['save_product'])) {
     echo "<script>location.href='products.php';</script>";
     exit();
 }
-
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -132,6 +145,7 @@ if (isset($_POST['save_product'])) {
             <img src="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>" alt="Product Image">
             <div class="product-info">
             <h3 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h3>
+            <p class="admin-label">Added by: <?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?></p>
             <p>₱<?= number_format($row['price'], 2) ?></p>
             
             <button 
@@ -143,7 +157,8 @@ if (isset($_POST['save_product'])) {
               data-price="<?= htmlspecialchars($row['price']) ?>" 
               data-stock="<?= htmlspecialchars($row['stock_qty']) ?>" 
               data-category="<?= htmlspecialchars($row['category']) ?>" 
-              data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>">
+              data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
+              data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
               View Details
             </button>
 
@@ -209,6 +224,7 @@ if (isset($_POST['save_product'])) {
         <div class="modal-content">
           <span class="close-modal-view">&times;</span>
           <h2>Product Details</h2>
+          <p><strong>Added by:</strong> <span id="view_recipient"></span></p>
           <p><strong>Name:</strong> <span id="view_product_name"></span></p>
           <p><strong>Description:</strong> <span id="view_description"></span></p>
           <p><strong>Price:</strong> <span id="view_price"></span></p>
@@ -362,6 +378,7 @@ if (isset($_POST['save_product'])) {
             document.getElementById("view_stock_qty").textContent = this.dataset.stock;
             document.getElementById("view_category").textContent = this.dataset.category;
             document.getElementById("view_image").src = this.dataset.image;
+            document.getElementById("view_recipient").textContent = this.dataset.admin;
 
             viewModal.style.display = "flex";
           });
