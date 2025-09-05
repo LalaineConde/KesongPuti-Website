@@ -112,6 +112,13 @@ $result = mysqli_query($connection, $sql);
     <span class="close-modal" id="closeReviewModal">&times;</span>
     <h3>Leave a Review</h3>
     <form method="POST" action="">
+
+    <div class="checkbox-row">
+      <!-- Anonymous Checkbox -->
+      <label class="anonymous-label">
+        <input type="checkbox" id="anonymousCheckbox" name="anonymous" class="anonymous-checkbox"> Submit Anonymously
+      </label>
+    </div>
     <input type="text" name="reviewName" placeholder="Your Name" required>
     <input type="email" name="reviewEmail" placeholder="Your Email" required>
     <!-- Star Rating -->
@@ -178,7 +185,7 @@ window.addEventListener("click", (e) => {
   }
 });
 
-// ⭐ Star Rating Logic
+// Star Rating Logic
 const stars = document.querySelectorAll(".star-rating .star");
 const reviewRatingInput = document.getElementById("reviewRating");
 
@@ -197,6 +204,21 @@ stars.forEach(star => {
     reviewRatingInput.value = "★".repeat(val) + "☆".repeat(5 - val);
     stars.forEach(s => s.classList.toggle("selected", s.dataset.value <= val));
   });
+});
+
+
+// Anonymous Checkbox Logic
+const anonymousCheckbox = document.getElementById("anonymousCheckbox");
+const reviewNameInput = document.querySelector("input[name='reviewName']");
+
+anonymousCheckbox.addEventListener("change", () => {
+  if (anonymousCheckbox.checked) {
+    reviewNameInput.value = "Anonymous";
+    reviewNameInput.disabled = true;
+  } else {
+    reviewNameInput.value = "";
+    reviewNameInput.disabled = false;
+  }
 });
 </script>
     <!-- FUNCTIONS -->

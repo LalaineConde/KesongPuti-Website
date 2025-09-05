@@ -672,6 +672,20 @@
   border-color: var(--green);
 }
 
+.checkbox-row {
+  display: flex;
+  align-items: center;
+
+}
+
+.anonymous-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 .star-rating {
   display: flex;
   gap: 5px;
