@@ -719,65 +719,116 @@ body {
     /* ORDERS */
 
 /* PAYMENT METHOD */
-.payment-form {
-    width: 100%;
-    padding: 0 20px;
-    border-radius: 0;
-    box-shadow: none;
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
+/* Box Wrapper */
+#payment-content {
+  border-radius: 12px;
+  margin-bottom: 20px;
 }
 
-.payment-form .form-group {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+/* Form */
+#payment-content .form-group {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
 }
 
-.payment-form label {
-    font-weight: bold;
-    margin-bottom: 8px;
-    color: var(--cocoa);
-    font-size: 16px;
+#payment-content label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
 }
 
-.payment-form input[type="text"],
-.payment-form input[type="file"] {
-    padding: 14px 16px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    width: 100%;
+#payment-content input[type="text"],
+#payment-content input[type="file"],
+#payment-content select {
+  padding: 12px 12px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 500px;
+  transition: border 0.2s ease;
 }
 
-.qr-preview {
-    margin-top: 10px;
-    max-width: 100%;
-    display: flex;
-    justify-content: start;
+#payment-content input:focus,
+#payment-content select:focus {
+  outline: none;
+  border-color: var(--green);
 }
 
-.qr-preview img {
-    max-width: 200px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    object-fit: cover;
-}
-
+/* Save Button */
 .save-btn {
-    align-self: flex-start;
-    background-color: var(--cocoa);
-    color: var(--yellow);
-    border: 2px solid black;
-    font-size: 16px;
-    padding: 10px 20px;
-    border-radius: 40px;
-    cursor: pointer;
-    margin-top: 10px;
+  background-color: var(--cocoa);
+  color: #fff;
+  border: none;
+  font-size: 15px;
+  padding: 10px 15px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
+.save-btn:hover {
+  background-color: var(cocoa);
+  transform: scale(1.05);
+}
+
+/* ==== PAYMENT TABLE ==== */
+.payment-table-wrapper {
+  width: 100%;
+  overflow-x: auto;          
+  -webkit-overflow-scrolling: touch; 
+  margin-top: 15px;
+}
+
+.payment-table {
+  min-width: 800px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.payment-table thead {
+  background: var(--cocoa);
+  color: var(--yellow);
+}
+
+.payment-table th,
+.payment-table td {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.payment-table tbody tr:hover {
+  background: #f9f9f9;
+}
+
+/* Action Buttons */
+.update-btn,
+.delete-btn {
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: transform 0.2s ease;
+}
+
+.update-btn:hover {
+  color: var(--yellow);
+  transform: scale(1.05);
+}
+
+.delete-btn:hover {
+  color: var(--yellow);
+  transform: scale(1.05);
+}
 
 /* PAYMENT METHOD */
 
