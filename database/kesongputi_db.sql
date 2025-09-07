@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 05, 2025 at 03:09 PM
+-- Generation Time: Sep 07, 2025 at 01:08 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -72,6 +72,26 @@ CREATE TABLE `customers` (
   `email` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `faqs`
+--
+
+CREATE TABLE `faqs` (
+  `id` int(11) NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `answer` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `faqs`
+--
+
+INSERT INTO `faqs` (`id`, `question`, `answer`, `created_at`) VALUES
+(3, 'What is Kesong Puti?', 'Kesong Puti is a traditional Filipino white cheese made from carabaos milk with a delicate creamy flavor.', '2025-09-07 10:44:58');
 
 -- --------------------------------------------------------
 
@@ -146,13 +166,13 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `stock_qty`, `category`, `product_image`, `category_id`, `owner_id`, `store_id`, `owner_type`, `date_added`, `updated_at`, `status`) VALUES
 (9, 'Kesong Puti', 'Cheese wrapped in banana leaf', 140.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-08-21 23:52:50', '2025-08-27 15:07:59', 'available'),
-(17, 'Kesorbetes', 'ice cream', 115.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 04:37:29', '2025-08-22 04:37:29', 'available'),
-(19, 'Kesorbetes (1 Gallon)', 'ice cream', 650.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 04:42:13', '2025-08-22 04:42:13', 'available'),
-(20, 'Kesorbetes (1 Tub)', 'ice cream', 550.00, 15, 'Ice Cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-09-05 12:04:05', 'available'),
+(17, 'Kesorbetes (Pint)', 'ice cream', 260.00, 15, 'ice-cream', '/assets/pint.png', NULL, 1, NULL, 'admin', '2025-08-22 04:37:29', '2025-09-05 22:50:49', 'available'),
+(19, 'Kesorbetes (Med Tub)', 'ice cream', 160.00, 15, 'ice-cream', '/assets/med tub.png', NULL, 1, NULL, 'admin', '2025-08-22 04:42:13', '2025-09-05 22:50:58', 'available'),
+(20, 'Kesorbetes (Liter)', 'ice cream', 320.00, 15, 'ice-cream', '/assets/liter.png', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-09-05 22:51:04', 'available'),
 (21, 'Kesong Puti', 'cheese', 110.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:20:16', '2025-08-22 10:27:12', 'available'),
-(22, 'Kesorbetes (Small)', 'ice cream', 50.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:31:19', '2025-08-22 10:31:19', 'available'),
-(30, 'Kesorbetes (1 Gallon)', 'ice cream', 750.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 06:20:19', '2025-09-03 06:20:19', 'available'),
-(31, 'Kesorbetes (1 Tub)', 'ice cream', 550.00, 15, 'ice-cream', '/assets/522845871_740647665242049_262399641837452041_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 06:22:07', '2025-09-03 06:22:07', 'available'),
+(22, 'Kesorbetes (Small Tub)', 'ice cream', 100.00, 15, 'ice-cream', '/assets/small tub.png', NULL, 3, NULL, 'admin', '2025-08-22 10:31:19', '2025-09-05 22:52:39', 'available'),
+(30, 'Kesorbetes (1 Gallon)', 'ice cream', 870.00, 15, 'ice-cream', '/assets/gallon.png', NULL, 3, NULL, 'admin', '2025-09-03 06:20:19', '2025-09-05 22:52:19', 'available'),
+(31, 'Kesorbetes (Half Gallon)', 'ice cream', 650.00, 15, 'ice-cream', '/assets/half gallon.png', NULL, 3, NULL, 'admin', '2025-09-03 06:22:07', '2025-09-05 22:52:13', 'available'),
 (34, 'Kesong Puti', 'cheese', 190.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-09-03 07:18:17', '2025-09-03 07:18:17', 'available'),
 (35, 'Kesong Puti', 'cheese', 180.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 07:23:18', '2025-09-03 07:23:18', 'available'),
 (36, 'Kesong Puti', 'cheese', 200.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 11:12:51', '2025-09-03 11:12:51', 'available');
@@ -252,6 +272,12 @@ ALTER TABLE `customers`
   ADD PRIMARY KEY (`c.id`);
 
 --
+-- Indexes for table `faqs`
+--
+ALTER TABLE `faqs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `inbox_messages`
 --
 ALTER TABLE `inbox_messages`
@@ -314,6 +340,12 @@ ALTER TABLE `customers`
   MODIFY `c.id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `faqs`
+--
+ALTER TABLE `faqs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
 -- AUTO_INCREMENT for table `inbox_messages`
 --
 ALTER TABLE `inbox_messages`
@@ -323,7 +355,7 @@ ALTER TABLE `inbox_messages`
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `products`

@@ -52,12 +52,11 @@
         <div class="footer-links">
           <h6 class="footer-title">Quick Links</h6>
           <a href="#">Home</a>
-          <a href="#">Products</a>
+          <a href="products.php">Products</a>
           <a href="#">About Us</a>
-          <a href="#">FAQ</a>
-          <a href="#">Contact Us</a>
-          <a href="#">Feedback</a>
-          <a href="#">Order Now</a>
+          <a href="FAQ.php">FAQ</a>
+          <a href="contact.php">Contact Us</a>
+          <a href="feedback.php">Feedback</a>
         </div>
         <div class="contact-info mt-4">
           <h6 class="footer-title mt-3">Contact Information</h6>

@@ -50,11 +50,11 @@
             <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="#">About</a></li>
             <li class="nav-item"><a class="nav-link" href="products.php">Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="FAQ.php">FAQ</a></li>
             <li class="nav-item">
               <a class="nav-link" href="contact.php">Contact Us</a>
             </li>
             <li class="nav-item"><a class="nav-link" href="feedback.php">Feedback</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Order Now</a></li>
           </ul>
         </div>
 

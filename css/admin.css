@@ -1229,3 +1229,133 @@ body {
 }
 
 /* FEEDBACK */
+
+
+/* FAQ */
+
+/* Container */
+#faq-content {
+  max-width: 100% !important;
+  width: 95%;
+  margin: 0 auto;        /* centers the container */
+  padding: 20px 40px;       /* adds space on sides */
+}
+
+
+/* FAQ */
+
+/* Container */
+#faq-content {
+  max-width: 100% !important;
+  width: 95%;
+  margin: 0 auto;        /* centers the container */
+  padding: 20px 40px;       /* adds space on sides */
+}
+
+
+/* Title */
+#faq-content h1 {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--cocoa);
+  margin-bottom: 20px;
+}
+
+/* Sub-heading */
+#faq-content h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Form */
+#faq-content form {
+  display: flex;
+  flex-direction: column;
+  ;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
+}
+
+#faq-content input[type="text"],
+#faq-content textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  margin-bottom: 15px;
+  resize: vertical;
+}
+.btn-wrapper {
+  height: 50px; /* lock height */
+  display: flex;
+  align-items: center;
+}
+
+#faq-content button[type="submit"] {
+    background-color: var(--cocoa);
+    color: var(--yellow);
+    border: 2px solid black;
+    font-size: 15px;
+    padding: 10px 15px;
+    border-radius: 40px;
+    cursor: pointer;
+
+}
+
+#faq-content button[type="submit"]:hover {
+  transform: scale(1.05);
+}
+
+/* FAQ Table */
+.faq-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.faq-table {
+  min-width: 700px;
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.faq-table th,
+.faq-table td {
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.faq-table th {
+  background: var(--cocoa);
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.faq-table td a {
+  color: var(--cocoa);
+  font-size: 18px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.faq-table td a:hover {
+  color: var(--yellow);
+}
+
+.faq-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* FAQ */

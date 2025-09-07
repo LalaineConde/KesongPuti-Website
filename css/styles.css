@@ -394,6 +394,61 @@
 
 /* PRODUCTS PAGE */
 
+/* FAQ */
+#faq {
+    margin-top: 19rem;
+    display: flex;
+    justify-content: center;
+}
+
+.faq-box {
+    background-color: var(--white);
+    min-height: 100vh;
+    width: 73%;
+    margin-top: -22rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12),
+        0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.accordion-button {
+    background-color: #4e6f47;
+    color: var(--white);
+    font-weight: bold;
+    border-radius: 10px !important;
+    margin-bottom: 10px;
+    box-shadow: none;
+    height: 8vh;
+    font-size: 22px;
+}
+
+.accordion-button:focus {
+    border: none;
+    box-shadow: none;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #4e6f47;
+    color: #fff;
+}
+
+.accordion-item {
+    border: none;
+    margin-bottom: 0;
+    background: transparent;
+}
+
+.accordion-body {
+    background: #dbe5d1;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 15px;
+    color: #333;
+}
+
+/* FAQ */
+
+
 /* CONTACT PAGE */
 .contact-page .container {     
   display: flex;
