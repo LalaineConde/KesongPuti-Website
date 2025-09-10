@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 07, 2025 at 01:08 PM
+-- Generation Time: Sep 09, 2025 at 08:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,7 +91,34 @@ CREATE TABLE `faqs` (
 --
 
 INSERT INTO `faqs` (`id`, `question`, `answer`, `created_at`) VALUES
-(3, 'What is Kesong Puti?', 'Kesong Puti is a traditional Filipino white cheese made from carabaos milk with a delicate creamy flavor.', '2025-09-07 10:44:58');
+(3, 'What is Kesong Puti?', 'Kesong Puti is a traditional Filipino white cheese made from carabao milk with a delicate creamy flavor.', '2025-09-07 10:44:58');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `footer_settings`
+--
+
+CREATE TABLE `footer_settings` (
+  `id` int(11) NOT NULL,
+  `logo` varchar(255) DEFAULT '../../assets/logo.png',
+  `description` text DEFAULT NULL,
+  `facebook_link` varchar(255) DEFAULT NULL,
+  `instagram_link` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `quick_links` text DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `bottom_text` varchar(255) NOT NULL DEFAULT 'Kesong Puti © 2025 All Rights Reserved'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `footer_settings`
+--
+
+INSERT INTO `footer_settings` (`id`, `logo`, `description`, `facebook_link`, `instagram_link`, `email`, `phone`, `address`, `quick_links`, `updated_at`, `bottom_text`) VALUES
+(1, '../../assets/logo.png', 'Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. We take pride in delivering locally made, high-quality products straight to your doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"}]', '2025-09-09 05:33:46', 'Kesong Puti © 2025 All Rights Reserved');
 
 -- --------------------------------------------------------
 
@@ -117,7 +144,8 @@ INSERT INTO `inbox_messages` (`inbox_id`, `name`, `email`, `contact`, `message`,
 (8, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 07:18:35', 'super_1'),
 (9, 'Lara Danielle', 'larafremista21@gmail.com', '09123456789', 'SARAP!!!', '2025-08-20 07:22:46', 'admin_3'),
 (10, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'SHHHHH HAHAHHAHAHAH', '2025-08-20 08:06:02', 'admin_3'),
-(11, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 08:06:39', 'admin_3');
+(11, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 08:06:39', 'admin_3'),
+(12, 'sample', 'sample@sample.com', '09123456611', 'sample message!', '2025-09-09 05:29:46', 'super_1');
 
 -- --------------------------------------------------------
 
@@ -136,6 +164,13 @@ CREATE TABLE `payment_methods` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `recipient` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `payment_methods`
+--
+
+INSERT INTO `payment_methods` (`method_id`, `method_name`, `account_name`, `account_number`, `qr_code`, `status`, `created_at`, `updated_at`, `recipient`) VALUES
+(4, 'bank', 'arlene macalinao', '09123456789', '1757398482_small tub.png', 'unpublished', '2025-09-09 06:14:42', '2025-09-09 06:15:05', 'superadmin_1');
 
 -- --------------------------------------------------------
 
@@ -231,6 +266,28 @@ INSERT INTO `store` (`store_id`, `store_name`, `recipient`, `owner_id`, `super_i
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `store_contacts`
+--
+
+CREATE TABLE `store_contacts` (
+  `id` int(11) NOT NULL,
+  `store_name` varchar(255) NOT NULL,
+  `email` text DEFAULT NULL,
+  `phone` text DEFAULT NULL,
+  `address` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `store_contacts`
+--
+
+INSERT INTO `store_contacts` (`id`, `store_name`, `email`, `phone`, `address`) VALUES
+(1, 'Mommy Lodie Kesong Puti', 'lodie@gmail.com', '091233455678', '123 sdjfhakjs fsdhafj'),
+(5, 'sample store', 'lalaineconde11@gmail.com', '09123432874', '123 sample address');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `super_admin`
 --
 
@@ -278,6 +335,12 @@ ALTER TABLE `faqs`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `footer_settings`
+--
+ALTER TABLE `footer_settings`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `inbox_messages`
 --
 ALTER TABLE `inbox_messages`
@@ -310,6 +373,12 @@ ALTER TABLE `store`
   ADD PRIMARY KEY (`store_id`),
   ADD KEY `owner_id` (`owner_id`),
   ADD KEY `super_id` (`super_id`);
+
+--
+-- Indexes for table `store_contacts`
+--
+ALTER TABLE `store_contacts`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `super_admin`
@@ -346,16 +415,22 @@ ALTER TABLE `faqs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
+-- AUTO_INCREMENT for table `footer_settings`
+--
+ALTER TABLE `footer_settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `inbox_messages`
 --
 ALTER TABLE `inbox_messages`
-  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -374,6 +449,12 @@ ALTER TABLE `reviews`
 --
 ALTER TABLE `store`
   MODIFY `store_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `store_contacts`
+--
+ALTER TABLE `store_contacts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `super_admin`

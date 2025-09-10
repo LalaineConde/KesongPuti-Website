@@ -1,6 +1,7 @@
 <?php
 $page_title = 'Contact Us | Kesong Puti';
 $page_header = "CONTACT US";
+require '../../connection.php';
 include ('../../includes/customer-dashboard.php');
 
 ?>
@@ -99,8 +100,44 @@ include ('../../includes/customer-dashboard.php');
         <button type="submit" class="submit-btn mt-2">Submit</button>
       </form>
     </div>
+
+
+
      </div>
   </div>
+
+      <!-- Store Contacts Section -->
+<div class="store-contacts mt-5">
+  <h3>Our Stores</h3>
+  <div class="row">
+    <?php
+      // fetch store contacts from DB
+      $contactQuery = "SELECT * FROM store_contacts ORDER BY id DESC";
+      $contactResult = mysqli_query($connection, $contactQuery);
+
+      if (mysqli_num_rows($contactResult) > 0) {
+        while ($contact = mysqli_fetch_assoc($contactResult)) {
+          echo '
+          <div class="col-md-4 mb-3">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title">'.htmlspecialchars($contact['store_name']).'</h5>
+                <p class="card-text mb-1"><i class="bi bi-envelope"></i> '.htmlspecialchars($contact['email']).'</p>
+                <p class="card-text mb-1"><i class="bi bi-phone"></i> '.htmlspecialchars($contact['phone']).'</p>
+                <p class="card-text"><i class="bi bi-geo-alt"></i> '.htmlspecialchars($contact['address']).'</p>
+              </div>
+            </div>
+          </div>';
+        }
+      } else {
+        echo '<p class="text-muted">No store contacts available yet.</p>';
+      }
+    ?>
+  </div>
+</div>
+
+
+
       <?php include('../../includes/footer.php'); ?>
 </body>
 

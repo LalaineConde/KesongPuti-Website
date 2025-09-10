@@ -847,6 +847,50 @@ body {
 
 /* CREATE ADMIN */
 /* Box Wrapper */
+
+/* Form */
+/* #contactForm form {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
+}
+
+#contactForm input[type="text"], #contactForm input[type="email"],
+#contactForm textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  margin-bottom: 15px;
+  resize: vertical;
+}
+.btn-wrapper {
+  height: 50px; 
+  display: flex;
+  align-items: center;
+}
+
+#contactForm button[type="submit"] {
+    background-color: var(--cocoa);
+    color: var(--yellow);
+    border: 2px solid black;
+    font-size: 15px;
+    padding: 10px 15px;
+    border-radius: 40px;
+    cursor: pointer;
+
+}
+
+#contactForm button[type="submit"]:hover {
+  transform: scale(1.05);
+} */
+
+
 #create-admin-content {
 
   border-radius: 12px;
@@ -856,7 +900,7 @@ body {
 
 
 
-/* Form */
+Form
 #create-admin-content .form-group {
   margin-bottom: 18px;
   display: flex;
@@ -1230,17 +1274,155 @@ body {
 
 /* FEEDBACK */
 
-
-/* FAQ */
+/* FOOTER */
 
 /* Container */
-#faq-content {
+#footer-content {
   max-width: 100% !important;
   width: 95%;
-  margin: 0 auto;        /* centers the container */
-  padding: 20px 40px;       /* adds space on sides */
+  margin: 0 auto;
+  padding: 20px 40px;
 }
 
+/* Title */
+#footer-content h1 {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--cocoa);
+  margin-bottom: 20px;
+}
+
+/* Sub-heading */
+#footer-content h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Buttons */
+#footer-content .btn {
+  font-size: 15px;
+  padding: 10px 18px;
+  border-radius: 40px;
+  font-weight: 500;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+#footer-content .btn-primary {
+  background-color: var(--cocoa);
+  color: var(--yellow);
+  border: 2px solid black;
+}
+
+#footer-content .btn-primary:hover {
+  transform: scale(1.05);
+}
+
+#footer-content .btn-warning {
+  border-radius: 40px;
+  font-weight: 500;
+}
+
+#footer-content .btn-success {
+  border-radius: 40px;
+  font-weight: 500;
+}
+
+
+/* Form */
+#footer-content form {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px;
+}
+
+#footer-content input[type="text"], #footer-content input[type="email"],
+#footer-content textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  margin-bottom: 15px;
+  resize: vertical;
+}
+.btn-wrapper {
+  height: 50px; /* lock height */
+  display: flex;
+  align-items: center;
+}
+
+#footer-content button[type="submit"] {
+    background-color: var(--cocoa);
+    color: var(--yellow);
+    border: 2px solid black;
+    font-size: 15px;
+    padding: 10px 15px;
+    border-radius: 40px;
+    cursor: pointer;
+
+}
+
+#footer-content button[type="submit"]:hover {
+  transform: scale(1.05);
+}
+
+
+/* Table */
+.footer-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.footer-table {
+  min-width: 700px;
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.footer-table th,
+.footer-table td {
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.footer-table th {
+  background: var(--cocoa);
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.footer-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Modals */
+#footer-content .modal-content {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+#footer-content .modal-header {
+  border-bottom: none;
+}
+
+#footer-content .modal-footer {
+  border-top: none;
+}
+
+/* FOOTER */
 
 /* FAQ */
 

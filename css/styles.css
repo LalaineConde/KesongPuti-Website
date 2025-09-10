@@ -394,6 +394,8 @@
 
 /* PRODUCTS PAGE */
 
+
+
 /* FAQ */
 #faq {
     margin-top: 19rem;
@@ -595,6 +597,65 @@
 
 .contact-page .contact-form-page button:hover {
   background-color: #e0b200;
+}
+
+/* Store Contacts Section */
+.store-contacts {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.store-contacts h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #064420; /* matches your brand green */
+}
+
+/* Card container */
+.store-contacts .card {
+  border: none;
+  border-radius: 15px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: #fff;
+}
+
+.store-contacts .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+/* Card content */
+.store-contacts .card-body {
+  padding: 1.2rem;
+}
+
+.store-contacts .card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+}
+
+/* Text inside cards */
+.store-contacts .card-text {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.store-contacts .card-text i {
+  margin-right: 6px;
+  color: #064420; /* green icon accent */
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .store-contacts h3 {
+    font-size: 1.5rem;
+  }
+  .store-contacts .card {
+    margin-bottom: 1rem;
+  }
 }
 
 /* CONTACT PAGE */
