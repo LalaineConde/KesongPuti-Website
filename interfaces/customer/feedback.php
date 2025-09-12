@@ -106,7 +106,7 @@ $result = mysqli_query($connection, $sql);
         <h4 class="feedback-name"><?= htmlspecialchars($row['name']) ?></h4>
         <div class="feedback-stars"><?= htmlspecialchars($row['rating']) ?></div>
         <p class="feedback-text"><?= htmlspecialchars($row['feedback']) ?></p>
-        <small>Store: 
+        <small class="feedback-store">Store: 
             <?= isset($recipients[$row['recipient']]) ? htmlspecialchars($recipients[$row['recipient']]) : 'Unknown' ?>
         </small>
       </div>
@@ -133,6 +133,7 @@ $result = mysqli_query($connection, $sql);
     <input type="email" name="reviewEmail" placeholder="Your Email" required>
     <!-- Star Rating -->
     <div class="star-rating">
+      <span class="star-rating-label">Rating:</span>
       <input type="hidden" name="reviewRating" id="reviewRating" required>
       <span class="star" data-value="1">★</span>
       <span class="star" data-value="2">★</span>

@@ -41,9 +41,23 @@ $fontFamily = $settings['font_family'] ?? 'Fredoka';
 
     <style>
 :root {
-    --primary-color: <?= htmlspecialchars($primaryColor) ?>;
-    --secondary-color: <?= htmlspecialchars($secondaryColor) ?>;
-    --font-family: '<?= htmlspecialchars($fontFamily) ?>', sans-serif;
+  /* --primary-color: <?= htmlspecialchars($primaryColor) ?>;
+  --secondary-color: <?= htmlspecialchars($secondaryColor) ?>; */
+
+  --primary-font: "<?= $settings['primary_font'] ?? 'Fredoka' ?>", sans-serif;
+  --page-header-font: "<?= $settings['page_header_font'] ?? 'Arial' ?>", sans-serif;
+
+  --navbar-color: <?= $settings['navbar_color'] ?? '#000000' ?>;
+  --subtitle-font-color: <?= $settings['subtitle_font_color'] ?? '#333333' ?>;
+  --price-color: <?= $settings['price_color'] ?? '#333333' ?>;
+  --description-color: <?= $settings['description_color'] ?? '#555555' ?>;
+  
+  --button1-color: <?= $settings['button1_color'] ?? '#87c159' ?>;
+  --button2-color: <?= $settings['button2_color'] ?? '#f4c400' ?>;
+
+  --faq-button-bg: <?= $settings['faq_button_bg'] ?? '#000000' ?>;
+  --faq-answer-bg: <?= $settings['faq_answer_bg'] ?? '#ffffff' ?>;
+  --product-page-number-bg: <?= $settings['product_page_number_bg'] ?? '#000000' ?>;
 }
 
 body {
@@ -62,7 +76,7 @@ body {
 
 /* Apply primary only when scrolled */
 .navbar-scrolled {
-    background-color: var(--primary-color) !important;
+    background-color: var(--navbar-color) !important;  
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -76,10 +90,7 @@ body {
     background-color: var(--primary-color) !important;
 }
 
-.btn-primary {
-    background-color: var(--secondary-color) !important;
-    border-color: var(--secondary-color) !important;
-}
+
 
 
     
@@ -166,7 +177,7 @@ body {
         <div class="d-flex justify-content-between mb-2">
           <strong>Total: </strong><span id="cartTotal">₱0.00</span>
         </div>
-        <button class="btn btn-dark w-100">Checkout</button>
+        <button class="btn btn-dark w-100" id="checkoutBtn">Checkout</button>
       </div>
     </div>
     <!-- CART SIDEBAR -->

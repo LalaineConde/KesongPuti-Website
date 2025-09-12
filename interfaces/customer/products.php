@@ -10,6 +10,13 @@ $toast_message = ''; // Initialize variable for toast message
 // Which page is this?
 $current_page = 'products'; // change this per file (products, contact, faq, etc.)
 
+// Fetch settings
+$settings = [];
+$query = mysqli_query($connection, "SELECT * FROM site_settings");
+while ($row = mysqli_fetch_assoc($query)) {
+    $settings[$row['setting_key']] = $row['setting_value'];
+}
+
 // Fetch header text
 $result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
 $row = mysqli_fetch_assoc($result);
@@ -112,6 +119,10 @@ $store_result = mysqli_query($connection, $store_sql);
 
     <!-- CSS -->
     <link rel="stylesheet" href="../../css/styles.css" >
+
+
+
+
   </head>
 
   <body>
@@ -207,8 +218,8 @@ $store_result = mysqli_query($connection, $store_sql);
                     <p class="admin-label"><strong>Store: <?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?> </strong></p>
                     <h5 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h5>
                     <p class="product-price">₱<?= number_format($row['price'], 2) ?></p>
-                    <p class="small text-muted flex-grow-1"><?= htmlspecialchars($row['description']) ?></p>
-                    
+                    <p class="small"><?= htmlspecialchars($row['description']) ?></p>
+                     <!-- text-muted flex-grow-1 -->
                     <!-- View / Add to Bag Buttons -->
                     <button 
                       type="button" 
@@ -221,7 +232,7 @@ $store_result = mysqli_query($connection, $store_sql);
                       data-category="<?= htmlspecialchars($row['category']) ?>"
                       data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
                       data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
-                      View
+                      <i class="bi bi-eye"></i> View
                     </button>
 
                     <form method="POST" action="add-to-cart.php">
@@ -229,7 +240,7 @@ $store_result = mysqli_query($connection, $store_sql);
 
                       <button 
                         type="button" 
-                        class="btn btn-dark w-100 add-to-cart"
+                        class="btn btn-dark add-to-cart"
                         data-id="<?= $row['product_id'] ?>"
                         data-name="<?= htmlspecialchars($row['product_name']) ?>"
                         data-price="<?= htmlspecialchars($row['price']) ?>"
@@ -265,7 +276,7 @@ $store_result = mysqli_query($connection, $store_sql);
           <input type="hidden" name="product_id" id="modalProductId">
           <button 
             type="button"
-            class="btn btn-dark w-100 mt-2 add-to-cart" 
+            class="btn btn-dark mt-2 add-to-cart" 
             
               data-id=""
               data-name=""

@@ -1544,10 +1544,19 @@ Form
 
 
 /* SETTINGS PAGE */
+.row {
+  display: flex;
+  gap: 20px;
+}
+
+.col-md-6 {
+  flex: 1;
+}
 .settings-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 30px;
+
 }
 
 .settings-container h2 {
@@ -1597,7 +1606,7 @@ Form
 }
 
 /* Inputs */
-.settings-card .form-control,
+.settings-card .form-control, select,
 .settings-card .form-control-color {
   border: 2px solid #000;
   border-radius: 6px;

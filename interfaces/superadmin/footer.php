@@ -8,10 +8,24 @@ $toast_message = '';
 $footer_query = mysqli_query($connection, "SELECT * FROM footer_settings LIMIT 1");
 $footer = mysqli_fetch_assoc($footer_query);
 
+
 // UPDATE FOOTER
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_footer'])) {
     $description = $_POST['description'];
     $bottom_text = $_POST['bottom_text'];
+
+    // Handle file upload (background)
+if (!empty($_FILES['background_image']['name'])) {
+    $background = time() . '_' . $_FILES['background_image']['name'];
+    $target = "../../uploads/footer/" . basename($background);
+    move_uploaded_file($_FILES['background_image']['tmp_name'], $target);
+
+    $background_sql = ", background_image='$background'";
+} else {
+    $background_sql = "";
+}
+
+
 
     // Handle file upload (logo)
     if (!empty($_FILES['logo']['name'])) {
@@ -24,9 +38,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_footer'])) {
         $logo_sql = "";
     }
 
-    mysqli_query($connection, "UPDATE footer_settings 
-                               SET description='$description', bottom_text='$bottom_text' $logo_sql
-                               WHERE id=" . $footer['id']);
+mysqli_query($connection, "UPDATE footer_settings 
+                           SET description='$description', bottom_text='$bottom_text' $logo_sql $background_sql
+                           WHERE id=" . $footer['id']);
+
+
 
     $toast_message = "Footer updated successfully!";
 }
@@ -96,9 +112,17 @@ mysqli_close($connection);
 
   <!-- Update Footer Settings -->
   <form method="post" enctype="multipart/form-data" id="footer-content">
+    <label>Footer Background:</label>
+    <input type="file" name="background_image"><br>
+    <?php if (!empty($footer['background_image'])): ?>
+      <img src="../../uploads/footer/<?php echo $footer['background_image']; ?>" width="200"><br>
+    <?php endif; ?>
+
     <label>Logo:</label>
     <input type="file" name="logo"><br>
-    <img src="../../uploads/footer/<?php echo $footer['logo']; ?>" width="100"><br>
+    <?php if (!empty($footer['logo'])): ?>
+      <img src="../../uploads/footer/<?php echo htmlspecialchars($footer['logo']); ?>" width="100"><br>
+    <?php endif; ?>
 
     <label>Description:</label>
     <textarea name="description" rows="3"><?php echo $footer['description']; ?></textarea><br>

@@ -5,6 +5,10 @@ $query = "SELECT * FROM footer_settings ORDER BY id DESC LIMIT 1";
 $result = mysqli_query($connection, $query);
 $footer = mysqli_fetch_assoc($result);
 
+$background_image = !empty($footer['background_image']) 
+    ? '../../uploads/footer/' . $footer['background_image']
+    : '';
+
 // Decode quick links JSON
 $quickLinks = json_decode($footer['quick_links'], true);
 ?>
@@ -36,13 +40,21 @@ $quickLinks = json_decode($footer['quick_links'], true);
 <body>
 
 <!-- FOOTER -->
-<footer>
+<footer style="
+    padding: 30px 0;
+    background-color: rgb(253, 242, 217);
+    background-image: url('<?php echo $background_image; ?>');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+">
   <div class="container footer-container">
     <div class="row">
       
       <!-- Column 1: Logo & Social -->
       <div class="col-md-4 col-sm-12 text-center footer-logo">
-        <img src="<?php echo htmlspecialchars($footer['logo']); ?>" alt="Kesong Puti Logo" />
+      <img src="../../uploads/footer/<?php echo htmlspecialchars($footer['logo']); ?>" alt="Kesong Puti Logo" />
+
         <p class="small mt-2"><?php echo htmlspecialchars($footer['description']); ?></p>
 
         <div class="social-icons d-flex justify-content-center gap-2 mt-2">

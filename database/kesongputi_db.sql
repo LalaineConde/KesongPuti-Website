@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 12, 2025 at 11:19 AM
+-- Generation Time: Sep 12, 2025 at 04:28 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -110,15 +110,16 @@ CREATE TABLE `footer_settings` (
   `address` varchar(255) DEFAULT NULL,
   `quick_links` text DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `bottom_text` varchar(255) NOT NULL DEFAULT 'Kesong Puti © 2025 All Rights Reserved'
+  `bottom_text` varchar(255) NOT NULL DEFAULT 'Kesong Puti © 2025 All Rights Reserved',
+  `background_image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `footer_settings`
 --
 
-INSERT INTO `footer_settings` (`id`, `logo`, `description`, `facebook_link`, `instagram_link`, `email`, `phone`, `address`, `quick_links`, `updated_at`, `bottom_text`) VALUES
-(1, '../../assets/logo.png', 'Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. We take pride in delivering locally made, high-quality products straight to your doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"}]', '2025-09-09 05:33:46', 'Kesong Puti © 2025 All Rights Reserved');
+INSERT INTO `footer_settings` (`id`, `logo`, `description`, `facebook_link`, `instagram_link`, `email`, `phone`, `address`, `quick_links`, `updated_at`, `bottom_text`, `background_image`) VALUES
+(1, 'logo.png', '          Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. \r\n          We take pride in delivering locally made, high-quality products straight to your \r\n          doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"}]', '2025-09-12 13:33:07', 'Kesong Puti © 2026 All Rights Reserved', '1757683987_leave.png');
 
 -- --------------------------------------------------------
 
@@ -280,14 +281,40 @@ CREATE TABLE `site_settings` (
 
 INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('body_font_color', '#000000'),
-('font_family', 'Fredoka'),
+('button1_color', '#fad82e'),
+('button2_color', '#12b607'),
+('button_bg_color', '#000000'),
+('button_font_color', '#24be19'),
+('button_hover_color', '#3d5538'),
+('description_color', '#000000'),
+('description_font_color', '#09430d'),
+('faq_answer_bg', '#d3ded5'),
+('faq_button_bg', '#82b658'),
+('font_family', 'Lilita One'),
 ('header_font_color', '#ffffff'),
+('navbar_color', '#82b658'),
 ('navbar_font_color', '#ffffff'),
 ('navbar_font_family', 'Fredoka'),
-('primary_color', '#4c9334'),
+('page_header_font', 'Lilita One'),
+('page_header_font_color', '#ffffff'),
+('page_header_font_family', 'Lilita One'),
+('page_numbers_font_color', '#ff9500'),
+('price_color', '#31a53f'),
+('price_font_color', '#e63946'),
+('primary_color', '#50a838'),
+('primary_font', 'Fredoka'),
 ('products_font_family', 'Fredoka'),
-('secondary_color', '#434342'),
-('site_title', 'Kesong Puti Stores');
+('product_name_font_color', '#a54545'),
+('product_name_font_family', 'Fredoka'),
+('product_page_number_bg', '#ffd53d'),
+('secondary_color', '#ffff00'),
+('secondary_font', 'Lilita One'),
+('site_title', 'Kesong Puti Stores'),
+('store_name_font_color', '#000000'),
+('store_name_font_family', 'Fredoka'),
+('subtitle_color', '#ff00e1'),
+('subtitle_font_color', '#3f8132'),
+('title_color', '#ff0000');
 
 -- --------------------------------------------------------
 
@@ -493,7 +520,7 @@ ALTER TABLE `inbox_messages`
 -- AUTO_INCREMENT for table `page_headers`
 --
 ALTER TABLE `page_headers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=186;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=196;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`

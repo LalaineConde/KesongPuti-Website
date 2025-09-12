@@ -6,7 +6,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: var(--font-family) !important;
+
 }
 
 
@@ -14,8 +14,6 @@
 .navbar {
     padding: 10px 30px;
     transition: all 0.5s ease;
-
-
     position: fixed;   /* make it stick */
     top: 0;
     left: 0;
@@ -24,6 +22,9 @@
     transition: background-color 0.4s ease, transform 0.4s ease;
 
 
+}
+.navbar a{
+      font-family: var(--primary-font) !important;
 }
 
 .navbar-brand img {
@@ -99,7 +100,7 @@
 }
 
 .cart-header {
-    background: #f8f9fa;
+    background: #f8f9fa !important;
 }
 
 .cart-body {
@@ -155,7 +156,13 @@
 }
 
 .cart-footer {
-    background: #f8f9fa;
+    background: #f8f9fa !important;
+}
+
+#checkoutBtn {
+    background-color: var(--button1-color) !important;
+    color: #000;
+
 }
 /* NAVBAR */
 
@@ -178,7 +185,7 @@
 
 .product-page h1 {
     font-size: 4rem;
-    font-family: "Lilita One", sans-serif;
+    font-family: var(--page-header-font) !important;
 }
 
 /* header */
@@ -206,6 +213,7 @@
     margin-right: 15px;
     font-size: 0.95rem;
     color: var(--black);
+    font-family: var(--primary-font) !important;
 }
 
 .filter-options {
@@ -223,6 +231,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    font-family: var(--primary-font) !important;
 }
 
 .dropdown-toggle::after {
@@ -239,6 +248,7 @@
     font-size: 0.9rem;
     padding: 8px 15px;
     cursor: pointer;
+
 }
 
 .dropdown-item:hover {
@@ -248,6 +258,7 @@
 .product-count {
     font-weight: bold;
     font-size: 0.95rem;
+    font-family: var(--primary-font) !important;
 }
 
 /* products */
@@ -295,20 +306,36 @@
     padding: 12px;
 }
 
+.admin-label{
+      font-family: var(--primary-font) !important;
+}
+
+.card-title{
+      font-family: var(--primary-font) !important;
+}
+
 .product-price {
     font-weight: bold;
     font-size: 1.1rem;
-    color: var(--green);
+    color: var(--price-color);
+    font-family: var(--primary-font) !important;
+}
+
+.card-body .small{
+    font-family: var(--primary-font) !important;
+    color: var(--description-color);
+
 }
 
 /* buttons */
 .btn.view-btn {
+    font-family: var(--primary-font) !important;
     color: #000;
     width: 100%;
     max-width: 160px;
     border-radius: 20px;
     padding: 6px 20px;
-    background-color: rgb(135, 193, 89);
+    background-color: var(--button1-color) !important;
     border: none;
     font-weight: 600;
     margin-bottom: 8px;
@@ -320,12 +347,13 @@
 }
 
 .btn.btn-dark{
+    font-family: var(--primary-font) !important;
     color: #000;
     width: 100%;
     max-width: 160px;
     border-radius: 20px;
     padding: 6px 30px;
-    background-color: var(--btn-yellow);
+    background-color: var(--button2-color) !important;
     border: none;
     font-weight: 600;
     transition: transform 0.2s ease;
@@ -363,6 +391,10 @@
   align-items: center;      /* Center items horizontally */
 }
 
+.product-modal .modal-content h2, p, button {
+      font-family: var(--primary-font) !important;
+}
+
 .product-modal .close-customer-view {
   position: absolute;
   top: 10px;
@@ -374,6 +406,7 @@
 .pagination {
     justify-content: center;
     margin-top: 30px;
+    font-family: var(--primary-font) !important;
 }
 
 .pagination .page-link {
@@ -386,7 +419,7 @@
 }
 
 .pagination .page-item.active .page-link {
-    background-color: var(--yellow);
+    background-color: var(--product-page-number-bg) !important;
     color: var(--black);
     border: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -424,7 +457,8 @@
 }
 
 .accordion-button {
-    background-color: #4e6f47;
+    font-family: var(--primary-font) !important;
+    background-color: var(--faq-button-bg) !important;
     color: var(--white);
     font-weight: bold;
     border-radius: 10px !important;
@@ -440,7 +474,7 @@
 }
 
 .accordion-button:not(.collapsed) {
-    background-color: #4e6f47;
+    background-color: var(--faq-button-bg) !important;
     color: #fff;
 }
 
@@ -451,7 +485,8 @@
 }
 
 .accordion-body {
-    background: #dbe5d1;
+    font-family: var(--primary-font) !important;
+    background-color: var(--faq-answer-bg) !important;
     margin-bottom: 10px;
     border-radius: 10px;
     padding: 15px;
@@ -507,15 +542,17 @@
 }
 
 .contact-page .contact-form-page h2 {
+  font-family: var(--primary-font) !important;
   font-size: 2.4rem;
   font-weight: bold;
-  color: #000;
+  color: var(--subtitle-font-color);
   margin-bottom: 10px;
 }
 
 .contact-page .contact-form-page p {
+  font-family: var(--primary-font) !important;
   font-size: 15px;
-  color: #064420;
+  color: var(--description-color);
   margin-bottom: 25px;
 }
 
@@ -542,6 +579,7 @@
 
 .contact-page .input-group input,
 .contact-page .input-group textarea {
+  font-family: var(--primary-font) !important;
   width: 100%;
   padding: 10px 12px 10px 40px;
   border: 2px solid #000;
@@ -566,6 +604,7 @@
 }
 
 .contact-page .input-group select {
+  font-family: var(--primary-font) !important;
   width: 100%;
   height: 45px;
   padding: 10px 12px 10px 40px;
@@ -579,20 +618,12 @@
   cursor: pointer;
 }
 
-.contact-page .input-group::after {
-  content: "\f078"; 
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-  position: absolute;
-  right: 12px;
-  pointer-events: none;
-  color: #444;
-  font-size: 12px;
-}
+  
 
 .contact-page .contact-form-page button {
+  font-family: var(--primary-font) !important;
   background-color: #f4c400;
-  color: #000;
+    background-color: var(--button1-color) !important;
   font-weight: bold;
   border: 2px solid #000;
   border-radius: 25px;
@@ -616,10 +647,11 @@
 }
 
 .store-contacts h3 {
+  font-family: var(--primary-font) !important;
   font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: #064420; /* matches your brand green */
+  color: var(--subtitle-font-color);
 }
 
 /* Card container */
@@ -641,21 +673,28 @@
 }
 
 .store-contacts .card-title {
+  font-family: var(--primary-font) !important;
   font-size: 1.2rem;
   font-weight: 600;
-  color: #333;
+  color: var(--subtitle-font-color);
   margin-bottom: 0.75rem;
 }
 
 /* Text inside cards */
 .store-contacts .card-text {
+  font-family: var(--primary-font) !important;
   font-size: 0.95rem;
   color: #555;
 }
 
 .store-contacts .card-text i {
   margin-right: 6px;
-  color: #064420; /* green icon accent */
+  color: #064420; 
+}
+
+.store-contacts .card-text a {
+  margin-right: 6px;
+  color: #000; 
 }
 
 /* Responsive layout */
@@ -672,14 +711,15 @@
 
 /* FEEDBACK PAGE */
 .feedback-page {
-  background-color: var(--green);
+  background-color: var(--white);
   text-align: center;
-  padding: 100px 20px;
+  padding: 50px 20px;
 }
 
 .message {
+  font-family: var(--primary-font) !important;
   font-size: 1.2rem;
-  color: #fdf5e6;
+  color: var(--description-color);
   padding: 10px 15px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -707,6 +747,7 @@
 }
 
 .feedback-name {
+  font-family: var(--primary-font) !important;
   font-weight: bold;
   font-size: 1rem;
   color: #333;
@@ -718,18 +759,26 @@
 }
 
 .feedback-text {
+  font-family: var(--primary-font) !important;
   font-size: 0.9rem;
   color: #444;
   line-height: 1.4;
 }
 
+.feedback-store{
+  font-family: var(--primary-font) !important;
+  font-size: 0.8rem;
+
+}
+
 .review-btn {
-  background-color: #3b2520;
-  color: var(--yellow);
+  font-family: var(--primary-font) !important;
+  background-color: var(--button1-color) !important;
+  color: var(--black);
   font-weight: bold;
   padding: 10px 25px;
-  border: none;
-  border-radius: 10px;
+  border: 2px solid #000;
+  border-radius: 30px;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -766,8 +815,9 @@
 }
 
 .review-modal-content h3 {
+  font-family: var(--primary-font) !important;
   margin-bottom: 15px;
-  color: var(--green);
+  color: var(--subtitle-font-color);
 }
 
 .review-modal-content form {
@@ -779,6 +829,7 @@
 .review-modal-content input,
 .review-modal-content select,
 .review-modal-content textarea {
+  font-family: var(--primary-font) !important;
   width: 100%;
   padding: 10px;
   border: 2px solid #ddd;
@@ -805,6 +856,7 @@
 }
 
 .anonymous-label {
+  font-family: var(--primary-font) !important;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -814,10 +866,21 @@
 
 .star-rating {
   display: flex;
-  gap: 5px;
-  font-size: 24px;
+  align-items: center; 
+  gap: 8px;
+  font-size: 24px;      
   cursor: pointer;
   margin-bottom: 10px;
+
+}
+
+.star-rating-label {
+  font-family: var(--primary-font) !important;
+  font-size: 16px;
+  color: #333;
+  line-height: 1;      
+  display: flex;      
+  align-items: center;   
 }
 
 .star {
@@ -831,10 +894,12 @@
 }
 
 .submit-review {
-  background-color: var(--yellow);
-  border: none;
+  font-family: var(--primary-font) !important;
+  background-color: var(--button1-color) !important;
+  color: var(--black);
   padding: 10px;
-  border-radius: 25px;
+  border-radius: 30px;
+  border: 2px solid #000;
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -861,11 +926,7 @@
 /* FOOTER */
 footer {
     padding: 30px 0;
-    background-color: rgb(253, 242, 217);
-    background-image: url(../assets/leave.png);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
+
 }
 
 .footer-container {
@@ -878,6 +939,11 @@ footer {
 /* Logo */
 .footer-logo img {
     max-width: 200px;
+}
+
+.small.mt-2{
+    font-family: var(--primary-font) !important;
+    color: var(--description-color);
 }
 
 /* Social icons */
@@ -905,9 +971,20 @@ footer {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+
+.contact-info .btn{
+    font-family: var(--primary-font) !important;
+}
+
 /* Contact form */
-.contact-form input,
+
+.contact-form p{
+    font-family: var(--primary-font) !important;
+    color: var(--description-color);  
+}
+.contact-form input, 
 .contact-form textarea {
+    font-family: var(--primary-font) !important;
     border-radius: 12px;
     border: 1px solid #ccc;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -922,8 +999,22 @@ footer {
     box-shadow: 0 0 6px rgba(19, 58, 25, 0.4);
 }
 
+.contact-form select {
+    font-family: var(--primary-font) !important;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    background-color: #fff;
+    color: #000;
+    appearance: none; 
+    cursor: pointer;
+}
+
 .submit-btn {
-    background-color: var(--yellow);
+    font-family: var(--primary-font) !important;
+    background-color: var(--button1-color) !important;
     border: 2px solid #000;
     border-radius: 25px;
     padding: 8px 25px;
@@ -944,6 +1035,7 @@ footer {
 }
 
 .footer-links a {
+    font-family: var(--primary-font) !important;
     display: block;
     font-weight: 500;
     margin: 6px 0;
@@ -963,6 +1055,7 @@ footer {
 }
 
 .contact-info p {
+    font-family: var(--primary-font) !important;
     margin: 6px 0;
     font-weight: 500;
     color: var(--black);
@@ -987,15 +1080,16 @@ footer {
 
 /* Section titles */
 .footer-title {
+    font-family: var(--primary-font) !important;
     font-weight: 700;
-    color: var(--green);
+    color: var(--subtitle-font-color) !important;;
     font-size: 25px;
 }
 
 /* Footer bottom */
 .footer-bottom {
     text-align: right;
-    /* aligned to right */
+    font-family: var(--primary-font) !important;
     font-size: 12px;
     margin-top: 20px;
     color: #555;
