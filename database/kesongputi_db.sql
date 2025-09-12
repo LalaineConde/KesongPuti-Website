@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 09, 2025 at 08:15 AM
+-- Generation Time: Sep 12, 2025 at 11:19 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,7 +91,7 @@ CREATE TABLE `faqs` (
 --
 
 INSERT INTO `faqs` (`id`, `question`, `answer`, `created_at`) VALUES
-(3, 'What is Kesong Puti?', 'Kesong Puti is a traditional Filipino white cheese made from carabao milk with a delicate creamy flavor.', '2025-09-07 10:44:58');
+(3, 'What is Kesong Puti?', 'Kesong Puti is a traditional Filipino white cheese made from carabaos milk with a delicate creamy flavor.', '2025-09-07 10:44:58');
 
 -- --------------------------------------------------------
 
@@ -145,7 +145,31 @@ INSERT INTO `inbox_messages` (`inbox_id`, `name`, `email`, `contact`, `message`,
 (9, 'Lara Danielle', 'larafremista21@gmail.com', '09123456789', 'SARAP!!!', '2025-08-20 07:22:46', 'admin_3'),
 (10, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'SHHHHH HAHAHHAHAHAH', '2025-08-20 08:06:02', 'admin_3'),
 (11, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 08:06:39', 'admin_3'),
-(12, 'sample', 'sample@sample.com', '09123456611', 'sample message!', '2025-09-09 05:29:46', 'super_1');
+(12, 'sample', 'sample@sample.com', '09123456611', 'sample message!', '2025-09-09 05:29:46', 'super_1'),
+(13, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'hello', '2025-09-11 06:45:00', 'super_1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `page_headers`
+--
+
+CREATE TABLE `page_headers` (
+  `id` int(11) NOT NULL,
+  `page_name` varchar(100) NOT NULL,
+  `header_text` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `page_headers`
+--
+
+INSERT INTO `page_headers` (`id`, `page_name`, `header_text`) VALUES
+(1, 'home', 'Welcome to Kesong Puti'),
+(2, 'products', 'Our Fresh Products'),
+(3, 'faq', 'Frequently Asked Questions'),
+(4, 'contact', 'Contact Us'),
+(5, 'feedback', 'Share Your Feedback');
 
 -- --------------------------------------------------------
 
@@ -238,6 +262,32 @@ INSERT INTO `reviews` (`review_id`, `name`, `email`, `rating`, `feedback`, `crea
 (11, 'JB Alico', 'jaironbartalico@gmail.com', '★★★☆☆', 'Hello this is just a sample feedback message!!', '2025-08-27 08:27:40', 'admin_3'),
 (12, 'Russell Garcia', 'jonrussell@gmail.com', '★★★☆☆', 'Hello, sample feedback message!', '2025-08-27 18:22:14', 'admin_1'),
 (13, 'Jaira Bautista', 'jairared@gmail.com', '★★★★☆', 'sample feedback!', '2025-08-27 18:31:34', 'super_1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `site_settings`
+--
+
+CREATE TABLE `site_settings` (
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `site_settings`
+--
+
+INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
+('body_font_color', '#000000'),
+('font_family', 'Fredoka'),
+('header_font_color', '#ffffff'),
+('navbar_font_color', '#ffffff'),
+('navbar_font_family', 'Fredoka'),
+('primary_color', '#4c9334'),
+('products_font_family', 'Fredoka'),
+('secondary_color', '#434342'),
+('site_title', 'Kesong Puti Stores');
 
 -- --------------------------------------------------------
 
@@ -347,6 +397,13 @@ ALTER TABLE `inbox_messages`
   ADD PRIMARY KEY (`inbox_id`);
 
 --
+-- Indexes for table `page_headers`
+--
+ALTER TABLE `page_headers`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `page_name` (`page_name`);
+
+--
 -- Indexes for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
@@ -365,6 +422,12 @@ ALTER TABLE `products`
 --
 ALTER TABLE `reviews`
   ADD PRIMARY KEY (`review_id`);
+
+--
+-- Indexes for table `site_settings`
+--
+ALTER TABLE `site_settings`
+  ADD PRIMARY KEY (`setting_key`);
 
 --
 -- Indexes for table `store`
@@ -424,7 +487,13 @@ ALTER TABLE `footer_settings`
 -- AUTO_INCREMENT for table `inbox_messages`
 --
 ALTER TABLE `inbox_messages`
-  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `page_headers`
+--
+ALTER TABLE `page_headers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=186;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
