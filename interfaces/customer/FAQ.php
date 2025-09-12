@@ -4,6 +4,13 @@ $page_header = "FAQ";
 require '../../connection.php';
 include ('../../includes/customer-dashboard.php');
 
+// Which page is this?
+$current_page = 'faq'; // change this per file (products, contact, faq, etc.)
+
+// Fetch header text
+$result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
+$row = mysqli_fetch_assoc($result);
+$page_header = $row['header_text'] ?? "WELCOME";
 
 $faqs = $connection->query("SELECT * FROM faqs ORDER BY id ASC");
 ?>
@@ -37,6 +44,9 @@ $faqs = $connection->query("SELECT * FROM faqs ORDER BY id ASC");
 
   <body style="background-color: var(--beige)">
 
+  <section class="product-page">
+  <h1 class="mt-5"><?= htmlspecialchars($page_header) ?></h1>
+</section>
 
     <!-- FAQ -->
     <section id="faq">

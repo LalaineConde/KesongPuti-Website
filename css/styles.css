@@ -6,7 +6,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Fredoka", sans-serif;
+    font-family: var(--font-family) !important;
 }
 
 
@@ -14,6 +14,16 @@
 .navbar {
     padding: 10px 30px;
     transition: all 0.5s ease;
+
+
+    position: fixed;   /* make it stick */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;     /* above all content */
+    transition: background-color 0.4s ease, transform 0.4s ease;
+
+
 }
 
 .navbar-brand img {
@@ -44,7 +54,7 @@
 }
 
 .navbar-scrolled {
-    background: var(--green);
+    background: var(--primary-color);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -992,4 +1002,6 @@ footer {
     border-top: 1px solid #ccc;
     padding-top: 8px;
 }
+
+
 

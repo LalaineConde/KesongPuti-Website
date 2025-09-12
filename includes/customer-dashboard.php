@@ -1,3 +1,20 @@
+<?php
+
+
+// Fetch site settings
+$settings = [];
+$query = mysqli_query($connection, "SELECT * FROM site_settings");
+while ($row = mysqli_fetch_assoc($query)) {
+    $settings[$row['setting_key']] = $row['setting_value'];
+}
+
+// Default fallback colors
+$primaryColor = $settings['primary_color'] ?? '#4e6f47';
+$secondaryColor = $settings['secondary_color'] ?? '#f4c400';
+$fontFamily = $settings['font_family'] ?? 'Fredoka';
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,17 +35,62 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       rel="stylesheet"
     >
-
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- CSS -->
     <link rel="stylesheet" href="../../css/styles.css" >
+
+    <style>
+:root {
+    --primary-color: <?= htmlspecialchars($primaryColor) ?>;
+    --secondary-color: <?= htmlspecialchars($secondaryColor) ?>;
+    --font-family: '<?= htmlspecialchars($fontFamily) ?>', sans-serif;
+}
+
+body {
+    font-family: var(--font-family);
+}
+
+.navbar {
+    position: fixed;   /* make it stick */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1050;     /* above all content */
+    transition: background-color 0.4s ease, transform 0.4s ease;
+}
+
+
+/* Apply primary only when scrolled */
+.navbar-scrolled {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Transparent at top */
+.navbar-transparent {
+    background: transparent !important;
+}
+
+/* Other elements keep primary */
+.cart-header, .cart-footer, .btn-dark {
+    background-color: var(--primary-color) !important;
+}
+
+.btn-primary {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+}
+
+
+    
+</style>
   </head>
 <body>
     
     <!-- NAVBAR --> 
-    <nav
-      class="navbar navbar-expand-lg fixed-top navbar-transparent navbar-hidden navbar-visible"
-      id="mainNavbar"
-    >
+<nav class="navbar navbar-expand-lg fixed-top navbar-transparent navbar-hidden navbar-visible" id="mainNavbar">
+
+   
       <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="#"
           ><img 
@@ -73,11 +135,7 @@
     <!-- NAVBAR -->
      
     <!-- PAGE HEADER -->
-    <section class="product-page">
-    <div>
-        <h1 class="mt-5"><?= isset($page_header) ? $page_header : "WELCOME"; ?></h1>
-    </div>
-    </section>
+ 
     <!-- PRODUCTS PAGE HEADER -->
 
     
@@ -125,56 +183,26 @@
       crossorigin="anonymous"
     ></script>
 
-    <!-- SCROLL NAVBAR -->
-    <script>
-      (function () {
-        const navbar = document.getElementById("mainNavbar");
-        const hero = document.querySelector(".product-page");
+<!-- SCROLL NAVBAR -->
+<script>
+(function () {
+  const navbar = document.getElementById("mainNavbar");
 
-        function setTopState() {
-          // At the very top: transparent + visible
-          navbar.classList.add("navbar-transparent", "navbar-visible");
-          navbar.classList.remove("navbar-scrolled", "navbar-hidden");
-        }
+  function updateNavbar() {
+    if (window.scrollY <= 0) {
+      navbar.classList.add("navbar-transparent");
+      navbar.classList.remove("navbar-scrolled");
+    } else {
+      navbar.classList.add("navbar-scrolled");
+      navbar.classList.remove("navbar-transparent");
+    }
+  }
 
-        function setHiddenTransparent() {
-          // While scrolling inside hero: hide (slide up) + keep transparent
-          navbar.classList.add("navbar-hidden", "navbar-transparent");
-          navbar.classList.remove("navbar-visible", "navbar-scrolled");
-        }
+  window.addEventListener("scroll", updateNavbar, { passive: true });
+  window.addEventListener("load", updateNavbar);
+})();
+</script>
 
-        function setVisibleColored() {
-          // After hero (second section and beyond): show (slide down) + colored background
-          navbar.classList.add("navbar-visible", "navbar-scrolled");
-          navbar.classList.remove("navbar-hidden", "navbar-transparent");
-        }
-
-        function updateNavbar() {
-          const y = window.scrollY;
-          const navH = navbar.offsetHeight || 0;
-          const heroH = (hero && hero.offsetHeight) || 0;
-          const heroBottom = Math.max(0, heroH - navH); // threshold to "second page"
-
-          if (y <= 0) {
-            setTopState();
-            return;
-          }
-
-          if (y < heroBottom) {
-            // Still within the hero area → keep it hidden while scrolling down the hero
-            setHiddenTransparent();
-          } else {
-            // Past the hero → show it with background color
-            setVisibleColored();
-          }
-        }
-
-        // Init + on scroll
-        window.addEventListener("scroll", updateNavbar, { passive: true });
-        window.addEventListener("load", updateNavbar);
-        document.addEventListener("DOMContentLoaded", updateNavbar);
-      })();
-    </script>
 
 
 

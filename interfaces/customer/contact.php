@@ -4,6 +4,14 @@ $page_header = "CONTACT US";
 require '../../connection.php';
 include ('../../includes/customer-dashboard.php');
 
+// Which page is this?
+$current_page = 'contact'; // change this per file (products, contact, faq, etc.)
+
+// Fetch header text
+$result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
+$row = mysqli_fetch_assoc($result);
+$page_header = $row['header_text'] ?? "WELCOME";
+
 ?>
 
 
@@ -13,7 +21,7 @@ include ('../../includes/customer-dashboard.php');
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Us | Kesong Puti</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <!-- BOOTSTRAP -->
     <link
@@ -31,8 +39,16 @@ include ('../../includes/customer-dashboard.php');
 
     <!-- CSS -->
     <link rel="stylesheet" href="../../css/styles.css" >
+
+
   </head>
 <body>
+
+<section class="product-page">
+  <h1 class="mt-5"><?= htmlspecialchars($page_header) ?></h1>
+</section>
+
+
   <div class="contact-page">
   <div class="container">
     <!-- Logo + Circles -->
@@ -53,19 +69,19 @@ include ('../../includes/customer-dashboard.php');
       <p>We’d love to hear from you! Send us a message—we’ll get back to you as soon as we can!</p>
       <form  action="save-message.php" method="POST">
         <div class="input-group">
-          <i class="fa-solid fa-user"></i>
+          <i class="bi bi-person"></i>
           <input type="text" name="name" placeholder="Name" required />
         </div>
         <div class="input-group">
-          <i class="fa-solid fa-envelope"></i>
+          <i class="bi bi-envelope"></i>
           <input type="email" name="email" placeholder="Email" required />
         </div>
         <div class="input-group">
-          <i class="fa-solid fa-phone"></i>
+          <i class="bi bi-telephone"></i>
           <input type="text" name="contact" placeholder="Contact Number" required />
         </div>
         <div class="input-group">
-          <i class="fa-solid fa-user-circle"></i>
+          <i class="bi bi-shop"></i>
           <select name="recipient" required>
             <option value="">-- Select Store --</option>
             <?php
@@ -94,7 +110,7 @@ include ('../../includes/customer-dashboard.php');
           </select>
         </div>
         <div class="input-group textarea">
-          <i class="fa-solid fa-comment"></i>
+          <i class="bi bi-chat-dots"></i>
           <textarea name="message" rows="3" placeholder="Message" required></textarea>
         </div>
         <button type="submit" class="submit-btn mt-2">Submit</button>
@@ -122,9 +138,27 @@ include ('../../includes/customer-dashboard.php');
             <div class="card h-100 shadow-sm">
               <div class="card-body">
                 <h5 class="card-title">'.htmlspecialchars($contact['store_name']).'</h5>
-                <p class="card-text mb-1"><i class="bi bi-envelope"></i> '.htmlspecialchars($contact['email']).'</p>
-                <p class="card-text mb-1"><i class="bi bi-phone"></i> '.htmlspecialchars($contact['phone']).'</p>
-                <p class="card-text"><i class="bi bi-geo-alt"></i> '.htmlspecialchars($contact['address']).'</p>
+                <p class="card-text mb-1">
+                  <i class="bi bi-envelope"></i>
+                  <a href="mailto:' . htmlspecialchars($contact['email']) . '?subject=Kesong%20Puti%20Customer%20Inquiry&body=Good%20day,%0D%0A%0D%0AI%20would%20like%20to%20inquire%20about..." class="text-decoration-none">
+                    ' . htmlspecialchars($contact['email']) . '
+                  </a>
+                </p>
+
+                <p class="card-text mb-1">
+                  <i class="bi bi-phone"></i>
+                  <a href="tel:' . htmlspecialchars($contact['phone']) . '" class="text-decoration-none">
+                    ' . htmlspecialchars($contact['phone']) . '
+                  </a>
+                </p>
+
+                <p class="card-text">
+                  <i class="bi bi-geo-alt"></i>
+                  <a href="https://www.google.com/maps/search/?api=1&query=' . htmlspecialchars(urlencode($contact['address'])) . '" 
+                    target="_blank" class="text-decoration-none">
+                    ' . htmlspecialchars($contact['address']) . '
+                  </a>
+                </p>
               </div>
             </div>
           </div>';
@@ -202,7 +236,7 @@ include ('../../includes/customer-dashboard.php');
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector(".contact-form form");
+    const form = document.querySelector(".contact-form-page form");
 
     form.addEventListener("submit", function (e) {
       e.preventDefault(); // prevent immediate submit

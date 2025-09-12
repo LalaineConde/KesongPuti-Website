@@ -8,6 +8,13 @@ include ('../../includes/customer-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
+// Which page is this?
+$current_page = 'feedback'; // change this per file (products, contact, faq, etc.)
+
+// Fetch header text
+$result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
+$row = mysqli_fetch_assoc($result);
+$page_header = $row['header_text'] ?? "WELCOME";
 
 // Fetch all superadmins
 $superadmins = [];
@@ -81,6 +88,9 @@ $result = mysqli_query($connection, $sql);
   </head>
 
   <body>
+  <section class="product-page">
+    <h1 class="mt-5"><?= htmlspecialchars($page_header) ?></h1>
+  </section>
 
     <!-- FEEDBACK -->
 <section class="feedback-page">
