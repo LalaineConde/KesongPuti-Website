@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 12, 2025 at 04:28 PM
+-- Generation Time: Sep 14, 2025 at 02:41 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -91,7 +91,8 @@ CREATE TABLE `faqs` (
 --
 
 INSERT INTO `faqs` (`id`, `question`, `answer`, `created_at`) VALUES
-(3, 'What is Kesong Puti?', 'Kesong Puti is a traditional Filipino white cheese made from carabaos milk with a delicate creamy flavor.', '2025-09-07 10:44:58');
+(3, 'What is Kesong Puti?', 'Kesong Puti is a traditional Filipino white cheese made from carabaos milk with a delicate creamy flavor.', '2025-09-07 10:44:58'),
+(17, 'sample questions', 'sample answer', '2025-09-13 03:13:18');
 
 -- --------------------------------------------------------
 
@@ -111,15 +112,22 @@ CREATE TABLE `footer_settings` (
   `quick_links` text DEFAULT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `bottom_text` varchar(255) NOT NULL DEFAULT 'Kesong Puti © 2025 All Rights Reserved',
-  `background_image` varchar(255) DEFAULT NULL
+  `background_image` varchar(255) DEFAULT NULL,
+  `mon_hours` varchar(50) NOT NULL DEFAULT '07:00AM - 05:00PM',
+  `tue_hours` varchar(50) NOT NULL DEFAULT '07:00AM - 05:00PM',
+  `wed_hours` varchar(50) NOT NULL DEFAULT '07:00AM - 05:00PM',
+  `thu_hours` varchar(50) NOT NULL DEFAULT '07:00AM - 05:00PM',
+  `fri_hours` varchar(50) NOT NULL DEFAULT '07:00AM - 05:00PM',
+  `sat_hours` varchar(50) NOT NULL DEFAULT '07:00AM - 05:00PM',
+  `sun_hours` varchar(50) NOT NULL DEFAULT '07:00AM - 05:00PM'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `footer_settings`
 --
 
-INSERT INTO `footer_settings` (`id`, `logo`, `description`, `facebook_link`, `instagram_link`, `email`, `phone`, `address`, `quick_links`, `updated_at`, `bottom_text`, `background_image`) VALUES
-(1, 'logo.png', '          Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. \r\n          We take pride in delivering locally made, high-quality products straight to your \r\n          doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"}]', '2025-09-12 13:33:07', 'Kesong Puti © 2026 All Rights Reserved', '1757683987_leave.png');
+INSERT INTO `footer_settings` (`id`, `logo`, `description`, `facebook_link`, `instagram_link`, `email`, `phone`, `address`, `quick_links`, `updated_at`, `bottom_text`, `background_image`, `mon_hours`, `tue_hours`, `wed_hours`, `thu_hours`, `fri_hours`, `sat_hours`, `sun_hours`) VALUES
+(1, 'logo.png', 'Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. We take pride in delivering locally made, high-quality products straight to your doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"},\r\n{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},\r\n{\"name\":\"Terms and Condition\",\"url\":\"terms-condition.php\"}]', '2025-09-14 12:39:20', 'Kesong Puti © 2026 All Rights Reserved', '1757850147_leave.png', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM');
 
 -- --------------------------------------------------------
 
@@ -166,11 +174,11 @@ CREATE TABLE `page_headers` (
 --
 
 INSERT INTO `page_headers` (`id`, `page_name`, `header_text`) VALUES
-(1, 'home', 'Welcome to Kesong Puti'),
-(2, 'products', 'Our Fresh Products'),
-(3, 'faq', 'Frequently Asked Questions'),
-(4, 'contact', 'Contact Us'),
-(5, 'feedback', 'Share Your Feedback');
+(1, 'home', 'WELCOME'),
+(2, 'products', 'OUR PRODUCTS'),
+(3, 'faq', 'FREQUENTLY ASKED QUESTIONS'),
+(4, 'contact', 'CONTACT US'),
+(5, 'feedback', 'CUSTOMER FEEDBACK');
 
 -- --------------------------------------------------------
 
@@ -502,7 +510,7 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `faqs`
 --
 ALTER TABLE `faqs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `footer_settings`

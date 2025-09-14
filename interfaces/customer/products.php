@@ -127,9 +127,18 @@ $store_result = mysqli_query($connection, $store_sql);
 
   <body>
 
-  <section class="product-page">
-    <h1 class="mt-5"><?= htmlspecialchars($page_header) ?></h1>
-  </section>
+  <!-- PAGE HEADER -->
+<section class="product-page" style="background-image: url('../../<?= htmlspecialchars($settings['header_image'] ?? 'assets/header.png') ?>');">
+  <div class="header-text">
+    <h1><?= htmlspecialchars($page_header) ?></h1>
+    <div class="breadcrumb">
+      <a href="home.php"><span>Home</span></a>
+      <p class="separator">-</p>
+      <span>Products</span>
+    </div>
+  </div>
+</section>
+<!-- PAGE HEADER -->
 
     <!-- PRODUCTS -->
     <section class="product-section">

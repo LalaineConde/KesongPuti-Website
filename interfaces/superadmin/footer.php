@@ -1,18 +1,34 @@
 <?php
 $page_title = 'Footer | Kesong Puti';
 require '../../connection.php';
-include ('../../includes/superadmin-dashboard.php');
+
 
 $toast_message = '';
+if (isset($_GET['updated']) && $_GET['updated'] == 1) {
+    $toast_message = "Footer updated successfully!";
+}
 
 $footer_query = mysqli_query($connection, "SELECT * FROM footer_settings LIMIT 1");
 $footer = mysqli_fetch_assoc($footer_query);
+
+
+
 
 
 // UPDATE FOOTER
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_footer'])) {
     $description = $_POST['description'];
     $bottom_text = $_POST['bottom_text'];
+
+    // business hours
+    $days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+    $hours_sql = [];
+
+    foreach ($days as $day) {
+        $open = !empty($_POST[$day . "_open"]) ? date("h:iA", strtotime($_POST[$day . "_open"])) : "07:00AM";
+        $close = !empty($_POST[$day . "_close"]) ? date("h:iA", strtotime($_POST[$day . "_close"])) : "05:00PM";
+        $hours_sql[$day] = "$open - $close";
+    }
 
     // Handle file upload (background)
 if (!empty($_FILES['background_image']['name'])) {
@@ -38,13 +54,23 @@ if (!empty($_FILES['background_image']['name'])) {
         $logo_sql = "";
     }
 
-mysqli_query($connection, "UPDATE footer_settings 
-                           SET description='$description', bottom_text='$bottom_text' $logo_sql $background_sql
-                           WHERE id=" . $footer['id']);
+    mysqli_query($connection, "UPDATE footer_settings 
+        SET description='$description', bottom_text='$bottom_text',
+            mon_hours='{$hours_sql['mon']}', tue_hours='{$hours_sql['tue']}', wed_hours='{$hours_sql['wed']}',
+            thu_hours='{$hours_sql['thu']}', fri_hours='{$hours_sql['fri']}',
+            sat_hours='{$hours_sql['sat']}', sun_hours='{$hours_sql['sun']}'
+            $logo_sql $background_sql
+        WHERE id=" . $footer['id']);
 
 
 
     $toast_message = "Footer updated successfully!";
+
+
+        // redirect so new data is fetched instantly
+// Redirect with a flag instead of echoing JS
+header("Location: footer.php?updated=1");
+exit();
 }
 
 // ADD CONTACT
@@ -83,6 +109,8 @@ if (isset($_GET['delete'])) {
 // Fetch contacts (all)
 $contacts_query = mysqli_query($connection, "SELECT * FROM store_contacts ORDER BY id DESC");
 $contacts = mysqli_fetch_all($contacts_query, MYSQLI_ASSOC);
+
+include ('../../includes/superadmin-dashboard.php');
 
 mysqli_close($connection);
 ?>
@@ -126,6 +154,42 @@ mysqli_close($connection);
 
     <label>Description:</label>
     <textarea name="description" rows="3"><?php echo $footer['description']; ?></textarea><br>
+
+<?php
+function split_hours($hours, $default_open = "07:00AM", $default_close = "05:00PM") {
+    if (!empty($hours) && strpos($hours, '-') !== false) {
+        list($open, $close) = explode(" - ", $hours);
+        return [
+            "open" => date("H:i", strtotime(trim($open))),
+            "close" => date("H:i", strtotime(trim($close)))
+        ];
+    }
+    return [
+        "open" => date("H:i", strtotime($default_open)),
+        "close" => date("H:i", strtotime($default_close))
+    ];
+}
+
+$days = [
+    "mon" => "Monday",
+    "tue" => "Tuesday",
+    "wed" => "Wednesday",
+    "thu" => "Thursday",
+    "fri" => "Friday",
+    "sat" => "Saturday",
+    "sun" => "Sunday"
+];
+
+foreach ($days as $short => $label):
+    $time = split_hours($footer[$short . "_hours"]);
+?>
+    <label><?= $label ?>:</label>
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;">
+        <input type="time" name="<?= $short ?>_open" value="<?= $time['open'] ?>" required>
+        <span>to</span>
+        <input type="time" name="<?= $short ?>_close" value="<?= $time['close'] ?>" required>
+    </div>
+<?php endforeach; ?>
 
     <label>Footer Note:</label>
     <input type="text" name="bottom_text" value="<?php echo $footer['bottom_text']; ?>"><br>

@@ -124,10 +124,10 @@ body {
             <li class="nav-item"><a class="nav-link" href="#">About</a></li>
             <li class="nav-item"><a class="nav-link" href="products.php">Products</a></li>
             <li class="nav-item"><a class="nav-link" href="FAQ.php">FAQ</a></li>
+            <li class="nav-item"><a class="nav-link" href="feedback.php">Feedback</a></li>
             <li class="nav-item">
               <a class="nav-link" href="contact.php">Contact Us</a>
-            </li>
-            <li class="nav-item"><a class="nav-link" href="feedback.php">Feedback</a></li>
+            </li>          
           </ul>
         </div>
 
@@ -152,39 +152,38 @@ body {
     
     <!-- CART SIDEBAR -->
     <div class="cart-sidebar" id="cartSidebar">
-      <div
-        class="cart-header d-flex justify-content-between align-items-center p-3 border-bottom"
-      >
-        <h5 class="mb-0">My Cart</h5>
-        <button class="btn btn-md" id="closeCart">
+      <!-- header -->
+      <div class="cart-header">
+        <h5><i class="bi bi-bag me-2"></i> Your Bag</h5>
+        <button class="close-btn" id="closeCart">
           <i class="bi bi-x-lg"></i>
         </button>
       </div>
 
-      <div class="cart-body p-3" id="cartItems">
-        <!-- Select All -->
-        <div class="d-flex align-items-center mb-2">
-          <input type="checkbox" id="selectAll" class="me-2" />
-          <label for="selectAll" class="mb-0 fw-bold">Select All</label>
+      <!-- Body -->
+      <div class="cart-body" id="cartItems">
+        <!-- checkbox -->
+        <div class="select-all">
+          <input type="checkbox" id="selectAll" />
+          <label for="selectAll">Select All</label>
         </div>
 
-         
-        </div>
+        <!-- items -->
+        
+      </div>
 
-
-      <!-- Footer -->
-      <div class="cart-footer p-3 border-top">
-        <div class="d-flex justify-content-between mb-2">
-          <strong>Total: </strong><span id="cartTotal">₱0.00</span>
+      <!-- footer -->
+      <div class="cart-footer">
+        <div class="total">
+          <span>Total:</span>
+          <strong id="cartTotal">₱0.00</strong>
         </div>
-        <button class="btn btn-dark w-100" id="checkoutBtn">Checkout</button>
+        <button class="checkout-btn">Checkout</button>
       </div>
     </div>
-    <!-- CART SIDEBAR -->
 
-    <!-- CART OVERLAY -->
     <div class="overlay" id="overlay"></div>
-    <!-- CART OVERLAY -->
+    <!-- CART SIDEBAR -->
 
 <!-- FUNCTIONS -->
   <!-- BOOTSTRAP JS -->

@@ -7,7 +7,9 @@ $footer = mysqli_fetch_assoc($result);
 
 $background_image = !empty($footer['background_image']) 
     ? '../../uploads/footer/' . $footer['background_image']
-    : '';
+    : 'leave.png';
+
+$logo = !empty($footer['logo']) ? htmlspecialchars($footer['logo']) : 'logo.png';
 
 // Decode quick links JSON
 $quickLinks = json_decode($footer['quick_links'], true);
@@ -39,21 +41,26 @@ $quickLinks = json_decode($footer['quick_links'], true);
   </head>
 <body>
 
+    <!-- SEPARATOR -->
+    <section class="footer-separator"></section>
+    <!-- SEPARATOR -->
+
 <!-- FOOTER -->
 <footer style="
     padding: 30px 0;
-    background-color: rgb(253, 242, 217);
+    background-color: #FFF5E1;
     background-image: url('<?php echo $background_image; ?>');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    font-family: var(--primary-font) !important;
 ">
   <div class="container footer-container">
     <div class="row">
       
       <!-- Column 1: Logo & Social -->
-      <div class="col-md-4 col-sm-12 text-center footer-logo">
-      <img src="../../uploads/footer/<?php echo htmlspecialchars($footer['logo']); ?>" alt="Kesong Puti Logo" />
+      <div class="col-md-3 col-sm-12 text-center footer-logo">
+      <img src="../../uploads/footer/<?php echo $logo; ?>" alt="Kesong Puti Logo" />
 
         <p class="small mt-2"><?php echo htmlspecialchars($footer['description']); ?></p>
 
@@ -64,34 +71,47 @@ $quickLinks = json_decode($footer['quick_links'], true);
       </div>
 
       <!-- Column 2: Quick Links & Contact Info -->
-      <div class="col-md-4 col-sm-12">
+      <div class="col-md-3 col-sm-12">
         <div class="footer-links">
           <h6 class="footer-title">Quick Links</h6>
-          <?php foreach ($quickLinks as $link): ?>
-            <a href="<?php echo htmlspecialchars($link['url']); ?>"><?php echo htmlspecialchars($link['name']); ?></a>
+          <?php foreach (array_slice($quickLinks, 0, 4) as $link): ?>
+            <a href="<?php echo htmlspecialchars($link['url']); ?>">
+              <?php echo htmlspecialchars($link['name']); ?>
+            </a>
           <?php endforeach; ?>
         </div>
-        <div class="contact-info mt-4">
-        <h6 class="footer-title">Contact Information</h6>
-            <p>
-            <a href="mailto:<?php echo $footer['email']; ?>?subject=Kesong%20Puti%20Customer%20Inquiry&body=Good%20day,%0D%0A%0D%0AI%20would%20like%20to%20inquire%20about..." 
-                class="contact-info">
-                <i class="bi bi-envelope"></i> <?php echo htmlspecialchars($footer['email']); ?>
-            </a>
-            </p>
-        <p><a href="tel:<?php echo $footer['phone']; ?>"><i class="bi bi-telephone"></i> <?php echo $footer['phone']; ?></a></p>
-        <p><a href="https://www.google.com/maps/place/Arlene+Macalinao+Kesong+Puti/@14.2684861,121.3959904,17z/data=!3m1!4b1!4m6!3m5!1s0x3397e3efb384ecc1:0xf04659f5f159bd0c!8m2!3d14.2684861!4d121.3985653!16s%2Fg%2F11j4m2c68r?entry=ttu&g_ep=EgoyMDI1MDkwMy4wIKXMDSoASAFQAw%3D%3D<?php echo urlencode($footer['address']); ?>" target="_blank"><i class="bi bi-geo-alt"></i> <?php echo $footer['address']; ?></a></p>
 
-        <!-- View More link -->
-        <a href="contact.php" class="btn btn-link p-0 mt-2">View More <i class="bi bi-arrow-right"></i></a>
+        <div class="footer-links mt-4">
+          <h6 class="footer-title">Need Assistance?</h6>
+          <?php foreach (array_slice($quickLinks, 4, 7) as $link): ?>
+            <a href="<?php echo htmlspecialchars($link['url']); ?>">
+              <?php echo htmlspecialchars($link['name']); ?>
+            </a>
+          <?php endforeach; ?>
+        </div>
+      </div>
+      
+      <!-- Column 3: Business Hours -->
+      <div class="col-md-3 col-sm-12">
+        <div class="contact-info">
+          <h6 class="footer-title">Business Hours</h6>
+          <p>Monday: <?= htmlspecialchars($footer['mon_hours']) ?></p>
+          <p>Tuesday: <?= htmlspecialchars($footer['tue_hours']) ?></p>
+          <p>Wednesday: <?= htmlspecialchars($footer['wed_hours']) ?></p>
+          <p>Thursday: <?= htmlspecialchars($footer['thu_hours']) ?></p>
+          <p>Friday: <?= htmlspecialchars($footer['fri_hours']) ?></p>
+          <p>Saturday: <?= htmlspecialchars($footer['sat_hours']) ?></p>
+          <p>Sunday: <?= htmlspecialchars($footer['sun_hours']) ?></p>
         </div>
       </div>
 
-      <!-- Column 3: Contact Form -->
-      <div class="col-md-4 col-sm-12 contact-form">
+      <!-- Column 4: Contact Form -->
+      <div class="col-md-3 col-sm-12 contact-form">
         <h5 class="footer-title">Contact Us</h5>
-        <p class="small">We’d love to hear from you! Send us a message—we’ll get back to you as soon as we can!</p>
-
+            <p class="small">
+              We’d love to hear from you! Send us a message—we’ll get back to
+              you as soon as we can!
+            </p>
         <form action="save-message.php" method="POST">
           <input type="text" name="name" class="form-control mb-2" placeholder="Name" required />
           <input type="email" name="email" class="form-control mb-2" placeholder="Email" required />

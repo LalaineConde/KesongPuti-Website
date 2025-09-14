@@ -88,9 +88,19 @@ $result = mysqli_query($connection, $sql);
   </head>
 
   <body>
-  <section class="product-page">
-    <h1 class="mt-5"><?= htmlspecialchars($page_header) ?></h1>
-  </section>
+    
+  <!-- PAGE HEADER -->
+<section class="product-page" style="background-image: url('../../<?= htmlspecialchars($settings['header_image'] ?? 'assets/header.png') ?>');">
+  <div class="header-text">
+    <h1><?= htmlspecialchars($page_header) ?></h1>
+    <div class="breadcrumb">
+      <a href="home.php"><span>Home</span></a>
+      <p class="separator">-</p>
+      <span>Feedback</span>
+    </div>
+  </div>
+</section>
+<!-- PAGE HEADER -->
 
     <!-- FEEDBACK -->
 <section class="feedback-page">
