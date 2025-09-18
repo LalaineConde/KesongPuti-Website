@@ -196,9 +196,30 @@ $page_header = $row['header_text'] ?? "WELCOME";
                   </div>
                   <div class="card-body">
                     <h5 class="store-name"><?= htmlspecialchars($contact['store_name']) ?></h5>
-                    <p class="store-info"><strong>Location:</strong> <?= htmlspecialchars($contact['address']) ?></p>
-                    <p class="store-info"><strong>Email:</strong> <?= htmlspecialchars($contact['email']) ?></p>
-                    <p class="store-info"><strong>Contact:</strong> <?= htmlspecialchars($contact['phone']) ?></p>
+                    <p class="store-info">
+                      <strong>Location:</strong>
+                      <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($contact['address']) ?>" 
+                        target="_blank" 
+                        class="text-decoration-none">
+                        <?= htmlspecialchars($contact['address']) ?>
+                      </a>
+                    </p>
+                    <!-- Email (mailto link) -->
+                    <p class="store-info">
+                      <strong>Email:</strong>
+                      <a href="mailto:<?= htmlspecialchars($contact['email']) ?>?subject=Kesong%20Puti%20Customer%20Inquiry&body=Good%20day,%0D%0A%0D%0AI%20would%20like%20to%20inquire%20about..."
+                        class="text-decoration-none">
+                        <?= htmlspecialchars($contact['email']) ?>
+                      </a>
+                    </p>
+
+                    <!-- Phone (tel link) -->
+                    <p class="store-info">
+                      <strong>Contact:</strong>
+                      <a href="tel:<?= htmlspecialchars($contact['phone']) ?>" class="text-decoration-none">
+                        <?= htmlspecialchars($contact['phone']) ?>
+                      </a>
+                    </p>
                     <p class="store-info"><strong>Owner:</strong> <?= htmlspecialchars($contact['owner'] ?? 'N/A') ?></p>
                   </div>
                 </div>

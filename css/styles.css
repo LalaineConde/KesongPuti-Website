@@ -1252,10 +1252,13 @@ input[type="checkbox"]:hover {
 
  .store-info {
      font-size: 0.9rem;
-     color: var(--black);
      margin: 0.3rem 0;
  }
 
+    .store-info a {
+    color: var(--body-font-color);
+    text-decoration: none;
+    }
 
  .carousel-control-prev,
  .carousel-control-next {
