@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 18, 2025 at 10:07 AM
+-- Generation Time: Sep 18, 2025 at 09:38 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -127,7 +127,7 @@ CREATE TABLE `footer_settings` (
 --
 
 INSERT INTO `footer_settings` (`id`, `logo`, `description`, `facebook_link`, `instagram_link`, `email`, `phone`, `address`, `quick_links`, `updated_at`, `bottom_text`, `background_image`, `mon_hours`, `tue_hours`, `wed_hours`, `thu_hours`, `fri_hours`, `sat_hours`, `sun_hours`) VALUES
-(1, 'logo.png', 'Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. We take pride in delivering locally made, high-quality products straight to your doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"},\r\n{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},\r\n{\"name\":\"Terms and Condition\",\"url\":\"terms-condition.php\"}]', '2025-09-14 12:39:20', 'Kesong Puti © 2026 All Rights Reserved', '1757850147_leave.png', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM');
+(1, 'logo.png', 'Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. We take pride in delivering locally made, high-quality products straight to your doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"},\r\n{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},\r\n{\"name\":\"Terms and Condition\",\"url\":\"terms-condition.php\"}]', '2025-09-18 19:25:03', 'Kesong Puti © 2026 All Rights Reserved', '1758223503_leave.png', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM');
 
 -- --------------------------------------------------------
 
@@ -155,7 +155,8 @@ INSERT INTO `inbox_messages` (`inbox_id`, `name`, `email`, `contact`, `message`,
 (10, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'SHHHHH HAHAHHAHAHAH', '2025-08-20 08:06:02', 'admin_3'),
 (11, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'Hello, this is just a sample message!', '2025-08-20 08:06:39', 'admin_3'),
 (12, 'sample', 'sample@sample.com', '09123456611', 'sample message!', '2025-09-09 05:29:46', 'super_1'),
-(13, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'hello', '2025-09-11 06:45:00', 'super_1');
+(13, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'hello', '2025-09-11 06:45:00', 'super_1'),
+(14, 'Russell Garcia', 'sample@sample.com', '09123456611', 'sample sample', '2025-09-18 09:45:54', 'super_1');
 
 -- --------------------------------------------------------
 
@@ -175,11 +176,11 @@ CREATE TABLE `page_headers` (
 --
 
 INSERT INTO `page_headers` (`id`, `page_name`, `header_text`, `header_image`) VALUES
-(1, 'home', 'Welcome to Kesong Puti', NULL),
-(2, 'products', 'Our Products', NULL),
-(3, 'FAQ', 'Frequently Asked Questions', NULL),
-(4, 'contact', 'Get in Touch', NULL),
-(5, 'feedback', 'Customer Feedback', NULL);
+(1, 'home', 'WELCOME', NULL),
+(2, 'products', 'OUR PRODUCTS', NULL),
+(3, 'FAQ', 'GOT QUESTIONS?', NULL),
+(4, 'contact', 'GET IN TOUCH', NULL),
+(5, 'feedback', 'CUSTOMER FEEDBACK', NULL);
 
 -- --------------------------------------------------------
 
@@ -289,49 +290,69 @@ CREATE TABLE `site_settings` (
 --
 
 INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
-('background_color', '#FFFFFF'),
+('background_color', '#FDF5E6'),
 ('body_font_color', '#000000'),
-('button1_color', '#F4C40F'),
-('button1_font_color', '#ffffff'),
+('button1_color', '#0D8540'),
+('button1_font_color', '#0D8540'),
+('button1_hover', '#FFFFFF'),
 ('button1_hover_color', '#F4C40F'),
-('button2_color', '#0D8540'),
-('button2_font_color', '#000000'),
+('button1_hover_font', '#0D8540'),
+('button2_color', '#FFFFFF'),
+('button2_font_color', '#FFFFFF'),
+('button2_hover', '#0D8540'),
 ('button2_hover_color', '#0D8540'),
+('button2_hover_font', '#FFFFFF'),
+('button3_color', '#F4C40F'),
+('button3_font_color', '#000000'),
 ('button_bg_color', '#000000'),
 ('button_font_color', '#24be19'),
 ('button_hover_color', '#3d5538'),
+('checkout_button_color', '#F4C40F'),
+('checkout_button_hover', '#0D8540'),
 ('description_color', '#000000'),
 ('description_font_color', '#09430d'),
-('faq_answer_bg', '#D3DED5'),
-('faq_button_bg', '#87B86B'),
+('faq_answer_bg', '#87B86B'),
+('faq_answer_font_color', '#000000'),
+('faq_button_bg', '#0D8540'),
+('faq_question_font_color', '#FFFFFF'),
 ('font_family', 'Lilita One'),
+('footer_bg', '#FBF1D7'),
 ('footer_color', '#FAF3DD'),
-('header_color', '#87B86B'),
+('headers_bg', '#FBF1D7'),
+('header_color', '#0D8540'),
 ('header_font_color', '#ffffff'),
+('heading_font_color', '#0D8540'),
+('icon_color', '#0D8540'),
 ('navbar_color', '#82b658'),
 ('navbar_font_color', '#ffffff'),
 ('navbar_font_family', 'Fredoka'),
-('navbar_hover_color', '#005F6B'),
+('navbar_hover_color', '#87B86B'),
+('page_bg', '#FEFAF6'),
 ('page_header_font', 'Lilita One'),
 ('page_header_font_color', '#ffffff'),
 ('page_header_font_family', 'Lilita One'),
 ('page_numbers_font_color', '#ff9500'),
-('price_color', '#0D8540'),
+('page_number_active', '#0D8540'),
+('page_number_hover', '#0D8540'),
+('price_color', '#F4C40F'),
 ('price_font_color', '#e63946'),
 ('primary_color', '#50a838'),
-('primary_font', 'Fredoka'),
+('primary_font', 'Poppins'),
 ('products_font_family', 'Fredoka'),
+('product_font_color', '#000000'),
 ('product_name_font_color', '#a54545'),
 ('product_name_font_family', 'Fredoka'),
 ('product_page_number_bg', '#F4C40F'),
 ('secondary_color', '#ffff00'),
 ('secondary_font', 'Lilita One'),
+('second_heading_font_color', '#FFFFFF'),
 ('site_title', 'Kesong Puti Stores'),
 ('store_name_font_color', '#000000'),
 ('store_name_font_family', 'Fredoka'),
 ('subtitle_color', '#ff00e1'),
 ('subtitle_font_color', '#0D8540'),
-('title_color', '#ff0000');
+('title_color', '#ff0000'),
+('wave_background', '#058240');
 
 -- --------------------------------------------------------
 
@@ -368,16 +389,20 @@ CREATE TABLE `store_contacts` (
   `store_name` varchar(255) NOT NULL,
   `email` text DEFAULT NULL,
   `phone` text DEFAULT NULL,
-  `address` text DEFAULT NULL
+  `address` text DEFAULT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `store_contacts`
 --
 
-INSERT INTO `store_contacts` (`id`, `store_name`, `email`, `phone`, `address`) VALUES
-(1, 'Mommy Lodie Kesong Puti', 'lodie@gmail.com', '091233455678', '123 sdjfhakjs fsdhafj'),
-(5, 'sample store', 'lalaineconde11@gmail.com', '09123432874', '123 sample address');
+INSERT INTO `store_contacts` (`id`, `store_name`, `email`, `phone`, `address`, `latitude`, `longitude`) VALUES
+(1, 'Mommy Lodie Kesong Puti', 'lodie@gmail.com', '091233455678', '123 sdjfhakjs fsdhafj', NULL, NULL),
+(5, 'sample store', 'lalaineconde11@gmail.com', '09123432874', '123 sample address', NULL, NULL),
+(8, 'sample store', 'lalaineconde11@gmail.com', '09123432874', 'sample address', NULL, NULL),
+(9, 'sample storesss', 'lalaineconde23@gmail.com', '09123432874', '4883 Bagumbayan Road, Santa Cruz, 4009 Laguna', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -531,13 +556,13 @@ ALTER TABLE `footer_settings`
 -- AUTO_INCREMENT for table `inbox_messages`
 --
 ALTER TABLE `inbox_messages`
-  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `page_headers`
 --
 ALTER TABLE `page_headers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=311;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=416;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
@@ -567,7 +592,7 @@ ALTER TABLE `store`
 -- AUTO_INCREMENT for table `store_contacts`
 --
 ALTER TABLE `store_contacts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `super_admin`

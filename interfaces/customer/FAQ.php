@@ -2,6 +2,7 @@
 $page_title = 'FAQ | Kesong Puti';
 require '../../connection.php';
 $current_page = 'FAQ'; 
+$page_subheader = "Let's get you an Answer";
 include ('../../includes/customer-dashboard.php');
 
 // Fetch header text
@@ -45,8 +46,10 @@ $faqs = $connection->query("SELECT * FROM faqs ORDER BY id ASC");
 
     <!-- FAQ -->
     <section id="faq">
-      <div class="faq-box mb-5">
-        <div class="p-5">
+      <div class="container faq-container">
+      <h1 class="text-center">Frequently Asked Questions</h1>
+        <h4 class="mb-4 text-center">How can we help?</h4>
+
           <div class="accordion" id="faqAccordion">
             <?php if ($faqs->num_rows > 0): ?>
               <?php while($faq = $faqs->fetch_assoc()): ?>
@@ -71,11 +74,138 @@ $faqs = $connection->query("SELECT * FROM faqs ORDER BY id ASC");
                 No FAQs available at the moment. Please check back later.
               </div>
             <?php endif; ?>
-          </div>
+
         </div>
       </div>
     </section>
     <!-- FAQ -->
+
+
+    <!-- VINE SEPARATOR -->
+    <div class="wave-transition">
+      <svg
+        viewBox="0 0 1440 80"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- two floating lines -->
+        <path
+          d="M0,20 C120,40 240,0 360,20 C480,40 600,0 720,20 C840,40 960,0 1080,20 C1200,40 1320,0 1440,20"
+          fill="none"
+          stroke="#058240"
+          stroke-width="8"
+        />
+        <path
+          d="M0,40 C120,60 240,20 360,40 C480,60 600,20 720,40 C840,60 960,20 1080,40 C1200,60 1320,20 1440,40"
+          fill="none"
+          stroke="#058240"
+          stroke-width="8"
+        />
+        <!-- last wave: bottom filled green (becomes top of green section) -->
+        <path
+          d="M0,60 C120,80 240,40 360,60 C480,80 600,40 720,60 C840,80 960,40 1080,60 C1200,80 1320,40 1440,60 L1440,80 L0,80 Z"
+          fill="#058240"
+          stroke="#058240"
+          stroke-width="8"
+        />
+      </svg>
+    </div>
+    <!-- VINE SEPARATOR -->
+
+
+<!-- CONTACT US -->
+<section id="inquiry">
+  <div class="container inquiry-container">
+    <div class="row g-5">
+      <!-- contact form -->
+          <div class="col-lg-6">
+            <h1 class="mb-1">Still Need Help?</h1>
+            <h2 class="mb-4">
+              We'd love to hear from you. Reach out, and we'll respond as
+              quickly as possible
+            </h2>
+
+        <form action="save-message.php" method="POST">
+          <!-- name -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- email and contact no -->
+          <div class="row g-3 mt-1">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" name="email" placeholder="Email" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                <input type="text" class="form-control" name="contact" placeholder="Contact Number" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- branch selection -->
+          <div class="mt-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-shop"></i></span>
+              <select class="form-select" name="recipient" required>
+                <option value="">Select Store</option>
+                <?php
+                  require '../../connection.php';
+
+                  // Super Admins
+                  $superQuery = "SELECT super_id, username FROM super_admin";
+                  $superResult = mysqli_query($connection, $superQuery);
+                  while ($row = mysqli_fetch_assoc($superResult)) {
+                      echo '<option value="super_' . $row['super_id'] . '">' 
+                          . htmlspecialchars($row['username']) . '</option>';
+                  }
+
+                  // Admins
+                  $adminQuery = "SELECT admin_id, username FROM admins";
+                  $adminResult = mysqli_query($connection, $adminQuery);
+                  while ($row = mysqli_fetch_assoc($adminResult)) {
+                      echo '<option value="admin_' . $row['admin_id'] . '">' 
+                          . htmlspecialchars($row['username']) . '</option>';
+                  }
+                ?>
+              </select>
+            </div>
+          </div>
+
+          <!-- message -->
+          <div class="mt-3">
+            <textarea class="form-control" name="message" rows="4" placeholder="Message" required></textarea>
+          </div>
+
+          <!-- submit button -->
+          <button type="submit" class="btn-submit mt-3">Submit</button>
+        </form>
+      </div>
+
+      <!-- logo -->
+      <div class="col-lg-6 d-flex align-items-center justify-content-center">
+        <div class="contact-logo text-center">
+          <img src="../../assets/logo.png" alt="Kesong Puti Logo" class="img-fluid" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 
 

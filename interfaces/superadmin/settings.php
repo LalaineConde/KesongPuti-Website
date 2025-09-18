@@ -14,7 +14,7 @@ if (isset($_POST['save_general'])) {
             or die("Error: " . mysqli_error($connection));
     }
 
-    // ✅ Handle Page Header Cover Upload (outside the foreach)
+    // ✅ Handle Page Header Cover Upload
     if (!empty($_FILES['page_header_cover']['name'])) {
         $targetDir = "../../uploads/header/";
         if (!is_dir($targetDir)) {
@@ -22,7 +22,6 @@ if (isset($_POST['save_general'])) {
         }
         $targetFile = $targetDir . "header.png"; // overwrite same file
 
-        // Delete old file if exists
         if (file_exists($targetFile)) {
             unlink($targetFile);
         }
@@ -64,33 +63,57 @@ $query = mysqli_query($connection, "SELECT * FROM page_headers");
 $defaultHeader = "../../assets/header.png";
 $uploadedHeader = "../../uploads/header/header.png";
 
-
 while ($row = mysqli_fetch_assoc($query)) {
     $headers[$row['page_name']] = $row['header_text'];
 }
 
 /* ========== RESET TO DEFAULT SETTINGS ========== */
 if (isset($_POST['reset_defaults'])) {
-    // Default values
     $defaultSettings = [
-        "primary_font" => "Fredoka",
+        // PAGE BACKGROUNDS
+        "page_bg" => "#FEFAF6",
+        "headers_bg" => "#FBF1D7",
+        "footer_bg" => "#FBF1D7",
+        "wave_background" => "#058240",
+
+        // FONTS
         "page_header_font" => "Lilita One",
-        "background_color" => "#FFFFFF",
-        "header_color" => "#87B86B",
-        "navbar_hover_color" => "#005F6B",
-        "footer_color" => "#FAF3DD",
-        "subtitle_font_color" => "#0D8540",
-        "price_color" => "#0D8540",
-        "description_color" => "#000000",
-        "product_page_number_bg" => "#F4C40F",
-        "faq_button_bg" => "#87B86B",
-        "faq_answer_bg" => "#D3DED5",
-        "button1_color" => "#F4C40F",
-        "button1_font_color" => "#ffffff",
-        "button1_hover_color" => "#F4C40F",
-        "button2_color" => "#0D8540",
-        "button2_font_color" => "#000000",
-        "button2_hover_color" => "#0D8540"
+        "primary_font" => "Poppins",
+
+        // FONT COLORS
+        "heading_font_color" => "#0D8540",
+        "second_heading_font_color" => "#FFFFFF",
+        "body_font_color" => "#000000",
+        "navbar_hover_color" => "#87B86B",
+        "price_color" => "#F4C40F",
+
+
+        // BUTTONS
+        "checkout_button_color" => "#F4C40F",
+        "checkout_button_hover" => "#0D8540",
+        "button1_color" => "#0D8540",
+        "button1_font_color" => "#0D8540",
+        "button1_hover" => "#FFFFFF",
+        "button1_hover_font" => "#0D8540",
+        "button2_color" => "#FFFFFF",
+        "button2_font_color" => "#FFFFFF",
+        "button2_hover" => "#0D8540",
+        "button2_hover_font" => "#FFFFFF",
+        "button3_color" => "#F4C40F",
+        "button3_font_color" => "#000000",
+
+        // PRODUCTS
+        "product_font_color" => "#000000",
+        "icon_color" => "#0D8540",
+        "page_number_active" => "#0D8540",
+        "page_number_hover" => "#0D8540",
+
+        // FAQ
+        "faq_button_bg" => "#0D8540",
+        "faq_question_font_color" => "#FFFFFF",
+        "faq_answer_bg" => "#87B86B",
+        "faq_answer_font_color" => "#000000",
+
     ];
 
     foreach ($defaultSettings as $key => $value) {
@@ -102,13 +125,13 @@ if (isset($_POST['reset_defaults'])) {
             or die("Error: " . mysqli_error($connection));
     }
 
-    // ✅ Default Page Headers
+    // Default Page Headers
     $defaultHeaders = [
-        "home" => "Welcome to Kesong Puti",
-        "products" => "Our Products",
-        "FAQ" => "Frequently Asked Questions",
-        "contact" => "Get in Touch",
-        "feedback" => "Customer Feedback"
+        "home" => "WELCOME",
+        "products" => "OUR PRODUCTS",
+        "FAQ" => "GOT QUESTIONS?",
+        "contact" => "GET IN TOUCH",
+        "feedback" => "CUSTOMER FEEDBACK"
     ];
 
     foreach ($defaultHeaders as $page => $text) {
@@ -120,25 +143,15 @@ if (isset($_POST['reset_defaults'])) {
              ON DUPLICATE KEY UPDATE header_text='$text'");
     }
 
+    // Reset Page Header Cover
+    $uploadedHeader = "../../uploads/header/header.png";
+    if (file_exists($uploadedHeader)) {
+        unlink($uploadedHeader);
+    }
 
-// Reset Page Header Cover to Default (from assets)
-$defaultHeader = "../../assets/header.png"; 
-$uploadedHeader = "../../uploads/header/header.png";
-
-// Delete old uploaded file
-if (file_exists($uploadedHeader)) {
-    unlink($uploadedHeader);
+    header("Location: settings.php?success=reset");
+    exit;
 }
-
-// Copy default back if it exists
-if (file_exists($defaultHeader)) {
-    copy($defaultHeader, $uploadedHeader);
-}
-
-          header("Location: settings.php?success=reset");
-          exit;
-      }
-
 
 include ('../../includes/superadmin-dashboard.php');
 ?>
@@ -151,7 +164,7 @@ include ('../../includes/superadmin-dashboard.php');
   <title>Settings | Kesong Puti</title>
 
   <!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- BOOTSTRAP ICONS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"/>
@@ -196,7 +209,7 @@ include ('../../includes/superadmin-dashboard.php');
 
     <!-- Preview Div -->
     <div id="pageHeaderPreview" 
-         style="background-image: url('<?= file_exists($uploadedHeader) ? $uploadedHeader : $defaultHeader ?>');
+         style="background-image: url('<?= file_exists($uploadedHeader) ? $uploadedHeader : ''?>');
                 height:150px; background-size:cover; 
                 border:1px solid #ccc; border-radius:8px; margin-top:10px;">
     </div>
@@ -213,7 +226,7 @@ include ('../../includes/superadmin-dashboard.php');
         <label class="form-label">Primary Font</label>
         <select class="form-select" name="settings[primary_font]">
           <?php 
-          $fonts = ['Arial','Verdana','Tahoma','Georgia','Times New Roman','Courier New','Trebuchet MS','Lilita One','Fredoka'];
+          $fonts = ['Lilita One','Poppins','Fredoka','Arial','Verdana','Tahoma','Georgia','Times New Roman','Courier New','Trebuchet MS'];
           foreach ($fonts as $font): ?>
             <option value="<?= $font ?>" <?= ($settings['primary_font'] ?? '') === $font ? 'selected' : '' ?>><?= $font ?></option>
           <?php endforeach; ?>
@@ -230,69 +243,123 @@ include ('../../includes/superadmin-dashboard.php');
       </div>
     </div>
 
-<!-- ================= Layout Colors ================= -->
-<h5>Layout Colors</h5>
-<div class="settings-row">
-  <?php 
-  $colorFields = [
-    "background_color" => "#FFFFFF",
-    "header_color" => "#87B86B",
-    "navbar_hover_color" => "#005F6B",
-    "footer_color" => "#FAF3DD",
-    "subtitle_font_color" => "#0D8540",
-    "price_color" => "#0D8540",
-    "description_color" => "#000000",
-    "product_page_number_bg" => "#F4C40F"
-  ];
-  foreach ($colorFields as $key => $default): 
-    $label = ucwords(str_replace("_", " ", $key));
-    $value = htmlspecialchars($settings[$key] ?? $default);
-  ?>
-    <div class="settings-col">
-      <label class="form-label"><?= $label ?></label>
-      <div class="color-picker">
-        <input type="color" id="<?= $key ?>" name="settings[<?= $key ?>]" value="<?= $value ?>">
-        <span id="<?= $key ?>Value"><?= $value ?></span>
-      </div>
+
+        <!-- ================= Backgrounds ================= -->
+    <h5>Backgrounds</h5>
+    <div class="settings-row">
+      <?php 
+      $bgFields = [
+        "page_bg" => "#FEFAF6",
+        "headers_bg" => "#FBF1D7",
+        "footer_bg" => "#FBF1D7",
+        "wave_background" => "#058240"
+      ];
+      foreach ($bgFields as $key => $default): 
+        $label = ucwords(str_replace("_", " ", $key));
+        $value = htmlspecialchars($settings[$key] ?? $default);
+      ?>
+        <div class="settings-col">
+          <label class="form-label"><?= $label ?></label>
+          <div class="color-picker">
+            <input type="color" id="<?= $key ?>" name="settings[<?= $key ?>]" value="<?= $value ?>">
+            <span id="<?= $key ?>Value"><?= $value ?></span>
+          </div>
+        </div>
+      <?php endforeach; ?>
     </div>
-  <?php endforeach; ?>
-</div>
+
+    <!-- ================= Font Colors ================= -->
+    <h5>Font Colors</h5>
+    <div class="settings-row">
+      <?php 
+      $fontColorFields = [
+        "heading_font_color" => "#0D8540",
+        "second_heading_font_color" => "#FFFFFF",
+        "body_font_color" => "#000000",
+        "navbar_hover_color" => "#87B86B",
+        "price_color" => "#F4C40F"
+      ];
+      foreach ($fontColorFields as $key => $default): 
+        $label = ucwords(str_replace("_", " ", $key));
+        $value = htmlspecialchars($settings[$key] ?? $default);
+      ?>
+        <div class="settings-col">
+          <label class="form-label"><?= $label ?></label>
+          <div class="color-picker">
+            <input type="color" id="<?= $key ?>" name="settings[<?= $key ?>]" value="<?= $value ?>">
+            <span id="<?= $key ?>Value"><?= $value ?></span>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+
+      <!-- ================= Buttons ================= -->
+    <h5>Buttons</h5>
+    <div class="settings-row">
+      <?php 
+      $buttonFields = [
+        "checkout_button_color" => "#F4C40F",
+        "checkout_button_hover" => "#0D8540",
+        "button1_color" => "#0D8540",
+        "button1_font_color" => "#0D8540",
+        "button1_hover" => "#FFFFFF",
+        "button1_hover_font" => "#0D8540",
+        "button2_color" => "#FFFFFF",
+        "button2_font_color" => "#FFFFFF",
+        "button2_hover" => "#0D8540",
+        "button2_hover_font" => "#FFFFFF",
+        "button3_color" => "#F4C40F",
+        "button3_font_color" => "#000000"
+      ];
+      foreach ($buttonFields as $key => $default): 
+        $label = ucwords(str_replace("_", " ", $key));
+        $value = htmlspecialchars($settings[$key] ?? $default);
+      ?>
+        <div class="settings-col">
+          <label class="form-label"><?= $label ?></label>
+          <div class="color-picker">
+            <input type="color" id="<?= $key ?>" name="settings[<?= $key ?>]" value="<?= $value ?>">
+            <span id="<?= $key ?>Value"><?= $value ?></span>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+
+    <!-- ================= Products ================= -->
+    <h5>Products</h5>
+    <div class="settings-row">
+      <?php 
+      $productFields = [
+        "product_font_color" => "#000000",
+        "icon_color" => "#0D8540",
+        "page_number_active" => "#0D8540",
+        "page_number_hover" => "#0D8540"
+      ];
+      foreach ($productFields as $key => $default): 
+        $label = ucwords(str_replace("_", " ", $key));
+        $value = htmlspecialchars($settings[$key] ?? $default);
+      ?>
+        <div class="settings-col">
+          <label class="form-label"><?= $label ?></label>
+          <div class="color-picker">
+            <input type="color" id="<?= $key ?>" name="settings[<?= $key ?>]" value="<?= $value ?>">
+            <span id="<?= $key ?>Value"><?= $value ?></span>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
 
 <!-- ================= FAQ Styles ================= -->
 <h5>FAQ Styles</h5>
 <div class="settings-row">
   <?php 
   $faqFields = [
-    "faq_button_bg" => "#87B86B",
-    "faq_answer_bg" => "#D3DED5"
+    "faq_button_bg" => "#0D8540",
+    "faq_question_font_color" => "#FFFFFF",
+    "faq_answer_bg" => "#87B86B",
+    "faq_answer_font_color" => "#000000"
   ];
   foreach ($faqFields as $key => $default): 
-    $label = ucwords(str_replace("_", " ", $key));
-    $value = htmlspecialchars($settings[$key] ?? $default);
-  ?>
-    <div class="settings-col">
-      <label class="form-label"><?= $label ?></label>
-      <div class="color-picker">
-        <input type="color" id="<?= $key ?>" name="settings[<?= $key ?>]" value="<?= $value ?>">
-        <span id="<?= $key ?>Value"><?= $value ?></span>
-      </div>
-    </div>
-  <?php endforeach; ?>
-</div>
-
-<!-- ================= Buttons ================= -->
-<h5>Buttons</h5>
-<div class="settings-row">
-  <?php 
-  $buttonFields = [
-    "button1_color" => "#F4C40F",
-    "button1_font_color" => "#ffffff",
-    "button1_hover_color" => "#F4C40F",
-    "button2_color" => "#0D8540",
-    "button2_font_color" => "#000000",
-    "button2_hover_color" => "#0D8540"
-  ];
-  foreach ($buttonFields as $key => $default): 
     $label = ucwords(str_replace("_", " ", $key));
     $value = htmlspecialchars($settings[$key] ?? $default);
   ?>

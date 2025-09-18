@@ -2,6 +2,7 @@
 $page_title = 'Contact Us | Kesong Puti';
 require '../../connection.php';
 $current_page = 'contact'; 
+$page_subheader = "Leave us a message";
 include ('../../includes/customer-dashboard.php');
 
 
@@ -44,129 +45,237 @@ $page_header = $row['header_text'] ?? "WELCOME";
   </head>
 <body>
 
+<!-- CONTACT US -->
+<section id="contact-us">
+  <div class="container contact-container">
+    <div class="row g-5">
+      <!-- contact form -->
+          <div class="col-lg-6">
+            <h1>Contact Us</h1>
+            <h2 class="mb-4">
+          We'd love to hear from you! Send us a message—we’ll get back to
+          you as soon as we can!
+        </h2>
 
-
-
-  <div class="contact-page">
-  <div class="container">
-    <!-- Logo + Circles -->
-    <div class="logo">
-      <img src="../../assets/ChatGPT_Image_Jun_15__2025__01_52_01_PM-removebg-preview.png" alt="Kesong Puti Logo">
-      <div class="circles">
-        <div class="circle"></div>
-        <div class="circle"></div>
-      </div>
-    </div>
-
-    
-
-
-    <!-- Contact Form -->
-    <div class="contact-form-page">
-      <h2>Contact Us</h2>
-      <p>We’d love to hear from you! Send us a message—we’ll get back to you as soon as we can!</p>
-      <form  action="save-message.php" method="POST">
-        <div class="input-group">
-          <i class="bi bi-person"></i>
-          <input type="text" name="name" placeholder="Name" required />
-        </div>
-        <div class="input-group">
-          <i class="bi bi-envelope"></i>
-          <input type="email" name="email" placeholder="Email" required />
-        </div>
-        <div class="input-group">
-          <i class="bi bi-telephone"></i>
-          <input type="text" name="contact" placeholder="Contact Number" required />
-        </div>
-        <div class="input-group">
-          <i class="bi bi-shop"></i>
-          <select name="recipient" required>
-            <option value="">-- Select Store --</option>
-            <?php
-                require '../../connection.php';
-
-                // Fetch all super admins
-                $superQuery = "SELECT super_id, username FROM super_admin";
-                $superResult = mysqli_query($connection, $superQuery);
-
-                while ($row = mysqli_fetch_assoc($superResult)) {
-                    echo '<option value="super_' . $row['super_id'] . '">'
-                        . htmlspecialchars($row['username']) . '</option>';
-                }
-
-                // Fetch all admins
-                $adminQuery = "SELECT admin_id, username FROM admins";
-                $adminResult = mysqli_query($connection, $adminQuery);
-
-                while ($row = mysqli_fetch_assoc($adminResult)) {
-                    echo '<option value="admin_' . $row['admin_id'] . '">'
-                        . htmlspecialchars($row['username']) . '</option>';
-                }
-
-                
-                ?>
-          </select>
-        </div>
-        <div class="input-group textarea">
-          <i class="bi bi-chat-dots"></i>
-          <textarea name="message" rows="3" placeholder="Message" required></textarea>
-        </div>
-        <button type="submit" class="submit-btn mt-2">Submit</button>
-      </form>
-    </div>
-
-
-
-     </div>
-  </div>
-
-      <!-- Store Contacts Section -->
-<div class="store-contacts mt-5">
-  <h3>Our Stores</h3>
-  <div class="row">
-    <?php
-      // fetch store contacts from DB
-      $contactQuery = "SELECT * FROM store_contacts ORDER BY id DESC";
-      $contactResult = mysqli_query($connection, $contactQuery);
-
-      if (mysqli_num_rows($contactResult) > 0) {
-        while ($contact = mysqli_fetch_assoc($contactResult)) {
-          echo '
-          <div class="col-md-4 mb-3">
-            <div class="card h-100 shadow-sm">
-              <div class="card-body">
-                <h5 class="card-title">'.htmlspecialchars($contact['store_name']).'</h5>
-                <p class="card-text mb-1">
-                  <i class="bi bi-envelope"></i>
-                  <a href="mailto:' . htmlspecialchars($contact['email']) . '?subject=Kesong%20Puti%20Customer%20Inquiry&body=Good%20day,%0D%0A%0D%0AI%20would%20like%20to%20inquire%20about..." class="text-decoration-none">
-                    ' . htmlspecialchars($contact['email']) . '
-                  </a>
-                </p>
-
-                <p class="card-text mb-1">
-                  <i class="bi bi-phone"></i>
-                  <a href="tel:' . htmlspecialchars($contact['phone']) . '" class="text-decoration-none">
-                    ' . htmlspecialchars($contact['phone']) . '
-                  </a>
-                </p>
-
-                <p class="card-text">
-                  <i class="bi bi-geo-alt"></i>
-                  <a href="https://www.google.com/maps/search/?api=1&query=' . htmlspecialchars(urlencode($contact['address'])) . '" 
-                    target="_blank" class="text-decoration-none">
-                    ' . htmlspecialchars($contact['address']) . '
-                  </a>
-                </p>
+        <form action="save-message.php" method="POST">
+          <!-- name -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" name="first_name" placeholder="First Name" required>
               </div>
             </div>
-          </div>';
-        }
-      } else {
-        echo '<p class="text-muted">No store contacts available yet.</p>';
-      }
-    ?>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" class="form-control" name="last_name" placeholder="Last Name" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- email and contact no -->
+          <div class="row g-3 mt-1">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" class="form-control" name="email" placeholder="Email" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                <input type="text" class="form-control" name="contact" placeholder="Contact Number" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- branch selection -->
+          <div class="mt-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="bi bi-shop"></i></span>
+              <select class="form-select" name="recipient" required>
+                <option value="">Select Store</option>
+                <?php
+                  require '../../connection.php';
+
+                  // Super Admins
+                  $superQuery = "SELECT super_id, username FROM super_admin";
+                  $superResult = mysqli_query($connection, $superQuery);
+                  while ($row = mysqli_fetch_assoc($superResult)) {
+                      echo '<option value="super_' . $row['super_id'] . '">' 
+                          . htmlspecialchars($row['username']) . '</option>';
+                  }
+
+                  // Admins
+                  $adminQuery = "SELECT admin_id, username FROM admins";
+                  $adminResult = mysqli_query($connection, $adminQuery);
+                  while ($row = mysqli_fetch_assoc($adminResult)) {
+                      echo '<option value="admin_' . $row['admin_id'] . '">' 
+                          . htmlspecialchars($row['username']) . '</option>';
+                  }
+                ?>
+              </select>
+            </div>
+          </div>
+
+          <!-- message -->
+          <div class="mt-3">
+            <textarea class="form-control" name="message" rows="4" placeholder="Message" required></textarea>
+          </div>
+
+          <!-- submit button -->
+          <button type="submit" class="btn-submit mt-3">Submit</button>
+        </form>
+      </div>
+
+      <!-- logo -->
+      <div class="col-lg-6 d-flex align-items-center justify-content-center">
+        <div class="contact-logo text-center">
+          <img src="../../assets/logo.png" alt="Kesong Puti Logo" class="img-fluid" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- CONTACT US -->
+
+
+    <!-- VINE SEPARATOR 1 -->
+    <div class="wave-transition2">
+      <svg
+        viewBox="0 0 1440 80"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- two floating lines -->
+        <path
+          d="M0,20 C120,40 240,0 360,20 C480,40 600,0 720,20 C840,40 960,0 1080,20 C1200,40 1320,0 1440,20"
+          fill="none"
+          stroke="#058240"
+          stroke-width="8"
+        />
+        <path
+          d="M0,40 C120,60 240,20 360,40 C480,60 600,20 720,40 C840,60 960,20 1080,40 C1200,60 1320,20 1440,40"
+          fill="none"
+          stroke="#058240"
+          stroke-width="8"
+        />
+        <!-- last wave: bottom filled green (becomes top of green section) -->
+        <path
+          d="M0,60 C120,80 240,40 360,60 C480,80 600,40 720,60 C840,80 960,40 1080,60 C1200,80 1320,40 1440,60 L1440,80 L0,80 Z"
+          fill="#058240"
+          stroke="#058240"
+          stroke-width="8"
+        />
+      </svg>
+    </div>
+    <!-- VINE SEPARATOR 1 -->
+
+
+<!-- STORE DETAILS -->
+<section id="store-details" class="my-5">
+  <div class="container py-5 store-details">
+    <h2>Store Branches</h2>
+    <div id="storeCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <?php
+          $contactQuery = "SELECT * FROM store_contacts ORDER BY id DESC";
+          $contactResult = mysqli_query($connection, $contactQuery);
+
+          $counter = 0;
+          while ($contact = mysqli_fetch_assoc($contactResult)) {
+              if ($counter % 3 == 0) {
+                  echo '<div class="carousel-item ' . ($counter == 0 ? 'active' : '') . '"><div class="row g-4">';
+              }
+              ?>
+              <div class="col-md-4">
+                <div class="store-card">
+                  <div class="card-header-bar">
+                    <i class="bi bi-shop"></i>
+                  </div>
+                  <div class="card-body">
+                    <h5 class="store-name"><?= htmlspecialchars($contact['store_name']) ?></h5>
+                    <p class="store-info"><strong>Location:</strong> <?= htmlspecialchars($contact['address']) ?></p>
+                    <p class="store-info"><strong>Email:</strong> <?= htmlspecialchars($contact['email']) ?></p>
+                    <p class="store-info"><strong>Contact:</strong> <?= htmlspecialchars($contact['phone']) ?></p>
+                    <p class="store-info"><strong>Owner:</strong> <?= htmlspecialchars($contact['owner'] ?? 'N/A') ?></p>
+                  </div>
+                </div>
+              </div>
+              <?php
+              if ($counter % 3 == 2) {
+                  echo '</div></div>';
+              }
+              $counter++;
+          }
+          if ($counter % 3 != 0) {
+              echo '</div></div>'; // close last row/slide if not full
+          }
+        ?>
+      </div>
+
+      <!-- carousel button -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#storeCarousel" data-bs-slide="prev">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#storeCarousel" data-bs-slide="next">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</section>
+<!-- STORE DETAILS -->
+
+
+    <!-- VINE SEPARATOR 3 -->
+    <div class="wave-transition3">
+      <svg
+        viewBox="0 0 1440 80"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- two floating lines -->
+        <path
+          d="M0,20 C120,40 240,0 360,20 C480,40 600,0 720,20 C840,40 960,0 1080,20 C1200,40 1320,0 1440,20"
+          fill="none"
+          stroke="#fefaf6"
+          stroke-width="8"
+        />
+        <path
+          d="M0,40 C120,60 240,20 360,40 C480,60 600,20 720,40 C840,60 960,20 1080,40 C1200,60 1320,20 1440,40"
+          fill="none"
+          stroke="#fefaf6"
+          stroke-width="8"
+        />
+        <!-- last wave: bottom filled green (becomes top of green section) -->
+        <path
+          d="M0,60 C120,80 240,40 360,60 C480,80 600,40 720,60 C840,80 960,40 1080,60 C1200,80 1320,40 1440,60 L1440,80 L0,80 Z"
+          fill="#fefaf6"
+          stroke="#fefaf6"
+          stroke-width="8"
+        />
+      </svg>
+    </div>
+    <!-- VINE SEPARATOR 2 -->
+
+
+    <!-- LOCATION -->
+    <section id="location" class="location">
+      <h2>Our Location</h2>
+<div class="map-container">
+  <div class="map-frame">
+    <iframe
+      src="https://www.google.com/maps/d/embed?mid=1bWvJY2YBH4bZEfWXVG9nKg6rBG02qWk&ehbc=2E312F&noprof=1"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
   </div>
 </div>
+    </section>
+    <!-- LOCATION -->
+
 
 
 

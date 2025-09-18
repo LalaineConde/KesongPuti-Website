@@ -51,33 +51,54 @@ if (!empty($current_page)) {
 
     <style>
 :root {
+  /* ===== Backgrounds ===== */
+  --page-bg: <?= $settings['page_bg'] ?? '#FEFAF6' ?>;
+  --headers-bg: <?= $settings['headers_bg'] ?? '#FBF1D7' ?>;
+  --footer-bg: <?= $settings['footer_bg'] ?? '#FBF1D7' ?>;
+  --wave-background: <?= $settings['wave_background'] ?? '#058240' ?>;
 
-
-  --background-color: <?= $settings['background_color'] ?? '#FFFFFF' ?>;
-
+  /* ===== Fonts ===== */
   --primary-font: "<?= $settings['primary_font'] ?? 'Fredoka' ?>", sans-serif;
   --page-header-font: "<?= $settings['page_header_font'] ?? 'Lilita One' ?>", sans-serif;
 
-  --header-color: <?= $settings['header_color'] ?? '#87B86B' ?>;
-  --navbar-hover-color: <?= $settings['navbar_hover_color'] ?? '#005F6B' ?>;  
-  --footer-color: <?= $settings['footer_color'] ?? '##FAF3DD' ?>;
-  --subtitle-font-color: <?= $settings['subtitle_font_color'] ?? '#0D8540' ?>;
-  --price-color: <?= $settings['price_color'] ?? '#0D8540' ?>;
-  --description-color: <?= $settings['description_color'] ?? '#000000' ?>;
-  
-  --button1-color: <?= $settings['button1_color'] ?? '#F4C40F' ?>;
-  --button2-color: <?= $settings['button2_color'] ?? '#0D8540' ?>;
+  /* ===== Font Colors ===== */
+  --heading-font-color: <?= $settings['heading_font_color'] ?? '#0D8540' ?>;
+  --second-heading-font-color: <?= $settings['second_heading_font_color'] ?? '#FFFFFF' ?>;
+  --body-font-color: <?= $settings['body_font_color'] ?? '#000000' ?>;
+  --navbar-hover-color: <?= $settings['navbar_hover_color'] ?? '#87B86B' ?>;
+  --price-color: <?= $settings['price_color'] ?? '#F4C40F' ?>;
 
-  --button1-font-color: <?= $settings['button1_font_color'] ?? '#ffffff' ?>;
-  --button1-hover-color: <?= $settings['button1_hover_color'] ?? '#F4C40F' ?>;
+  /* ===== Buttons ===== */
+  --checkout-button-color: <?= $settings['checkout_button_color'] ?? '#F4C40F' ?>;
+  --checkout-button-hover: <?= $settings['checkout_button_hover'] ?? '#0D8540' ?>;
 
-  --button2-font-color: <?= $settings['button2_font_color'] ?? '#000000' ?>;
-  --button2-hover-color: <?= $settings['button2_hover_color'] ?? '#0D8540' ?>;
+  --button1-color: <?= $settings['button1_color'] ?? '#0D8540' ?>;
+  --button1-font-color: <?= $settings['button1_font_color'] ?? '#0D8540' ?>;
+  --button1-hover: <?= $settings['button1_hover'] ?? '#FFFFFF' ?>;
+  --button1-hover-font: <?= $settings['button1_hover_font'] ?? '#0D8540' ?>;
 
-  --faq-button-bg: <?= $settings['faq_button_bg'] ?? '#87B86B' ?>;
-  --faq-answer-bg: <?= $settings['faq_answer_bg'] ?? '#D3DED5' ?>;
-  --product-page-number-bg: <?= $settings['product_page_number_bg'] ?? '#F4C40F' ?>;
+  --button2-color: <?= $settings['button2_color'] ?? '#FFFFFF' ?>;
+  --button2-font-color: <?= $settings['button2_font_color'] ?? '#FFFFFF' ?>;
+  --button2-hover: <?= $settings['button2_hover'] ?? '#0D8540' ?>;
+  --button2-hover-font: <?= $settings['button2_hover_font'] ?? '#FFFFFF' ?>;
+
+  --button3-color: <?= $settings['button3_color'] ?? '#F4C40F' ?>;
+  --button3-font-color: <?= $settings['button3_font_color'] ?? '#000000' ?>;
+
+  /* ===== Products ===== */
+  --product-font-color: <?= $settings['product_font_color'] ?? '#000000' ?>;
+  --icon-color: <?= $settings['icon_color'] ?? '#0D8540' ?>;
+  --page-number-active: <?= $settings['page_number_active'] ?? '#0D8540' ?>;
+  --page-number-hover: <?= $settings['page_number_hover'] ?? '#0D8540' ?>;
+
+  /* ===== FAQ ===== */
+  --faq-button-bg: <?= $settings['faq_button_bg'] ?? '#0D8540' ?>;
+  --faq-question-font-color: <?= $settings['faq_question_font_color'] ?? '#FFFFFF' ?>;
+  --faq-answer-bg: <?= $settings['faq_answer_bg'] ?? '#87B86B' ?>;
+  --faq-answer-font-color: <?= $settings['faq_answer_font_color'] ?? '#000000' ?>;
 }
+
+
 
 
 body {
@@ -95,7 +116,7 @@ body {
 
 
 .navbar-scrolled {
-    background-color: var(--header-color) !important;  
+    background-color: var(--headers-bg) !important;  
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
@@ -113,6 +134,7 @@ body {
     color: var(--navbar-hover-color) !important;
     transition: all 0.5s ease;
 }
+
 
 
 
@@ -178,12 +200,28 @@ body {
          style="background-image: url('../../<?= htmlspecialchars($header_image) ?>');">
   <div class="header-text">
     <h1><?= htmlspecialchars($page_header) ?></h1>
-    <div class="breadcrumb">
+    <h2><?= htmlspecialchars($page_subheader ?? '') ?></h2>
+    <div class="mt-4 breadcrumb">
       <a href="home.php"><span>Home</span></a>
       <p class="separator">-</p>
-      <span><?= ucfirst($current_page) ?></span>
+      <span class="current-page"><?= ucfirst($current_page) ?></span>
     </div>
   </div>
+
+
+      <!-- wave separator -->
+      <svg
+        class="wave"
+        viewBox="0 0 1440 320"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- white part -->
+        <path
+          d="M0,224 L48,213.3 C96,203 192,181 288,165.3 C384,149 480,139 576,149.3 C672,160 768,192 864,202.7 C960,213 1056,203 1152,186.7 C1248,171 1344,149 1392,138.7 L1440,128 L1440,320 L1392,320 C1344,320 1248,320 1152,320 C1056,320 960,320 864,320 C768,320 672,320 576,320 C480,320 384,320 288,320 C192,320 96,320 48,320 L0,320 Z"
+          fill="#fefaf6"
+        />
+      </svg>
 </section>
  
     <!-- PRODUCTS PAGE HEADER -->
@@ -201,26 +239,25 @@ body {
 
       <!-- Body -->
       <div class="cart-body" id="cartItems">
-        <!-- checkbox -->
-        <div class="select-all">
-          <input type="checkbox" id="selectAll" />
-          <label for="selectAll">Select All</label>
-        </div>
+
 
         <!-- items -->
         
       </div>
-
       <!-- footer -->
       <div class="cart-footer">
+        <div class="select-all">
+          <input type="checkbox" id="selectAll" />
+          <label for="selectAll">Select All</label>
+        </div>
         <div class="total">
           <span>Total:</span>
-          <strong id="cartTotal">₱0.00</strong>
+          <strong id="cartTotal">₱65</strong>
         </div>
         <button class="checkout-btn">Checkout</button>
       </div>
     </div>
-
+    <!-- overlay -->
     <div class="overlay" id="overlay"></div>
     <!-- CART SIDEBAR -->
 
@@ -367,12 +404,7 @@ body {
 
         // Render cart items
         function renderCart() {
-          cartContainer.innerHTML = `
-            <div class="d-flex align-items-center mb-2">
-              <input type="checkbox" id="selectAll" class="me-2" />
-              <label for="selectAll" class="mb-0 fw-bold">Select All</label>
-            </div>
-          `;
+          cartContainer.innerHTML = "";
 
           if (cart.length === 0) {
             cartContainer.innerHTML += `<p class="text-muted empty-message">Your cart is empty.</p>`;

@@ -3,6 +3,7 @@
 $page_title = 'Customer Products | Kesong Puti';
 require '../../connection.php';
 $current_page = 'products'; 
+$page_subheader = "Explore our Kesong Puti Delicacy";
 include ('../../includes/customer-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
@@ -126,6 +127,46 @@ $store_result = mysqli_query($connection, $store_sql);
   <body>
 
 
+    <!-- BRANDING -->
+    <section id="branding-section">
+      <div class="container">
+        <div class="row g-4">
+          <!--  -->
+          <div class="col-lg-4 branding">
+            <i class="bi bi-heart"></i>
+            <h2>Authentic Filipino Tradition</h2>
+            <p>
+              Taste a Piece of Filipino Heritage. Our kesong puti is crafted
+              with a time-honored recipe passed down through generations
+            </p>
+          </div>
+
+          <!--  -->
+          <div class="col-lg-4 branding">
+            <i class="bi bi-person"></i>
+            <h2>Freshness from Local Farms</h2>
+            <p>
+              Farm-Fresh Goodness. We use carabao’s milk sourced daily from
+              local farmers to ensure maximum freshness and flavor.
+            </p>
+          </div>
+
+          <!--  -->
+          <div class="col-lg-4 branding">
+            <i class="bi bi-leaf"></i>
+            <h2>Simple, Pure Ingredients</h2>
+            <p>
+              Pure and Simple. Absolutely Delicious. Made only with fresh
+              carabao’s milk, salt, and rennet, our cheese has no
+              preservatives—just natural flavor.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- BRANDING -->
+
+
 
     <!-- PRODUCTS -->
     <section class="product-section">
@@ -210,7 +251,7 @@ $store_result = mysqli_query($connection, $store_sql);
                     class="card-img-top"
                     alt="<?= htmlspecialchars($row['product_name']) ?>"
                   >
-                  <div class="card-body d-flex flex-column">
+                  <div class="card-body">
                     <p class="admin-label">Store: <?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?></p>
                     <h5 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h5>
                     <p class="product-price">₱<?= number_format($row['price'], 2) ?></p>
@@ -286,23 +327,23 @@ $store_result = mysqli_query($connection, $store_sql);
       </div>
 
         <!-- pagination -->
-        <nav>
+        <nav aria-label="Page navigation" class="pagination-wrapper mb-5">
           <ul class="pagination pb-5 justify-content-center">
             <!-- Previous -->
             <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
-              <a class="page-link shadow-none" href="<?= $base_url ?>&page=<?= max(1, $page - 1) ?>">Previous</a>
+              <a class="page-link" href="<?= $base_url ?>&page=<?= max(1, $page - 1) ?>">Previous</a>
             </li>
 
             <!-- Page Numbers -->
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
               <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                <a class="page-link shadow-none" href="<?= $base_url ?>&page=<?= $i ?>"><?= $i ?></a>
+                <a class="page-link" href="<?= $base_url ?>&page=<?= $i ?>"><?= $i ?></a>
               </li>
             <?php endfor; ?>
 
             <!-- Next -->
             <li class="page-item <?= ($page >= $total_pages) ? 'disabled' : '' ?>">
-              <a class="page-link shadow-none" href="<?= $base_url ?>&page=<?= min($total_pages, $page + 1) ?>">Next</a>
+              <a class="page-link" href="<?= $base_url ?>&page=<?= min($total_pages, $page + 1) ?>">Next</a>
             </li>
           </ul>
         </nav>

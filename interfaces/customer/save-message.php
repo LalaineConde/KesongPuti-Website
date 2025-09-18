@@ -1,16 +1,20 @@
 <?php
 require '../../connection.php'; 
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $name    = mysqli_real_escape_string($connection, $_POST['name']);
-    $email   = mysqli_real_escape_string($connection, $_POST['email']);
-    $contact = mysqli_real_escape_string($connection, $_POST['contact']);
-    $message = mysqli_real_escape_string($connection, $_POST['message']);
+    $firstName = mysqli_real_escape_string($connection, $_POST['first_name']);
+    $lastName  = mysqli_real_escape_string($connection, $_POST['last_name']);
+    $email     = mysqli_real_escape_string($connection, $_POST['email']);
+    $contact   = mysqli_real_escape_string($connection, $_POST['contact']);
+    $message   = mysqli_real_escape_string($connection, $_POST['message']);
     $recipient = mysqli_real_escape_string($connection, $_POST['recipient']);
 
-$sql = "INSERT INTO inbox_messages (name, email, contact, message, recipient) 
-        VALUES ('$name', '$email', '$contact', '$message', '$recipient')";
+    // Combine first and last name into "name"
+    $name = trim($firstName . " " . $lastName);
 
+    $sql = "INSERT INTO inbox_messages (name, email, contact, message, recipient) 
+            VALUES ('$name', '$email', '$contact', '$message', '$recipient')";
 
     if (mysqli_query($connection, $sql)) {
         $_SESSION['toast_message'] = "Message submitted successfully!";
@@ -20,7 +24,7 @@ $sql = "INSERT INTO inbox_messages (name, email, contact, message, recipient)
 
     mysqli_close($connection);
 
-    // Redirect back to the page where the form was submitted
+    // Redirect back
     $redirect = $_SERVER['HTTP_REFERER'] ?? 'index.php';
     header("Location: $redirect");
     exit();

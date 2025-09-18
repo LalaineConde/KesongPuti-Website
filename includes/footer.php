@@ -107,7 +107,7 @@ $quickLinks = json_decode($footer['quick_links'], true);
 
       <!-- Column 4: Contact Form -->
       <div class="col-md-3 col-sm-12 contact-form">
-        <h5 class="footer-title">Contact Us</h5>
+        <h5 class="footer-title">Leave A Message</h5>
             <p class="small">
               We’d love to hear from you! Send us a message—we’ll get back to
               you as soon as we can!
