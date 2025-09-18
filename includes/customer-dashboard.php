@@ -8,10 +8,20 @@ while ($row = mysqli_fetch_assoc($query)) {
     $settings[$row['setting_key']] = $row['setting_value'];
 }
 
-// Default fallback colors
-$primaryColor = $settings['primary_color'] ?? '#4e6f47';
-$secondaryColor = $settings['secondary_color'] ?? '#f4c400';
-$fontFamily = $settings['font_family'] ?? 'Fredoka';
+$header_image = "assets/header.png";
+
+if (!empty($current_page)) {
+    $result = mysqli_query($connection, 
+        "SELECT header_text, header_image 
+         FROM page_headers 
+         WHERE page_name='$current_page' 
+         LIMIT 1");
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        $page_header = $row['header_text'] ?? "WELCOME";
+        $header_image = $row['header_image'] ?? "uploads/header/header.png";
+    }
+}
 ?>
 
 
@@ -41,54 +51,70 @@ $fontFamily = $settings['font_family'] ?? 'Fredoka';
 
     <style>
 :root {
-  /* --primary-color: <?= htmlspecialchars($primaryColor) ?>;
-  --secondary-color: <?= htmlspecialchars($secondaryColor) ?>; */
+
+
+  --background-color: <?= $settings['background_color'] ?? '#FFFFFF' ?>;
 
   --primary-font: "<?= $settings['primary_font'] ?? 'Fredoka' ?>", sans-serif;
-  --page-header-font: "<?= $settings['page_header_font'] ?? 'Arial' ?>", sans-serif;
+  --page-header-font: "<?= $settings['page_header_font'] ?? 'Lilita One' ?>", sans-serif;
 
-  --navbar-color: <?= $settings['navbar_color'] ?? '#000000' ?>;
-  --subtitle-font-color: <?= $settings['subtitle_font_color'] ?? '#333333' ?>;
-  --price-color: <?= $settings['price_color'] ?? '#333333' ?>;
-  --description-color: <?= $settings['description_color'] ?? '#555555' ?>;
+  --header-color: <?= $settings['header_color'] ?? '#87B86B' ?>;
+  --navbar-hover-color: <?= $settings['navbar_hover_color'] ?? '#005F6B' ?>;  
+  --footer-color: <?= $settings['footer_color'] ?? '##FAF3DD' ?>;
+  --subtitle-font-color: <?= $settings['subtitle_font_color'] ?? '#0D8540' ?>;
+  --price-color: <?= $settings['price_color'] ?? '#0D8540' ?>;
+  --description-color: <?= $settings['description_color'] ?? '#000000' ?>;
   
-  --button1-color: <?= $settings['button1_color'] ?? '#87c159' ?>;
-  --button2-color: <?= $settings['button2_color'] ?? '#f4c400' ?>;
+  --button1-color: <?= $settings['button1_color'] ?? '#F4C40F' ?>;
+  --button2-color: <?= $settings['button2_color'] ?? '#0D8540' ?>;
 
-  --faq-button-bg: <?= $settings['faq_button_bg'] ?? '#000000' ?>;
-  --faq-answer-bg: <?= $settings['faq_answer_bg'] ?? '#ffffff' ?>;
-  --product-page-number-bg: <?= $settings['product_page_number_bg'] ?? '#000000' ?>;
+  --button1-font-color: <?= $settings['button1_font_color'] ?? '#ffffff' ?>;
+  --button1-hover-color: <?= $settings['button1_hover_color'] ?? '#F4C40F' ?>;
+
+  --button2-font-color: <?= $settings['button2_font_color'] ?? '#000000' ?>;
+  --button2-hover-color: <?= $settings['button2_hover_color'] ?? '#0D8540' ?>;
+
+  --faq-button-bg: <?= $settings['faq_button_bg'] ?? '#87B86B' ?>;
+  --faq-answer-bg: <?= $settings['faq_answer_bg'] ?? '#D3DED5' ?>;
+  --product-page-number-bg: <?= $settings['product_page_number_bg'] ?? '#F4C40F' ?>;
 }
+
 
 body {
     font-family: var(--font-family);
 }
 
 .navbar {
-    position: fixed;   /* make it stick */
+    position: fixed;   
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1050;     /* above all content */
+    z-index: 1050;     
     transition: background-color 0.4s ease, transform 0.4s ease;
 }
 
 
-/* Apply primary only when scrolled */
 .navbar-scrolled {
-    background-color: var(--navbar-color) !important;  
+    background-color: var(--header-color) !important;  
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Transparent at top */
+
 .navbar-transparent {
     background: transparent !important;
 }
 
-/* Other elements keep primary */
-.cart-header, .cart-footer, .btn-dark {
-    background-color: var(--primary-color) !important;
+.navbar .nav-link:hover {
+    color: var(--navbar-hover-color) !important;
+    transition: all 0.5s ease;
 }
+
+.cart-icon:hover {
+    color: var(--navbar-hover-color) !important;
+    transition: all 0.5s ease;
+}
+
+
 
 
 
@@ -146,6 +172,19 @@ body {
     <!-- NAVBAR -->
      
     <!-- PAGE HEADER -->
+
+
+<section class="product-page" 
+         style="background-image: url('../../<?= htmlspecialchars($header_image) ?>');">
+  <div class="header-text">
+    <h1><?= htmlspecialchars($page_header) ?></h1>
+    <div class="breadcrumb">
+      <a href="home.php"><span>Home</span></a>
+      <p class="separator">-</p>
+      <span><?= ucfirst($current_page) ?></span>
+    </div>
+  </div>
+</section>
  
     <!-- PRODUCTS PAGE HEADER -->
 

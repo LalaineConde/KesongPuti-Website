@@ -2,13 +2,11 @@
 <?php
 $page_title = 'Customer Products | Kesong Puti';
 require '../../connection.php';
-$page_header = "PRODUCTS";
+$current_page = 'products'; 
 include ('../../includes/customer-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
-// Which page is this?
-$current_page = 'products'; // change this per file (products, contact, faq, etc.)
 
 // Fetch settings
 $settings = [];
@@ -127,18 +125,7 @@ $store_result = mysqli_query($connection, $store_sql);
 
   <body>
 
-  <!-- PAGE HEADER -->
-<section class="product-page" style="background-image: url('../../<?= htmlspecialchars($settings['header_image'] ?? 'assets/header.png') ?>');">
-  <div class="header-text">
-    <h1><?= htmlspecialchars($page_header) ?></h1>
-    <div class="breadcrumb">
-      <a href="home.php"><span>Home</span></a>
-      <p class="separator">-</p>
-      <span>Products</span>
-    </div>
-  </div>
-</section>
-<!-- PAGE HEADER -->
+
 
     <!-- PRODUCTS -->
     <section class="product-section">
@@ -217,22 +204,22 @@ $store_result = mysqli_query($connection, $store_sql);
           <?php if (mysqli_num_rows($result) > 0) { ?>
             <?php while ($row = mysqli_fetch_assoc($result)) { ?>
               <div class="col-md-3 col-sm-6">
-                <div class="card product-card h-100">
+                <div class="card product-card">
                   <img 
                     src="../../<?= htmlspecialchars($row['product_image'] ?: '/assets/default.png') ?>" 
                     class="card-img-top"
                     alt="<?= htmlspecialchars($row['product_name']) ?>"
                   >
                   <div class="card-body d-flex flex-column">
-                    <p class="admin-label"><strong>Store: <?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?> </strong></p>
+                    <p class="admin-label">Store: <?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?></p>
                     <h5 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h5>
                     <p class="product-price">₱<?= number_format($row['price'], 2) ?></p>
-                    <p class="small"><?= htmlspecialchars($row['description']) ?></p>
+                    
                      <!-- text-muted flex-grow-1 -->
                     <!-- View / Add to Bag Buttons -->
                     <button 
                       type="button" 
-                      class="btn btn-outline-dark view-btn"
+                      class="btn-view mb-1"
                       data-id="<?= $row['product_id'] ?>"
                       data-name="<?= htmlspecialchars($row['product_name']) ?>"
                       data-desc="<?= htmlspecialchars($row['description']) ?>"
@@ -241,21 +228,21 @@ $store_result = mysqli_query($connection, $store_sql);
                       data-category="<?= htmlspecialchars($row['category']) ?>"
                       data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
                       data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
-                      <i class="bi bi-eye"></i> View
+                      View
                     </button>
 
-                    <form method="POST" action="add-to-cart.php">
+                    <form method="POST" action="add-to-cart.php" class="cart-form-btn">
                       <input type="hidden" name="product_id" value="<?= $row['product_id'] ?>">
 
                       <button 
                         type="button" 
-                        class="btn btn-dark add-to-cart"
+                        class="btn-add-to-cart"
                         data-id="<?= $row['product_id'] ?>"
                         data-name="<?= htmlspecialchars($row['product_name']) ?>"
                         data-price="<?= htmlspecialchars($row['price']) ?>"
                         data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
                         data-store="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
-                        <i class="bi bi-bag-plus"></i> Add to Bag
+                        Add to Bag
                       </button>
 
                     </form>
@@ -281,18 +268,18 @@ $store_result = mysqli_query($connection, $store_sql);
           <p><strong>Availability:</strong> <span id="modalProductStock"></span></p>
           <p><strong>Category:</strong> <span id="modalProductCategory"></span></p>
 
-          <form method="POST" action="add-to-cart.php">
+          <form method="POST" action="add-to-cart.php" class="cart-form-btn">
           <input type="hidden" name="product_id" id="modalProductId">
           <button 
             type="button"
-            class="btn btn-dark mt-2 add-to-cart" 
+            class="btn-add-to-cart" 
             
               data-id=""
               data-name=""
               data-price=""
               data-image=""
               data-store="">
-              <i class="bi bi-bag-plus"></i> Add to Bag
+              Add to Bag
             </button> 
           </form>
         </div>
@@ -417,7 +404,7 @@ $store_result = mysqli_query($connection, $store_sql);
       const customerModal = document.getElementById("customerViewModal");
       const closeCustomerModal = document.querySelector(".close-customer-view");
 
-      document.querySelectorAll(".view-btn").forEach(btn => {
+      document.querySelectorAll(".btn-view").forEach(btn => {
         btn.addEventListener("click", function() {
           // Fill modal with data
           document.getElementById("modalProductId").value = this.dataset.id;
@@ -429,7 +416,7 @@ $store_result = mysqli_query($connection, $store_sql);
           document.getElementById("modalProductImage").src = this.dataset.image;
           document.getElementById("view_recipient").textContent = this.dataset.admin;
 
-          const modalAddBtn = customerModal.querySelector(".add-to-cart");
+          const modalAddBtn = customerModal.querySelector(".btn-add-to-cart");
           modalAddBtn.dataset.id = this.dataset.id;
           modalAddBtn.dataset.name = this.dataset.name;
           modalAddBtn.dataset.price = this.dataset.price;
@@ -448,7 +435,7 @@ $store_result = mysqli_query($connection, $store_sql);
 
       <!-- ADD TO CART -->
        <script>
-        document.querySelectorAll(".add-to-cart").forEach(btn => {
+        document.querySelectorAll(".btn-add-to-cart").forEach(btn => {
           btn.addEventListener("click", () => {
             const product = {
               id: btn.dataset.id,

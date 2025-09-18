@@ -142,16 +142,6 @@ $admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
       <div class="sidebar-bottom">
         <ul>
           <li>
-            <a
-              href="../admin/settings.php"
-              class="main-tab single-tab"
-              data-content="account-settings-content"
-            >
-              <i class="bi bi-gear"></i>
-              <span class="nav-item">Account Settings</span>
-            </a>
-          </li>
-          <li>
             <a href="../../login.php" id="logout-button">
               <i class="bi bi-box-arrow-right"></i>
               <span class="nav-item">Logout</span>

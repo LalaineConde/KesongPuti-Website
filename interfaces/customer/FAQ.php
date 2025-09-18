@@ -1,11 +1,8 @@
 <?php
 $page_title = 'FAQ | Kesong Puti';
-$page_header = "FAQ";
 require '../../connection.php';
+$current_page = 'FAQ'; 
 include ('../../includes/customer-dashboard.php');
-
-// Which page is this?
-$current_page = 'faq'; // change this per file (products, contact, faq, etc.)
 
 // Fetch header text
 $result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
@@ -44,18 +41,7 @@ $faqs = $connection->query("SELECT * FROM faqs ORDER BY id ASC");
 
   <body style="background-color: var(--beige)">
 
-  <!-- PAGE HEADER -->
-<section class="product-page" style="background-image: url('../../<?= htmlspecialchars($settings['header_image'] ?? 'assets/header.png') ?>');">
-  <div class="header-text">
-    <h1><?= htmlspecialchars($page_header) ?></h1>
-    <div class="breadcrumb">
-      <a href="home.php"><span>Home</span></a>
-      <p class="separator">-</p>
-      <span>FAQ</span>
-    </div>
-  </div>
-</section>
-<!-- PAGE HEADER -->
+
 
     <!-- FAQ -->
     <section id="faq">

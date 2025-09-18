@@ -1,11 +1,11 @@
 <?php
 $page_title = 'Contact Us | Kesong Puti';
-$page_header = "CONTACT US";
 require '../../connection.php';
+$current_page = 'contact'; 
 include ('../../includes/customer-dashboard.php');
 
-// Which page is this?
-$current_page = 'contact'; // change this per file (products, contact, faq, etc.)
+
+
 
 // Fetch header text
 $result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
@@ -44,18 +44,7 @@ $page_header = $row['header_text'] ?? "WELCOME";
   </head>
 <body>
 
-  <!-- PAGE HEADER -->
-<section class="product-page" style="background-image: url('../../<?= htmlspecialchars($settings['header_image'] ?? 'assets/header.png') ?>');">
-  <div class="header-text">
-    <h1><?= htmlspecialchars($page_header) ?></h1>
-    <div class="breadcrumb">
-      <a href="home.php"><span>Home</span></a>
-      <p class="separator">-</p>
-      <span>Contacts</span>
-    </div>
-  </div>
-</section>
-<!-- PAGE HEADER -->
+
 
 
   <div class="contact-page">

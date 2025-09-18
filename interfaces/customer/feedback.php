@@ -2,14 +2,13 @@
 <?php
 $page_title = 'Customer Feedback | Kesong Puti';
 require '../../connection.php';
-$page_header = "CUSTOMER FEEDBACK";
+$current_page = 'feedback';
 include ('../../includes/customer-dashboard.php');
 
 
 $toast_message = ''; // Initialize variable for toast message
 
-// Which page is this?
-$current_page = 'feedback'; // change this per file (products, contact, faq, etc.)
+
 
 // Fetch header text
 $result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
@@ -88,19 +87,8 @@ $result = mysqli_query($connection, $sql);
   </head>
 
   <body>
-    
-  <!-- PAGE HEADER -->
-<section class="product-page" style="background-image: url('../../<?= htmlspecialchars($settings['header_image'] ?? 'assets/header.png') ?>');">
-  <div class="header-text">
-    <h1><?= htmlspecialchars($page_header) ?></h1>
-    <div class="breadcrumb">
-      <a href="home.php"><span>Home</span></a>
-      <p class="separator">-</p>
-      <span>Feedback</span>
-    </div>
-  </div>
-</section>
-<!-- PAGE HEADER -->
+
+
 
     <!-- FEEDBACK -->
 <section class="feedback-page">

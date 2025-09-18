@@ -34,8 +34,6 @@ body {
 .auth-logo {
     width: 150px;
     margin-bottom: 30px;
-    border-radius: 50%;
-    border: 3px solid black;
 }
 
 .input-group-text {
@@ -140,8 +138,7 @@ form {
 .logo-container {
     width: 150px;
     margin-bottom: 30px;
-    border-radius: 50%;
-    border: 3px solid black;
+
 }
 
 .logo-container img {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 14, 2025 at 02:41 PM
+-- Generation Time: Sep 18, 2025 at 10:07 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -166,19 +166,20 @@ INSERT INTO `inbox_messages` (`inbox_id`, `name`, `email`, `contact`, `message`,
 CREATE TABLE `page_headers` (
   `id` int(11) NOT NULL,
   `page_name` varchar(100) NOT NULL,
-  `header_text` varchar(255) NOT NULL
+  `header_text` varchar(255) NOT NULL,
+  `header_image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `page_headers`
 --
 
-INSERT INTO `page_headers` (`id`, `page_name`, `header_text`) VALUES
-(1, 'home', 'WELCOME'),
-(2, 'products', 'OUR PRODUCTS'),
-(3, 'faq', 'FREQUENTLY ASKED QUESTIONS'),
-(4, 'contact', 'CONTACT US'),
-(5, 'feedback', 'CUSTOMER FEEDBACK');
+INSERT INTO `page_headers` (`id`, `page_name`, `header_text`, `header_image`) VALUES
+(1, 'home', 'Welcome to Kesong Puti', NULL),
+(2, 'products', 'Our Products', NULL),
+(3, 'FAQ', 'Frequently Asked Questions', NULL),
+(4, 'contact', 'Get in Touch', NULL),
+(5, 'feedback', 'Customer Feedback', NULL);
 
 -- --------------------------------------------------------
 
@@ -288,40 +289,48 @@ CREATE TABLE `site_settings` (
 --
 
 INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
+('background_color', '#FFFFFF'),
 ('body_font_color', '#000000'),
-('button1_color', '#fad82e'),
-('button2_color', '#12b607'),
+('button1_color', '#F4C40F'),
+('button1_font_color', '#ffffff'),
+('button1_hover_color', '#F4C40F'),
+('button2_color', '#0D8540'),
+('button2_font_color', '#000000'),
+('button2_hover_color', '#0D8540'),
 ('button_bg_color', '#000000'),
 ('button_font_color', '#24be19'),
 ('button_hover_color', '#3d5538'),
 ('description_color', '#000000'),
 ('description_font_color', '#09430d'),
-('faq_answer_bg', '#d3ded5'),
-('faq_button_bg', '#82b658'),
+('faq_answer_bg', '#D3DED5'),
+('faq_button_bg', '#87B86B'),
 ('font_family', 'Lilita One'),
+('footer_color', '#FAF3DD'),
+('header_color', '#87B86B'),
 ('header_font_color', '#ffffff'),
 ('navbar_color', '#82b658'),
 ('navbar_font_color', '#ffffff'),
 ('navbar_font_family', 'Fredoka'),
+('navbar_hover_color', '#005F6B'),
 ('page_header_font', 'Lilita One'),
 ('page_header_font_color', '#ffffff'),
 ('page_header_font_family', 'Lilita One'),
 ('page_numbers_font_color', '#ff9500'),
-('price_color', '#31a53f'),
+('price_color', '#0D8540'),
 ('price_font_color', '#e63946'),
 ('primary_color', '#50a838'),
 ('primary_font', 'Fredoka'),
 ('products_font_family', 'Fredoka'),
 ('product_name_font_color', '#a54545'),
 ('product_name_font_family', 'Fredoka'),
-('product_page_number_bg', '#ffd53d'),
+('product_page_number_bg', '#F4C40F'),
 ('secondary_color', '#ffff00'),
 ('secondary_font', 'Lilita One'),
 ('site_title', 'Kesong Puti Stores'),
 ('store_name_font_color', '#000000'),
 ('store_name_font_family', 'Fredoka'),
 ('subtitle_color', '#ff00e1'),
-('subtitle_font_color', '#3f8132'),
+('subtitle_font_color', '#0D8540'),
 ('title_color', '#ff0000');
 
 -- --------------------------------------------------------
@@ -528,7 +537,7 @@ ALTER TABLE `inbox_messages`
 -- AUTO_INCREMENT for table `page_headers`
 --
 ALTER TABLE `page_headers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=196;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=311;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
@@ -558,7 +567,7 @@ ALTER TABLE `store`
 -- AUTO_INCREMENT for table `store_contacts`
 --
 ALTER TABLE `store_contacts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `super_admin`
