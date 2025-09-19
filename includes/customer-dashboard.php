@@ -252,9 +252,9 @@ body {
         </div>
         <div class="total">
           <span>Total:</span>
-          <strong id="cartTotal">₱65</strong>
+          <strong id="cartTotal">₱0.00</strong>
         </div>
-        <button class="checkout-btn">Checkout</button>
+        <a href="checkout.php"><button class="checkout-btn">Checkout</button></a>
       </div>
     </div>
     <!-- overlay -->
@@ -268,6 +268,9 @@ body {
       integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
       crossorigin="anonymous"
     ></script>
+
+    <!-- SweetAlert2 Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- SCROLL NAVBAR -->
 <script>
@@ -449,11 +452,41 @@ body {
 
         // Add to cart
         function addToCart(product) {
-          let existing = cart.find(p => p.id === product.id);
+          // Validate and sanitize product data
+          const validatedProduct = {
+            id: String(product.id || ''),
+            name: String(product.name || 'Unknown Product'),
+            price: parseFloat(product.price) || 0,
+            image: String(product.image || '../../assets/kesong puti.png'),
+            store: String(product.store || 'Unknown Store'),
+            recipient: String(product.recipient || ''),
+            storeId: String(product.storeId || ''),
+            qty: Math.max(1, parseInt(product.qty) || 1)
+          };
+
+          // Single-store cart
+          if (cart.length > 0) {
+            const currentStore = cart[0].store || '';
+            if (validatedProduct.store !== currentStore) {
+              if (window.Swal) {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Single-store cart',
+                  text: 'You can only add items from one store per cart. Please checkout or clear your cart to add from a different store.',
+                  confirmButtonColor: '#ff6b6b'
+                });
+              } else {
+                alert('You can only add items from one store per cart. Please checkout or clear your cart to add from a different store.');
+              }
+              return; 
+            }
+          }
+
+          let existing = cart.find(p => p.id === validatedProduct.id);
           if (existing) {
-            existing.qty++;
+            existing.qty += validatedProduct.qty;
           } else {
-            cart.push({ ...product, qty: 1 });
+            cart.push(validatedProduct);
           }
           saveCart();
           renderCart();
@@ -486,7 +519,68 @@ body {
           renderCart();
         });
 
-        // Restore cart on page load
+        // Checkbox updates
+        document.addEventListener("change", function (e) {
+          if (e.target.classList.contains("cart-check")) {
+            updateCartTotal();
+          }
+
+          if (e.target.id === "selectAll") {
+            let checked = e.target.checked;
+            document.querySelectorAll(".cart-check").forEach((cb) => {
+              cb.checked = checked;
+            });
+            updateCartTotal();
+          }
+        });
+
+        // Global handler for "Add to Cart" buttons
+        document.addEventListener("click", function (e) {
+          const btn = e.target.closest(".add-to-cart");
+          if (!btn) return;
+
+          const qtyTarget = btn.dataset.qtyTarget ? document.querySelector(btn.dataset.qtyTarget) : null;
+          const chosenQty = qtyTarget ? parseInt(qtyTarget.value || "1") : 1;
+
+          const product = {
+            id: String(btn.dataset.id || ""),
+            name: btn.dataset.name || "",
+            price: parseFloat(btn.dataset.price || "0"),
+            image: btn.dataset.image || "",
+            store: btn.dataset.store || "",
+            recipient: btn.dataset.recipient || "",
+            storeId: btn.dataset.storeId || "",
+            qty: isNaN(chosenQty) ? 1 : Math.max(1, chosenQty)
+          };
+
+          addToCart(product);
+        });
+
+        // Function to clear invalid cart data
+        function clearInvalidCartData() {
+          cart = cart.filter(item => {
+            return item && 
+                   item.id && 
+                   item.name && 
+                   !isNaN(parseFloat(item.price)) && 
+                   !isNaN(parseInt(item.qty)) &&
+                   item.price > 0 &&
+                   item.qty > 0;
+          });
+          saveCart();
+        }
+
+        // Function to clear cart completely
+        function clearCart() {
+          cart = [];
+          saveCart();
+          renderCart();
+        }
+
+        
+        
+        // Also run immediately in case DOMContentLoaded already fired
+        clearInvalidCartData();
         renderCart();
       </script>
 

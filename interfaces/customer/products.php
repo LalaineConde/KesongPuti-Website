@@ -251,38 +251,32 @@ $store_result = mysqli_query($connection, $store_sql);
                     class="card-img-top"
                     alt="<?= htmlspecialchars($row['product_name']) ?>"
                   >
-                  <div class="card-body">
+                  <div class="card-body d-flex flex-column">
                     <p class="admin-label">Store: <?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?></p>
                     <h5 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h5>
                     <p class="product-price">₱<?= number_format($row['price'], 2) ?></p>
-                    
                      <!-- text-muted flex-grow-1 -->
+                      
                     <!-- View / Add to Bag Buttons -->
-                    <button 
-                      type="button" 
-                      class="btn-view mb-1"
-                      data-id="<?= $row['product_id'] ?>"
-                      data-name="<?= htmlspecialchars($row['product_name']) ?>"
-                      data-desc="<?= htmlspecialchars($row['description']) ?>"
-                      data-price="<?= htmlspecialchars($row['price']) ?>"
-                      data-stock="<?= htmlspecialchars($row['stock_qty']) ?>"
-                      data-category="<?= htmlspecialchars($row['category']) ?>"
-                      data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
-                      data-admin="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
-                      View
-                    </button>
+                    <a 
+                      href="view-products.php?id=<?= $row['product_id'] ?>" 
+                      class="btn-view mb-1">
+                      <i class="bi bi-eye"></i> View
+                    </a>
 
                     <form method="POST" action="add-to-cart.php" class="cart-form-btn">
                       <input type="hidden" name="product_id" value="<?= $row['product_id'] ?>">
 
                       <button 
                         type="button" 
-                        class="btn-add-to-cart"
+                        class="btn-add-to-cart add-to-cart"
                         data-id="<?= $row['product_id'] ?>"
                         data-name="<?= htmlspecialchars($row['product_name']) ?>"
                         data-price="<?= htmlspecialchars($row['price']) ?>"
                         data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
-                        data-store="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>">
+                        data-store="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>"
+                        data-recipient="<?= htmlspecialchars($row['recipient_code'] ?? '') ?>"
+                        data-store-id="<?= htmlspecialchars($row['store_id'] ?? '') ?>">
                         Add to Bag
                       </button>
 
@@ -435,60 +429,6 @@ $store_result = mysqli_query($connection, $store_sql);
           'All Stores <i class="bi bi-chevron-down"></i>';
       }
     </script>
-
-
-    
-
-
-    <!-- VIEW DETAILS -->
-    <script>
-      const customerModal = document.getElementById("customerViewModal");
-      const closeCustomerModal = document.querySelector(".close-customer-view");
-
-      document.querySelectorAll(".btn-view").forEach(btn => {
-        btn.addEventListener("click", function() {
-          // Fill modal with data
-          document.getElementById("modalProductId").value = this.dataset.id;
-          document.getElementById("modalProductName").textContent = this.dataset.name;
-          document.getElementById("modalProductDesc").textContent = this.dataset.desc;
-          document.getElementById("modalProductPrice").textContent = parseFloat(this.dataset.price).toFixed(2);
-          document.getElementById("modalProductStock").textContent = this.dataset.stock > 0 ? "In Stock" : "Out of Stock";
-          document.getElementById("modalProductCategory").textContent = this.dataset.category;
-          document.getElementById("modalProductImage").src = this.dataset.image;
-          document.getElementById("view_recipient").textContent = this.dataset.admin;
-
-          const modalAddBtn = customerModal.querySelector(".btn-add-to-cart");
-          modalAddBtn.dataset.id = this.dataset.id;
-          modalAddBtn.dataset.name = this.dataset.name;
-          modalAddBtn.dataset.price = this.dataset.price;
-          modalAddBtn.dataset.image = this.dataset.image;
-          modalAddBtn.dataset.store = this.dataset.admin;
-
-          customerModal.style.display = "flex";
-        });
-      });
-
-      // Close modal
-      closeCustomerModal.onclick = () => { customerModal.style.display = "none"; };
-      window.onclick = (e) => { if (e.target === customerModal) customerModal.style.display = "none"; };
-    </script>
-
-
-      <!-- ADD TO CART -->
-       <script>
-        document.querySelectorAll(".btn-add-to-cart").forEach(btn => {
-          btn.addEventListener("click", () => {
-            const product = {
-              id: btn.dataset.id,
-              name: btn.dataset.name,
-              price: parseFloat(btn.dataset.price),
-              image: btn.dataset.image,
-              store: btn.dataset.store
-            };
-            addToCart(product); 
-          });
-        });
-      </script>
 
     <?php include('../../includes/footer.php'); ?>
   </body>

@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 18, 2025 at 09:38 PM
+-- Generation Time: Sep 19, 2025 at 07:17 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -72,6 +72,13 @@ CREATE TABLE `customers` (
   `email` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `customers`
+--
+
+INSERT INTO `customers` (`c.id`, `fullname`, `phone_number`, `email`, `address`) VALUES
+(1, 'Lara Fremista', '09957432998', 'larafremista21@gmail.com', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026');
 
 -- --------------------------------------------------------
 
@@ -157,6 +164,38 @@ INSERT INTO `inbox_messages` (`inbox_id`, `name`, `email`, `contact`, `message`,
 (12, 'sample', 'sample@sample.com', '09123456611', 'sample message!', '2025-09-09 05:29:46', 'super_1'),
 (13, 'Lalaine Conde', 'lalaineconde11@gmail.com', '09397956661', 'hello', '2025-09-11 06:45:00', 'super_1'),
 (14, 'Russell Garcia', 'sample@sample.com', '09123456611', 'sample sample', '2025-09-18 09:45:54', 'super_1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `o_id` int(11) NOT NULL,
+  `c_id` int(11) NOT NULL,
+  `handled_by` int(11) NOT NULL,
+  `order_date` datetime DEFAULT current_timestamp(),
+  `total_amount` decimal(10,2) NOT NULL,
+  `payment_status` enum('pending','paid','failed','refunded') DEFAULT 'pending',
+  `order_status` enum('pending','processing','shipped','delivered','cancelled') DEFAULT 'pending',
+  `delivery_address` varchar(255) NOT NULL,
+  `owner_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_items`
+--
+
+CREATE TABLE `order_items` (
+  `order_item_id` int(11) NOT NULL,
+  `o_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL CHECK (`quantity` > 0),
+  `price_at_purchase` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -466,6 +505,20 @@ ALTER TABLE `inbox_messages`
   ADD PRIMARY KEY (`inbox_id`);
 
 --
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`o_id`),
+  ADD KEY `fk_orders_customer` (`c_id`);
+
+--
+-- Indexes for table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD PRIMARY KEY (`order_item_id`),
+  ADD KEY `fk_orderitems_order` (`o_id`);
+
+--
 -- Indexes for table `page_headers`
 --
 ALTER TABLE `page_headers`
@@ -538,7 +591,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `c.id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `c.id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `faqs`
@@ -557,6 +610,18 @@ ALTER TABLE `footer_settings`
 --
 ALTER TABLE `inbox_messages`
   MODIFY `inbox_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `order_items`
+--
+ALTER TABLE `order_items`
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `page_headers`
@@ -603,6 +668,18 @@ ALTER TABLE `super_admin`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `fk_orders_customer` FOREIGN KEY (`c_id`) REFERENCES `customers` (`c.id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `order_items`
+--
+ALTER TABLE `order_items`
+  ADD CONSTRAINT `fk_orderitems_order` FOREIGN KEY (`o_id`) REFERENCES `orders` (`o_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `products`
