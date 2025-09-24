@@ -150,8 +150,6 @@ body {
     opacity: 1;
 }
 
-
-
 /* SIDEBAR GENERAL */
 
 
@@ -183,7 +181,7 @@ body {
 }
 
 .sidebar.active .nav-tab.open .sub-menu {
-    max-height: 200px;
+    max-height: none;
     opacity: 1;
 }
 
@@ -1227,6 +1225,25 @@ Form
     color: var(--yellow);
 }
 
+
+.modal-media-thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin-right: 5px;
+    border-radius: 5px;
+}
+.plus-n {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(0,0,0,0.5);
+    color: #fff;
+    border-radius: 5px;
+}
+
 /* Modal Styling */
 .feedback-modal {
     display: none;
@@ -1261,6 +1278,31 @@ Form
     cursor: pointer;
 }
 
+  .modal-gallery {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-gallery button {
+    background: rgba(0,0,0,0.5);
+    margin-top: 10px;
+    color: #fff;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.modal-gallery img {
+    max-width: 400px;
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 5px;
+}
+
 .filter-star {
   font-size: 22px;
   cursor: pointer;
@@ -1274,6 +1316,116 @@ Form
 }
 
 /* FEEDBACK */
+
+
+/* ==============================
+   Homepage Customization Styles
+   ============================== */
+.home-container{
+    max-width: 100% !important;
+    width: 95%;
+    margin: 0 auto;        /* centers the container */
+    padding: 20px 40px;       /* adds space on sides */
+   }
+
+   .home-form {
+    width: 100%;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+.settings-card.home {
+  border: 2px solid #000;
+  border-radius: 12px;
+  background-color: #fff;
+  margin: 0 auto 25px;   /* centers horizontally + bottom spacing */
+  box-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+  transition: 0.3s;
+  /* max-width: 800px;       */
+  width: 100%;           /* responsive */
+}
+
+.settings-card.home .settings-header {
+  background-color: #002d13;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 12px 18px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.settings-card.home .settings-body {
+  padding: 20px;
+}
+
+.font-color-section{
+  padding: 20px;
+}
+
+
+.settings-card.home h5, label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #064420;
+  margin: 5px 0 25px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.settings-card.home .form-select,
+.settings-card.home .form-control,
+.settings-card.home .form-control-color {
+  border: 2px solid #000;
+  border-radius: 6px;
+  font-size: 15px;
+  padding: 8px 12px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.ssettings-card.home .form-select:focus,
+.settings-card.home .form-control:focus,
+.settings-card.home .form-control-color:focus {
+  border-color: #0D8540;
+
+  outline: none;
+}
+
+
+.update-home-btn {
+  background-color: #f4c400;
+  border: 2px solid #000;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 25px;
+  box-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+.update-home-btn:hover {
+  background-color: #e0b200;
+  transform: scale(1.05);
+}
+
+.reset-home-btn {
+  background: #dc3545;
+  color: #fff;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.reset-home-btn:hover {
+  background: #b02a37;
+}
+
+
 
 /* FOOTER */
 
@@ -1569,35 +1721,6 @@ Form
   flex: 1 1 calc(50% - 20px);
   min-width: 300px;
 }
-
-/* ================= CARDS =================
-.settings-card {
-  border: 2px solid #000;
-  border-radius: 12px;
-  background-color: #fff;
-  margin-bottom: 25px;
-  box-shadow: 2px 3px 6px rgba(0,0,0,0.15);
-  transition: 0.3s;
-}
-
-.settings-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 3px 5px 10px rgba(0,0,0,0.25);
-}
-
-.settings-card .settings-header {
-  background-color: #002d13;
-  color: #fff;
-  font-weight: bold;
-  font-size: 1.1rem;
-  padding: 12px 18px;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-}
-
-.settings-card .settings-body {
-  padding: 20px;
-} */
 
 /* ================= GENERAL SETTINGS CARD ================= */
 .settings-card.general {

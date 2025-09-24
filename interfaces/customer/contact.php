@@ -2,6 +2,7 @@
 $page_title = 'Contact Us | Kesong Puti';
 require '../../connection.php';
 $current_page = 'contact'; 
+$isHomePage = ($current_page === 'home'); // check if this is the home page
 $page_subheader = "Leave us a message";
 include ('../../includes/customer-dashboard.php');
 

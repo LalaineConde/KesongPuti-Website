@@ -3,6 +3,7 @@
 $page_title = 'Customer Products | Kesong Puti';
 require '../../connection.php';
 $current_page = 'products'; 
+$isHomePage = ($current_page === 'home'); // check if this is the home page
 $page_subheader = "Explore our Kesong Puti Delicacy";
 include ('../../includes/customer-dashboard.php');
 
@@ -261,7 +262,7 @@ $store_result = mysqli_query($connection, $store_sql);
                     <a 
                       href="view-products.php?id=<?= $row['product_id'] ?>" 
                       class="btn-view mb-1">
-                     View
+                      <i class="bi bi-eye"></i> View
                     </a>
 
                     <form method="POST" action="add-to-cart.php" class="cart-form-btn">

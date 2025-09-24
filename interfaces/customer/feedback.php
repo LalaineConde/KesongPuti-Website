@@ -1,239 +1,157 @@
-
 <?php
 $page_title = 'Customer Feedback | Kesong Puti';
 require '../../connection.php';
 $current_page = 'feedback';
+$isHomePage = ($current_page === 'home'); // check if this is the home page
 include ('../../includes/customer-dashboard.php');
 
-
-$toast_message = ''; // Initialize variable for toast message
-
-
-
-// Fetch header text
-$result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
-$row = mysqli_fetch_assoc($result);
-$page_header = $row['header_text'] ?? "WELCOME";
-
-// Fetch all superadmins
-$superadmins = [];
-$superQuery = "SELECT super_id, username FROM super_admin";
-$superResult = mysqli_query($connection, $superQuery);
-if ($superResult && mysqli_num_rows($superResult) > 0) {
-    while ($row = mysqli_fetch_assoc($superResult)) {
-        $superadmins['super_' . $row['super_id']] = $row['username'];
-    }
-}
-
-// Fetch all admins
-$admins = [];
-$adminQuery = "SELECT admin_id, username FROM admins";
-$adminResult = mysqli_query($connection, $adminQuery);
-if ($adminResult && mysqli_num_rows($adminResult) > 0) {
-    while ($row = mysqli_fetch_assoc($adminResult)) {
-        $admins['admin_' . $row['admin_id']] = $row['username'];
-    }
-}
-
-// Merge into a single array for easy lookup
-$recipients = array_merge($superadmins, $admins);
-
-// Handle form submission
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $name = mysqli_real_escape_string($connection, $_POST['reviewName']);
-    $email = mysqli_real_escape_string($connection, $_POST['reviewEmail']);
-    $rating = mysqli_real_escape_string($connection, $_POST['reviewRating']);
-    $feedback = mysqli_real_escape_string($connection, $_POST['reviewText']);
-    $recipient = mysqli_real_escape_string($connection, $_POST['reviewRecipient']);
-
-    $sql = "INSERT INTO reviews (name, email, rating, feedback, recipient) VALUES ('$name', '$email', '$rating', '$feedback', '$recipient')";
-    mysqli_query($connection, $sql);
-}
+$toast_message = '';
 
 // Fetch reviews
-$sql = "SELECT *, 
-  LENGTH(rating) - LENGTH(REPLACE(rating, '★', '')) AS star_count
-  FROM reviews 
-  ORDER BY star_count DESC, created_at DESC";
-$result = mysqli_query($connection, $sql);
+$reviewQuery = "
+SELECT r.rating, r.feedback, r.media, r.created_at,
+       r.name AS fullname, r.email
+FROM reviews r
+ORDER BY r.created_at DESC
+";
+$reviewResult = mysqli_query($connection, $reviewQuery);
 ?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Kesong Puti - Products</title>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kesong Puti - Customer Feedback</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- BOOTSTRAP -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
-      crossorigin="anonymous"
-    >
+</head>
+<body>
 
-    <!-- ICONS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-      rel="stylesheet"
-    >
+<section class="feedback-page container mt-4">
+  <div class="message mb-3">
+    Love our Kesong Puti products? Share your feedback below!
+  </div>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="../../css/styles.css" >
-  </head>
+  <h4>Customer Reviews</h4>
+  <div class="feedback-container mt-4">
+    <?php if ($reviewResult && mysqli_num_rows($reviewResult) > 0): ?>
+      <?php while ($row = mysqli_fetch_assoc($reviewResult)): ?>
+        <div class="feedback-box border p-3 mb-3 rounded">
+          <h5><?= htmlspecialchars($row['fullname'] ?? 'Anonymous') ?></h5>
+          <small class="text-muted"><?= htmlspecialchars($row['email'] ?? '') ?></small>
+          <div class="feedback-stars mb-2">
+            <?php for ($i=1; $i<=5; $i++): ?>
+              <span style="color:<?= ($i <= $row['rating']) ? 'gold' : '#ccc' ?>">&#9733;</span>
+            <?php endfor; ?>
+          </div>
+          <?php if (!empty($row['feedback'])): ?>
+            <p class="mt-2"><?= nl2br(htmlspecialchars($row['feedback'])) ?></p>
+          <?php endif; ?>
 
-  <body>
+          <?php
+          $mediaFiles = [];
+          if (!empty($row['media'])) {
+              $decoded = json_decode($row['media'], true);
+              $mediaFiles = is_array($decoded) ? $decoded : [$row['media']];
+          }
+          $maxPreview = 3;
+          ?>
 
+<?php if (!empty($mediaFiles)): ?>
+<div class="media-row mt-2">
+  <?php foreach ($mediaFiles as $i => $file): 
+      if ($i >= $maxPreview) break; // only show up to $maxPreview
+      $ext = pathinfo($file, PATHINFO_EXTENSION);
+      $type = preg_match('/(jpg|jpeg|png|gif)/i', $ext) ? 'image' : 'video';
+  ?>
+    <div class="media-thumb" 
+         data-files='<?= htmlspecialchars(json_encode($mediaFiles)) ?>'
+         data-index="<?= $i ?>">
+      <?php if ($type==='image'): ?>
+        <img src="../../<?= htmlspecialchars($file) ?>">
+      <?php else: ?>
+        <video src="../../<?= htmlspecialchars($file) ?>"></video>
+      <?php endif; ?>
 
-
-    <!-- FEEDBACK -->
-<section class="feedback-page">
-
-<div class="message">
-  Love our Kesong Puti products? Share your feedback below and help us serve you better!
+      <?php if ($i === $maxPreview - 1 && count($mediaFiles) > $maxPreview): ?>
+        <div class="overlay">+<?= count($mediaFiles) - $maxPreview + 1 ?></div>
+      <?php endif; ?>
+    </div>
+  <?php endforeach; ?>
 </div>
+<?php endif; ?>
 
 
-<div class="feedback-container">
-    <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-      <div class="feedback-box">
-        <h4 class="feedback-name"><?= htmlspecialchars($row['name']) ?></h4>
-        <div class="feedback-stars"><?= htmlspecialchars($row['rating']) ?></div>
-        <p class="feedback-text"><?= htmlspecialchars($row['feedback']) ?></p>
-        <small class="feedback-store">Store: 
-            <?= isset($recipients[$row['recipient']]) ? htmlspecialchars($recipients[$row['recipient']]) : 'Unknown' ?>
-        </small>
-      </div>
-    <?php } ?>
-</div>
+          <small class="text-muted">Posted on <?= date("F j, Y, g:i a", strtotime($row['created_at'])) ?></small>
+        </div>
+      <?php endwhile; ?>
+    <?php else: ?>
+      <p>No reviews yet.</p>
+    <?php endif; ?>
+  </div>
 
-  <button class="review-btn" id="openReviewModal">Leave a Review</button>
+  <a href="review_form.php" class="review-btn btn btn-primary mt-3">Leave a Review</a>
 </section>
 
-<!-- Review Modal -->
-<div class="review-modal" id="reviewModal" style="display:none;">
-  <div class="review-modal-content">
-    <span class="close-modal" id="closeReviewModal">&times;</span>
-    <h3>Leave a Review</h3>
-    <form method="POST" action="">
+<!-- Media Carousel Modal -->
+<div class="modal fade" id="mediaModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content bg-dark position-relative">
+      <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-index-3" 
+              data-bs-dismiss="modal" aria-label="Close" style="z-index: 1055; font-size: 1.5rem;"></button>
 
-    <div class="checkbox-row">
-      <!-- Anonymous Checkbox -->
-      <label class="anonymous-label">
-        <input type="checkbox" id="anonymousCheckbox" name="anonymous" class="anonymous-checkbox"> Submit Anonymously
-      </label>
+      <div class="modal-body p-0 position-relative">
+        <div id="mediaCarousel" class="carousel slide">
+          <div class="carousel-inner" id="carouselInner"></div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#mediaCarousel" data-bs-slide="prev">
+            <i class="bi bi-chevron-left text-black fs-1"></i>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#mediaCarousel" data-bs-slide="next">
+            <i class="bi bi-chevron-right text-black fs-1"></i>
+          </button>
+        </div>
+      </div>
     </div>
-    <input type="text" name="reviewName" placeholder="Your Name" required>
-    <input type="email" name="reviewEmail" placeholder="Your Email" required>
-    <!-- Star Rating -->
-    <div class="star-rating">
-      <span class="star-rating-label">Rating:</span>
-      <input type="hidden" name="reviewRating" id="reviewRating" required>
-      <span class="star" data-value="1">★</span>
-      <span class="star" data-value="2">★</span>
-      <span class="star" data-value="3">★</span>
-      <span class="star" data-value="4">★</span>
-      <span class="star" data-value="5">★</span>
-    </div>
-    <select name="reviewRecipient" required>
-          <option value="">-- Select Store --</option>
-          <?php
-          // Fetch superadmins
-          $superQuery = "SELECT super_id, username FROM super_admin";
-          $superResult = mysqli_query($connection, $superQuery);
-          if ($superResult && mysqli_num_rows($superResult) > 0) {
-              while ($row = mysqli_fetch_assoc($superResult)) {
-                  echo '<option value="super_' . $row['super_id'] . '">'
-                       . htmlspecialchars($row['username']) . '</option>';
-              }
-          }
-
-          // Fetch admins
-          $adminQuery = "SELECT admin_id, username FROM admins";
-          $adminResult = mysqli_query($connection, $adminQuery);
-          if ($adminResult && mysqli_num_rows($adminResult) > 0) {
-              while ($row = mysqli_fetch_assoc($adminResult)) {
-                  echo '<option value="admin_' . $row['admin_id'] . '">'
-                       . htmlspecialchars($row['username']) . '</option>';
-              }
-          }
-          ?>
-      </select>
-      <textarea name="reviewText" placeholder="Write your feedback..." required></textarea>
-      <button type="submit" class="submit-review">Submit</button>
-    </form>
   </div>
 </div>
-    <!-- FEEDBACK -->
 
-    <!-- FUNCTIONS -->
-
-
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Review Modal Script
-const reviewModal = document.getElementById("reviewModal");
-const openReviewBtn = document.getElementById("openReviewModal");
-const closeReviewBtn = document.getElementById("closeReviewModal");
-
-openReviewBtn.addEventListener("click", () => {
-  reviewModal.style.display = "flex";
+// Open media in carousel
+document.querySelectorAll('.media-thumb').forEach(el => {
+    el.addEventListener('click', function() {
+        const files = JSON.parse(this.dataset.files);
+        const index = parseInt(this.dataset.index);
+        openMediaCarousel(files, index);
+    });
 });
 
-closeReviewBtn.addEventListener("click", () => {
-  reviewModal.style.display = "none";
-});
-
-window.addEventListener("click", (e) => {
-  if (e.target === reviewModal) {
-    reviewModal.style.display = "none";
-  }
-});
-
-// Star Rating Logic
-const stars = document.querySelectorAll(".star-rating .star");
-const reviewRatingInput = document.getElementById("reviewRating");
-
-stars.forEach(star => {
-  star.addEventListener("mouseover", () => {
-    const val = star.dataset.value;
-    stars.forEach(s => s.classList.toggle("hover", s.dataset.value <= val));
-  });
-
-  star.addEventListener("mouseout", () => {
-    stars.forEach(s => s.classList.remove("hover"));
-  });
-
-  star.addEventListener("click", () => {
-    const val = star.dataset.value;
-    reviewRatingInput.value = "★".repeat(val) + "☆".repeat(5 - val);
-    stars.forEach(s => s.classList.toggle("selected", s.dataset.value <= val));
-  });
-});
-
-
-// Anonymous Checkbox Logic
-const anonymousCheckbox = document.getElementById("anonymousCheckbox");
-const reviewNameInput = document.querySelector("input[name='reviewName']");
-
-anonymousCheckbox.addEventListener("change", () => {
-  if (anonymousCheckbox.checked) {
-    reviewNameInput.value = "Anonymous";
-    reviewNameInput.disabled = true;
-  } else {
-    reviewNameInput.value = "";
-    reviewNameInput.disabled = false;
-  }
-});
+function openMediaCarousel(mediaFiles, startIndex = 0) {
+    const carouselInner = document.getElementById('carouselInner');
+    carouselInner.innerHTML = '';
+    mediaFiles.forEach((file, i) => {
+        const ext = file.split('.').pop().toLowerCase();
+        const activeClass = i === startIndex ? 'active' : '';
+        let item = '';
+        if (['jpg','jpeg','png','gif'].includes(ext)) {
+            item = `<div class="carousel-item ${activeClass}">
+                        <img src="../../${file}" style="width:100%; max-height:80vh; object-fit:contain;">
+                    </div>`;
+        } else if (['mp4','webm','ogg'].includes(ext)) {
+            item = `<div class="carousel-item ${activeClass}">
+                        <video controls style="width:100%; max-height:80vh; object-fit:contain;">
+                            <source src="../../${file}" type="video/mp4">
+                        </video>
+                    </div>`;
+        }
+        carouselInner.insertAdjacentHTML('beforeend', item);
+    });
+    const modal = new bootstrap.Modal(document.getElementById('mediaModal'));
+    modal.show();
+}
 </script>
-    <!-- FUNCTIONS -->
 
-
-
-    <?php include('../../includes/footer.php'); ?>
-  </body>
+<?php include('../../includes/footer.php'); ?>
+</body>
 </html>

@@ -106,7 +106,7 @@ if (isset($_POST['reset_defaults'])) {
         "product_font_color" => "#000000",
         "icon_color" => "#0D8540",
         "page_number_active" => "#0D8540",
-        "page_number_hover" => "#0D8540",
+        "page_number_hover" => "#F4C40F",
 
         // FAQ
         "faq_button_bg" => "#0D8540",
@@ -333,7 +333,7 @@ include ('../../includes/superadmin-dashboard.php');
         "product_font_color" => "#000000",
         "icon_color" => "#0D8540",
         "page_number_active" => "#0D8540",
-        "page_number_hover" => "#0D8540"
+        "page_number_hover" => "#F4C40F"
       ];
       foreach ($productFields as $key => $default): 
         $label = ucwords(str_replace("_", " ", $key));

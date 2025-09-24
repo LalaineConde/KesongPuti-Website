@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 24, 2025 at 01:39 PM
+-- Generation Time: Sep 24, 2025 at 02:42 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -59,6 +59,17 @@ CREATE TABLE `categories` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `categories`
+--
+
+INSERT INTO `categories` (`category_id`, `category_name`, `description`, `owner_id`, `owner_type`, `created_at`) VALUES
+(1, 'Dairy Products', NULL, 1, 'admin', '2025-09-23 07:58:32'),
+(10, 'Dairy Products', NULL, 1, 'admin', '2025-09-23 07:59:14'),
+(30, 'Dairy Products', NULL, 1, 'admin', '2025-09-23 07:59:31'),
+(51, 'cheese', NULL, 1, 'admin', '2025-09-23 08:00:24'),
+(101, 'cheese', NULL, 1, 'admin', '2025-09-23 08:00:59');
+
 -- --------------------------------------------------------
 
 --
@@ -66,7 +77,7 @@ CREATE TABLE `categories` (
 --
 
 CREATE TABLE `customers` (
-  `c.id` int(11) NOT NULL,
+  `c_id` int(11) NOT NULL,
   `fullname` varchar(255) NOT NULL,
   `phone_number` varchar(15) NOT NULL,
   `email` varchar(255) NOT NULL,
@@ -77,7 +88,7 @@ CREATE TABLE `customers` (
 -- Dumping data for table `customers`
 --
 
-INSERT INTO `customers` (`c.id`, `fullname`, `phone_number`, `email`, `address`) VALUES
+INSERT INTO `customers` (`c_id`, `fullname`, `phone_number`, `email`, `address`) VALUES
 (1, 'Lara Fremista', '09957432998', 'larafremista21@gmail.com', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026'),
 (2, 'Lalaine Conde', '09123456789', 'lalaineconde@gmail.com', ''),
 (3, 'Juan Dela Cruz', '09152345678', 'juandelacruz@gmail.com', ''),
@@ -138,6 +149,147 @@ CREATE TABLE `footer_settings` (
 
 INSERT INTO `footer_settings` (`id`, `logo`, `description`, `facebook_link`, `instagram_link`, `email`, `phone`, `address`, `quick_links`, `updated_at`, `bottom_text`, `background_image`, `mon_hours`, `tue_hours`, `wed_hours`, `thu_hours`, `fri_hours`, `sat_hours`, `sun_hours`) VALUES
 (1, 'logo.png', 'Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. We take pride in delivering locally made, high-quality products straight to your doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"},\r\n{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},\r\n{\"name\":\"Terms and Condition\",\"url\":\"terms-condition.php\"}]', '2025-09-18 19:25:03', 'Kesong Puti © 2026 All Rights Reserved', '1758223503_leave.png', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_about_slider`
+--
+
+CREATE TABLE `home_about_slider` (
+  `id` int(11) NOT NULL,
+  `image_path` varchar(255) NOT NULL,
+  `position` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_about_slider`
+--
+
+INSERT INTO `home_about_slider` (`id`, `image_path`, `position`) VALUES
+(1, 'uploads/assets/default-team-1.png', 1),
+(2, 'uploads/assets/default-team-2.png', 2),
+(3, 'uploads/assets/default-team-3.png', 3),
+(4, 'uploads/assets/default-team-4.png', 4),
+(5, 'uploads/assets/default-team-5.png', 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_delivery_pickup`
+--
+
+CREATE TABLE `home_delivery_pickup` (
+  `id` int(11) NOT NULL,
+  `title1` varchar(255) DEFAULT NULL,
+  `title2` varchar(255) DEFAULT NULL,
+  `title3` varchar(255) DEFAULT NULL,
+  `title4` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_delivery_pickup`
+--
+
+INSERT INTO `home_delivery_pickup` (`id`, `title1`, `title2`, `title3`, `title4`) VALUES
+(1, 'THE', 'CHOICE', 'IS YOURS:', 'GO OR STAY');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_featured`
+--
+
+CREATE TABLE `home_featured` (
+  `id` int(11) NOT NULL,
+  `image_path` varchar(255) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `position` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_featured`
+--
+
+INSERT INTO `home_featured` (`id`, `image_path`, `title`, `position`) VALUES
+(1, 'uploads/assets/default-featured-1.png', 'Kesorbetes', 1),
+(2, 'uploads/assets/default-featured-2.png', 'Kesong Puti', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_hero`
+--
+
+CREATE TABLE `home_hero` (
+  `id` int(11) NOT NULL,
+  `image_path` varchar(255) NOT NULL,
+  `subtitle` varchar(255) NOT NULL,
+  `position` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_hero`
+--
+
+INSERT INTO `home_hero` (`id`, `image_path`, `subtitle`, `position`) VALUES
+(1, 'uploads/assets/default-pic-1.png', 'SOFT CREAMY AND FRESH', 1),
+(2, 'uploads/assets/default-pic-2.png', 'MORNING CLASSIC BREAKFAST', 2),
+(3, 'uploads/assets/default-pic-3.png', 'FRESH WHITE CHEESE', 3),
+(4, 'uploads/assets/default-pic-4.png', 'SNACKS AND APPETIZERS', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_reasons`
+--
+
+CREATE TABLE `home_reasons` (
+  `id` int(11) NOT NULL,
+  `icon` varchar(100) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `subtitle` text NOT NULL,
+  `position` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_reasons`
+--
+
+INSERT INTO `home_reasons` (`id`, `icon`, `title`, `subtitle`, `position`) VALUES
+(1, 'fa-solid fa-cow', 'Freshness and Simple Production', 'Kesong puti is a good choice because it\'s a fresh cheese without preservatives, offering a pure, natural flavor.', 1),
+(2, 'fa-solid fa-pills', 'Rich in Nutrients', 'It is a great source of essential nutrients, particularly protein and calcium, from the rich carabao\'s milk.', 2),
+(3, 'fa-solid fa-cheese', 'Cultural and Culinary Importance', 'Kesong puti is a cultural staple in the Philippines, often enjoyed as a classic breakfast food.', 3),
+(4, 'fa-solid fa-utensils', 'Versatility in the Kitchen', 'Its mild, slightly salty flavor makes it a versatile ingredient for both sweet and savory dishes.', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `home_settings`
+--
+
+CREATE TABLE `home_settings` (
+  `id` int(11) NOT NULL,
+  `setting_key` varchar(50) NOT NULL,
+  `setting_value` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `home_settings`
+--
+
+INSERT INTO `home_settings` (`id`, `setting_key`, `setting_value`) VALUES
+(470, 'del_pick_image', ''),
+(473, 'home_header_font_color_part1', '#0D8540'),
+(474, 'home_header_font_color_part2', '#F4C40F'),
+(475, 'home_header_font_color_part3', '#0D8540'),
+(476, 'del_pick_font_color_title1', '#058240'),
+(477, 'del_pick_font_color_title2', '#058240'),
+(478, 'del_pick_font_color_title3', '#058240'),
+(479, 'del_pick_font_color_title4', '#F4C40F'),
+(480, 'home_featured_title', 'The Original & Classics'),
+(481, 'home_reasons_heading', 'Why is it Good?'),
+(482, 'about_heading', 'OUR FAMILY’S LEGACY OF KESONG PUTI');
 
 -- --------------------------------------------------------
 
@@ -232,19 +384,23 @@ CREATE TABLE `page_headers` (
   `id` int(11) NOT NULL,
   `page_name` varchar(100) NOT NULL,
   `header_text` varchar(255) NOT NULL,
-  `header_image` varchar(255) DEFAULT NULL
+  `header_image` varchar(255) DEFAULT NULL,
+  `part1` varchar(50) DEFAULT NULL,
+  `part2` varchar(50) DEFAULT NULL,
+  `part3` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `page_headers`
 --
 
-INSERT INTO `page_headers` (`id`, `page_name`, `header_text`, `header_image`) VALUES
-(1, 'home', 'WELCOME', NULL),
-(2, 'products', 'OUR PRODUCTS', NULL),
-(3, 'FAQ', 'GOT QUESTIONS?', NULL),
-(4, 'contact', 'GET IN TOUCH', NULL),
-(5, 'feedback', 'CUSTOMER FEEDBACK', NULL);
+INSERT INTO `page_headers` (`id`, `page_name`, `header_text`, `header_image`, `part1`, `part2`, `part3`) VALUES
+(1, 'home', 'WELCOME', NULL, 'PURE', 'CHEESE', 'BLISS'),
+(2, 'about us', 'OUR STORY', NULL, NULL, NULL, NULL),
+(3, 'products', 'OUR PRODUCTS', NULL, NULL, NULL, NULL),
+(4, 'FAQ', 'GOT QUESTIONS?', NULL, NULL, NULL, NULL),
+(5, 'contact', 'GET IN TOUCH', NULL, NULL, NULL, NULL),
+(6, 'feedback', 'CUSTOMER FEEDBACK', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -284,6 +440,7 @@ INSERT INTO `payment_methods` (`method_id`, `method_name`, `method_type`, `accou
 CREATE TABLE `products` (
   `product_id` int(11) NOT NULL,
   `product_name` varchar(150) NOT NULL,
+  `variation_size` varchar(50) DEFAULT NULL,
   `description` text DEFAULT NULL,
   `price` decimal(10,2) NOT NULL,
   `stock_qty` int(11) DEFAULT 0,
@@ -302,18 +459,24 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `product_name`, `description`, `price`, `stock_qty`, `category`, `product_image`, `category_id`, `owner_id`, `store_id`, `owner_type`, `date_added`, `updated_at`, `status`) VALUES
-(9, 'Kesong Puti', 'Cheese wrapped in banana leaf', 140.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-08-21 23:52:50', '2025-08-27 15:07:59', 'available'),
-(17, 'Kesorbetes (Pint)', 'ice cream', 260.00, 15, 'ice-cream', '/assets/pint.png', NULL, 1, NULL, 'admin', '2025-08-22 04:37:29', '2025-09-05 22:50:49', 'available'),
-(19, 'Kesorbetes (Med Tub)', 'ice cream', 160.00, 15, 'ice-cream', '/assets/med tub.png', NULL, 1, NULL, 'admin', '2025-08-22 04:42:13', '2025-09-05 22:50:58', 'available'),
-(20, 'Kesorbetes (Liter)', 'ice cream', 320.00, 15, 'ice-cream', '/assets/liter.png', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-09-05 22:51:04', 'available'),
-(21, 'Kesong Puti', 'cheese', 110.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:20:16', '2025-08-22 10:27:12', 'available'),
-(22, 'Kesorbetes (Small Tub)', 'ice cream', 100.00, 15, 'ice-cream', '/assets/small tub.png', NULL, 3, NULL, 'admin', '2025-08-22 10:31:19', '2025-09-05 22:52:39', 'available'),
-(30, 'Kesorbetes (1 Gallon)', 'ice cream', 870.00, 15, 'ice-cream', '/assets/gallon.png', NULL, 3, NULL, 'admin', '2025-09-03 06:20:19', '2025-09-05 22:52:19', 'available'),
-(31, 'Kesorbetes (Half Gallon)', 'ice cream', 650.00, 15, 'ice-cream', '/assets/half gallon.png', NULL, 3, NULL, 'admin', '2025-09-03 06:22:07', '2025-09-05 22:52:13', 'available'),
-(34, 'Kesong Puti', 'cheese', 190.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-09-03 07:18:17', '2025-09-03 07:18:17', 'available'),
-(35, 'Kesong Puti', 'cheese', 180.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 07:23:18', '2025-09-03 07:23:18', 'available'),
-(36, 'Kesong Puti', 'cheese', 200.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 11:12:51', '2025-09-03 11:12:51', 'available');
+INSERT INTO `products` (`product_id`, `product_name`, `variation_size`, `description`, `price`, `stock_qty`, `category`, `product_image`, `category_id`, `owner_id`, `store_id`, `owner_type`, `date_added`, `updated_at`, `status`) VALUES
+(1, 'Kesong Puti', NULL, NULL, 120.00, 0, '', NULL, NULL, 0, NULL, 'admin', '2025-09-23 07:53:17', '2025-09-23 07:53:17', 'available'),
+(2, 'Kesorbetes', NULL, NULL, 80.00, 0, '', NULL, NULL, 0, NULL, 'admin', '2025-09-23 07:53:17', '2025-09-23 07:53:17', 'available'),
+(3, 'Kesong Puti', 'pint', 'Fresh white cheese made from carabao milk.', 120.00, 50, 'Dairy', 'kesong_puti.jpg', 1, 1, 1, 'admin', '2025-09-23 07:58:32', '2025-09-23 13:30:46', 'available'),
+(4, 'Kesorbetes', 'tub', 'Homemade cheese ice cream.', 80.00, 30, 'Dessert', 'kesorbetes.jpg', 1, 1, 1, 'admin', '2025-09-23 07:58:32', '2025-09-23 13:30:56', 'available'),
+(9, 'Kesong Puti', NULL, 'Cheese wrapped in banana leaf', 140.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-08-21 23:52:50', '2025-08-27 15:07:59', 'available'),
+(17, 'Kesorbetes (Pint)', NULL, 'ice cream', 260.00, 15, 'ice-cream', '/assets/pint.png', NULL, 1, NULL, 'admin', '2025-08-22 04:37:29', '2025-09-05 22:50:49', 'available'),
+(19, 'Kesorbetes (Med Tub)', NULL, 'ice cream', 160.00, 15, 'ice-cream', '/assets/med tub.png', NULL, 1, NULL, 'admin', '2025-08-22 04:42:13', '2025-09-05 22:50:58', 'available'),
+(20, 'Kesorbetes (Liter)', NULL, 'ice cream', 320.00, 15, 'ice-cream', '/assets/liter.png', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-09-05 22:51:04', 'available'),
+(21, 'Kesong Puti', NULL, 'cheese', 110.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:20:16', '2025-08-22 10:27:12', 'available'),
+(22, 'Kesorbetes (Small Tub)', NULL, 'ice cream', 100.00, 15, 'ice-cream', '/assets/small tub.png', NULL, 3, NULL, 'admin', '2025-08-22 10:31:19', '2025-09-05 22:52:39', 'available'),
+(30, 'Kesorbetes (1 Gallon)', NULL, 'ice cream', 870.00, 15, 'ice-cream', '/assets/gallon.png', NULL, 3, NULL, 'admin', '2025-09-03 06:20:19', '2025-09-05 22:52:19', 'available'),
+(31, 'Kesorbetes (Half Gallon)', NULL, 'ice cream', 650.00, 15, 'ice-cream', '/assets/half gallon.png', NULL, 3, NULL, 'admin', '2025-09-03 06:22:07', '2025-09-05 22:52:13', 'available'),
+(34, 'Kesong Puti', NULL, 'cheese', 190.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-09-03 07:18:17', '2025-09-03 07:18:17', 'available'),
+(35, 'Kesong Puti', NULL, 'cheese', 180.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 07:23:18', '2025-09-03 07:23:18', 'available'),
+(36, 'Kesong Puti', NULL, 'cheese', 200.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 11:12:51', '2025-09-03 11:12:51', 'available'),
+(101, 'Kesong Puti', 'pint', 'Fresh white cheese made from carabao milk.', 120.00, 50, 'Dairy', 'kesong_puti.jpg', 1, 1, 1, 'admin', '2025-09-23 08:00:59', '2025-09-23 13:22:17', 'available'),
+(102, 'Kesorbetes', 'tub', 'Homemade cheese ice cream.', 80.00, 30, 'Dessert', 'kesorbetes.jpg', 1, 1, 1, 'admin', '2025-09-23 08:00:59', '2025-09-23 13:23:57', 'available');
 
 -- --------------------------------------------------------
 
@@ -328,19 +491,23 @@ CREATE TABLE `reviews` (
   `rating` varchar(10) NOT NULL,
   `feedback` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `recipient` varchar(100) NOT NULL
+  `recipient` varchar(100) NOT NULL,
+  `order_id` int(11) DEFAULT NULL,
+  `media` text DEFAULT NULL,
+  `order_item_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reviews`
 --
 
-INSERT INTO `reviews` (`review_id`, `name`, `email`, `rating`, `feedback`, `created_at`, `recipient`) VALUES
-(8, 'Lalaine Conde', 'lalaineconde11@gmail.com', '★★★★★', 'Hello, this is just a sample feedback message!', '2025-08-27 07:46:48', 'super_1'),
-(10, 'Lara Fremista', 'larafremista21@gmail.com', '★★★★☆', 'Hello, this is just a sample feedback message!', '2025-08-27 08:26:54', 'admin_3'),
-(11, 'JB Alico', 'jaironbartalico@gmail.com', '★★★☆☆', 'Hello this is just a sample feedback message!!', '2025-08-27 08:27:40', 'admin_3'),
-(12, 'Russell Garcia', 'jonrussell@gmail.com', '★★★☆☆', 'Hello, sample feedback message!', '2025-08-27 18:22:14', 'admin_1'),
-(13, 'Jaira Bautista', 'jairared@gmail.com', '★★★★☆', 'sample feedback!', '2025-08-27 18:31:34', 'super_1');
+INSERT INTO `reviews` (`review_id`, `name`, `email`, `rating`, `feedback`, `created_at`, `recipient`, `order_id`, `media`, `order_item_id`) VALUES
+(8, 'Lalaine Conde', 'lalaineconde11@gmail.com', '4', 'Hello, this is just a sample feedback message!', '2025-08-27 07:46:48', 'super_1', NULL, NULL, NULL),
+(10, 'Lara Fremista', 'larafremista21@gmail.com', '★★★★☆', 'Hello, this is just a sample feedback message!', '2025-08-27 08:26:54', 'admin_3', NULL, NULL, NULL),
+(11, 'JB Alico', 'jaironbartalico@gmail.com', '★★★☆☆', 'Hello this is just a sample feedback message!!', '2025-08-27 08:27:40', 'admin_3', NULL, NULL, NULL),
+(12, 'Russell Garcia', 'jonrussell@gmail.com', '★★★☆☆', 'Hello, sample feedback message!', '2025-08-27 18:22:14', 'admin_1', NULL, NULL, NULL),
+(198, 'Lara Fremista', 'larafremista21@gmail.com', '5', 'keso', '2025-09-23 16:57:47', 'super_1', NULL, '[\"uploads\\/reviews\\/1758646667_0_0_528149698_2466653143708497_6422652806459652480_n.jpg\"]', 101),
+(199, 'Lara Fremista', 'larafremista21@gmail.com', '3', 'sorbetes', '2025-09-23 16:57:47', 'super_1', NULL, '[\"uploads\\/reviews\\/1758646667_1_0_gallon.png\",\"uploads\\/reviews\\/1758646667_1_1_half gallon.png\",\"uploads\\/reviews\\/1758646667_1_2_liter.png\",\"uploads\\/reviews\\/1758646667_1_3_med tub.png\",\"uploads\\/reviews\\/1758646667_1_4_pint.png\",\"uploads\\/reviews\\/1758646667_1_5_small cup.png\",\"uploads\\/reviews\\/1758646667_1_6_small tub.png\"]', 102);
 
 -- --------------------------------------------------------
 
@@ -390,6 +557,7 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('header_color', '#0D8540'),
 ('header_font_color', '#ffffff'),
 ('heading_font_color', '#0D8540'),
+('home_header_text_color', ''),
 ('icon_color', '#0D8540'),
 ('navbar_color', '#82b658'),
 ('navbar_font_color', '#ffffff'),
@@ -401,7 +569,7 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('page_header_font_family', 'Lilita One'),
 ('page_numbers_font_color', '#ff9500'),
 ('page_number_active', '#0D8540'),
-('page_number_hover', '#0D8540'),
+('page_number_hover', '#F4C40F'),
 ('price_color', '#F4C40F'),
 ('price_font_color', '#e63946'),
 ('primary_color', '#50a838'),
@@ -513,7 +681,7 @@ ALTER TABLE `categories`
 -- Indexes for table `customers`
 --
 ALTER TABLE `customers`
-  ADD PRIMARY KEY (`c.id`);
+  ADD PRIMARY KEY (`c_id`);
 
 --
 -- Indexes for table `faqs`
@@ -526,6 +694,45 @@ ALTER TABLE `faqs`
 --
 ALTER TABLE `footer_settings`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `home_about_slider`
+--
+ALTER TABLE `home_about_slider`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `home_delivery_pickup`
+--
+ALTER TABLE `home_delivery_pickup`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `home_featured`
+--
+ALTER TABLE `home_featured`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `position` (`position`);
+
+--
+-- Indexes for table `home_hero`
+--
+ALTER TABLE `home_hero`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `home_reasons`
+--
+ALTER TABLE `home_reasons`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `position` (`position`);
+
+--
+-- Indexes for table `home_settings`
+--
+ALTER TABLE `home_settings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `setting_key` (`setting_key`);
 
 --
 -- Indexes for table `inbox_messages`
@@ -614,13 +821,13 @@ ALTER TABLE `admins`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `c.id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `faqs`
@@ -633,6 +840,42 @@ ALTER TABLE `faqs`
 --
 ALTER TABLE `footer_settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `home_about_slider`
+--
+ALTER TABLE `home_about_slider`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `home_delivery_pickup`
+--
+ALTER TABLE `home_delivery_pickup`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `home_featured`
+--
+ALTER TABLE `home_featured`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `home_hero`
+--
+ALTER TABLE `home_hero`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `home_reasons`
+--
+ALTER TABLE `home_reasons`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT for table `home_settings`
+--
+ALTER TABLE `home_settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=483;
 
 --
 -- AUTO_INCREMENT for table `inbox_messages`
@@ -650,13 +893,13 @@ ALTER TABLE `orders`
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
 
 --
 -- AUTO_INCREMENT for table `page_headers`
 --
 ALTER TABLE `page_headers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=416;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=421;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
@@ -668,13 +911,13 @@ ALTER TABLE `payment_methods`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- AUTO_INCREMENT for table `store`
@@ -702,7 +945,7 @@ ALTER TABLE `super_admin`
 -- Constraints for table `orders`
 --
 ALTER TABLE `orders`
-  ADD CONSTRAINT `fk_orders_customer` FOREIGN KEY (`c_id`) REFERENCES `customers` (`c.id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_orders_customer` FOREIGN KEY (`c_id`) REFERENCES `customers` (`c_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `order_items`

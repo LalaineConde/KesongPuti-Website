@@ -10,6 +10,26 @@ while ($row = mysqli_fetch_assoc($query)) {
 
 $header_image = "assets/header.png";
 
+// Default homepage header parts
+$home_header_part1 = "PURE";
+$home_header_part2 = "CHEESE";
+$home_header_part3 = "BLISS";
+
+// Fetch homepage header font colors
+$header_colors = [];
+$result = mysqli_query($connection, "SELECT * FROM home_settings");
+while ($row = mysqli_fetch_assoc($result)) {
+    $header_colors[$row['setting_key']] = $row['setting_value'];
+}
+
+// Optional: fetch from DB if you have a table for homepage settings
+$result = mysqli_query($connection, "SELECT part1, part2, part3 FROM page_headers WHERE page_name='home' LIMIT 1");
+if ($row = mysqli_fetch_assoc($result)) {
+    $home_header_part1 = $row['part1'] ?? $home_header_part1;
+    $home_header_part2 = $row['part2'] ?? $home_header_part2;
+    $home_header_part3 = $row['part3'] ?? $home_header_part3;
+}
+
 if (!empty($current_page)) {
     $result = mysqli_query($connection, 
         "SELECT header_text, header_image 
@@ -30,7 +50,7 @@ if (!empty($current_page)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us</title>
+    <title></title>
 
     <!-- BOOTSTRAP -->
     <link
@@ -68,6 +88,11 @@ if (!empty($current_page)) {
   --navbar-hover-color: <?= $settings['navbar_hover_color'] ?? '#87B86B' ?>;
   --price-color: <?= $settings['price_color'] ?? '#F4C40F' ?>;
 
+
+  --home-header-font-color-part1: <?= $settings['home_header_font_color_part1'] ?? '#0D8540' ?>;
+  --home-header-font-color-part2: <?= $settings['home_header_font_color_part2'] ?? '#F4C40F' ?>;
+  --home-header-font-color-part3: <?= $settings['home_header_font_color_part3'] ?? '#0D8540' ?>;
+
   /* ===== Buttons ===== */
   --checkout-button-color: <?= $settings['checkout_button_color'] ?? '#F4C40F' ?>;
   --checkout-button-hover: <?= $settings['checkout_button_hover'] ?? '#0D8540' ?>;
@@ -89,7 +114,7 @@ if (!empty($current_page)) {
   --product-font-color: <?= $settings['product_font_color'] ?? '#000000' ?>;
   --icon-color: <?= $settings['icon_color'] ?? '#0D8540' ?>;
   --page-number-active: <?= $settings['page_number_active'] ?? '#0D8540' ?>;
-  --page-number-hover: <?= $settings['page_number_hover'] ?? '#0D8540' ?>;
+  --page-number-hover: <?= $settings['page_number_hover'] ?? '#F4C40F' ?>;
 
   /* ===== FAQ ===== */
   --faq-button-bg: <?= $settings['faq_button_bg'] ?? '#0D8540' ?>;
@@ -168,8 +193,8 @@ body {
           id="navbarNav"
         >
           <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.php">About</a></li>
             <li class="nav-item"><a class="nav-link" href="products.php">Products</a></li>
             <li class="nav-item"><a class="nav-link" href="FAQ.php">FAQ</a></li>
             <li class="nav-item"><a class="nav-link" href="feedback.php">Feedback</a></li>
@@ -196,33 +221,42 @@ body {
     <!-- PAGE HEADER -->
 
 
-<section class="product-page" 
-         style="background-image: url('../../<?= htmlspecialchars($header_image) ?>');">
+<?php if($isHomePage): ?>
+<section class="home-header-section">
   <div class="header-text">
-    <h1><?= htmlspecialchars($page_header) ?></h1>
-    <h2><?= htmlspecialchars($page_subheader ?? '') ?></h2>
-    <div class="mt-4 breadcrumb">
-      <a href="home.php"><span>Home</span></a>
-      <p class="separator">-</p>
-      <span class="current-page"><?= ucfirst($current_page) ?></span>
-    </div>
+    <h1>
+      <span style="color: <?= htmlspecialchars($header_colors['home_header_font_color_part1'] ?? '#0D8540') ?>;">
+        <?= htmlspecialchars($home_header_part1) ?>
+      </span>
+      <span style="color: <?= htmlspecialchars($header_colors['home_header_font_color_part2'] ?? '#F4C40F') ?>;">
+        <?= htmlspecialchars($home_header_part2) ?>
+      </span>
+      <span style="color: <?= htmlspecialchars($header_colors['home_header_font_color_part3'] ?? '#0D8540') ?>;">
+        <?= htmlspecialchars($home_header_part3) ?>
+      </span>
+    </h1>
   </div>
-
-
-      <!-- wave separator -->
-      <svg
-        class="wave"
-        viewBox="0 0 1440 320"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <!-- white part -->
-        <path
-          d="M0,224 L48,213.3 C96,203 192,181 288,165.3 C384,149 480,139 576,149.3 C672,160 768,192 864,202.7 C960,213 1056,203 1152,186.7 C1248,171 1344,149 1392,138.7 L1440,128 L1440,320 L1392,320 C1344,320 1248,320 1152,320 C1056,320 960,320 864,320 C768,320 672,320 576,320 C480,320 384,320 288,320 C192,320 96,320 48,320 L0,320 Z"
-          fill="#fefaf6"
-        />
-      </svg>
 </section>
+<?php else: ?>
+    <!-- DEFAULT PAGE HEADER -->
+    <section class="product-page" 
+             style="background-image: url('../../<?= htmlspecialchars($header_image) ?>');">
+      <div class="header-text">
+        <h1><?= htmlspecialchars($page_header) ?></h1>
+        <h2><?= htmlspecialchars($page_subheader ?? '') ?></h2>
+        <div class="mt-4 breadcrumb">
+          <a href="index.php"><span>Home</span></a>
+          <p class="separator">-</p>
+          <span class="current-page"><?= ucfirst($current_page) ?></span>
+        </div>
+      </div>
+      <!-- wave separator -->
+      <svg class="wave" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,224 L48,213.3 C96,203 192,181 288,165.3 C384,149 480,139 576,149.3 C672,160 768,192 864,202.7 C960,213 1056,203 1152,186.7 C1248,171 1344,149 1392,138.7 L1440,128 L1440,320 L1392,320 C1344,320 1248,320 1152,320 C1056,320 960,320 864,320 C768,320 672,320 576,320 C480,320 384,320 288,320 C192,320 96,320 48,320 L0,320 Z" fill="#fefaf6"/>
+      </svg>
+    </section>
+<?php endif; ?>
+
  
     <!-- PRODUCTS PAGE HEADER -->
 

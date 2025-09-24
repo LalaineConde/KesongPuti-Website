@@ -5,11 +5,24 @@
 
   $toast_message = ''; // Initialize variable for toast message
 
-  if ($_SESSION['role'] === 'admin') {
-      $recipient = "admin_" . $_SESSION['admin_id'];
-  } elseif ($_SESSION['role'] === 'superadmin') {
-      $recipient = "super_" . $_SESSION['super_id'];
-  }
+ if ($_SESSION['role'] === 'admin') {
+    $recipient = "admin_" . $_SESSION['admin_id'];
+    $userId = $_SESSION['admin_id'];
+    $storeQuery = "SELECT store_name FROM admins WHERE admin_id = $userId LIMIT 1";
+} elseif ($_SESSION['role'] === 'superadmin') {
+    $recipient = "super_" . $_SESSION['super_id'];
+    $userId = $_SESSION['super_id'];
+    $storeQuery = "SELECT store_name FROM super_admin WHERE super_id = $userId LIMIT 1";
+}
+
+$storeName = "Kesong Puti"; // fallback
+if (isset($storeQuery)) {
+    $storeResult = mysqli_query($connection, $storeQuery);
+    $storeRow = mysqli_fetch_assoc($storeResult);
+    if ($storeRow && !empty($storeRow['store_name'])) {
+        $storeName = htmlspecialchars($storeRow['store_name']);
+    }
+}
 
   // Fetch inbox messages
   $sql = "SELECT * FROM reviews 
@@ -38,7 +51,10 @@
       />
 
       <link rel="stylesheet" href="../../css/admin.css"/>
+<style>
 
+
+</style>
   </head>
   <body>
 
@@ -76,86 +92,78 @@
               </tr>
             </thead>
               <tbody id="feedbackTableBody">
-                <?php if (mysqli_num_rows($result) > 0): ?>
-                  <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                    <?php
-                      $to = htmlspecialchars($row['email']);
-                      $subject = rawurlencode('Response to your message');
-                      
-                      // Use admin name from DB (recipient column stores "admin_1" or "super_2")
-                      $recipient = $row['recipient']; 
-                      $adminName = "Our Team"; // fallback
-                      
-                      if (strpos($recipient, 'admin_') === 0) {
-                          $adminId = str_replace('admin_', '', $recipient);
-                          $query = mysqli_query($connection, "SELECT username FROM admins WHERE admin_id='$adminId'");
-                          if ($query && $adminRow = mysqli_fetch_assoc($query)) {
-                              $adminName = $adminRow['username'];
+              <?php if (mysqli_num_rows($result) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                  <?php
+                    // Convert numeric rating to stars for display
+                  $rating = (int)$row['rating']; // ensure it's an integer
+              $stars = str_repeat('★', $rating) . str_repeat('☆', 5 - $rating);
+                  ?>
+                  <tr>
+                    <td><?= htmlspecialchars($row['name']) ?></td>
+              <td>
+                  <?php 
+                      $cleanName = htmlspecialchars($row['name']);
+                      $email = htmlspecialchars($row['email']);
+                      $subject = "Response to Your Feedback";
 
-                          }
-                      } elseif (strpos($recipient, 'super_') === 0) {
-                          $superId = str_replace('super_', '', $recipient);
-                          $query = mysqli_query($connection, "SELECT username FROM super_admin WHERE super_id='$superId'");
-                          if ($query && $superRow = mysqli_fetch_assoc($query)) {
-                              $adminName = $superRow['username'];
+                      $body = "Dear $cleanName,%0D%0A%0D%0A" .
+                              "Thank you for your feedback regarding our services. We have reviewed your message and would like to provide the following response:%0D%0A%0D%0A" .
+                              "[Your Response Here]%0D%0A%0D%0A" .
+                              "Best regards,%0D%0A" .
+                              "$storeName";
+                  ?>
+                  <a href="mailto:<?= $email ?>?subject=<?= rawurlencode($subject) ?>&body=<?= $body ?>">
+                      <?= $email ?>
+                  </a>
+              </td>
 
-                          }
-                      }
-
-                      $body = rawurlencode(
-                        "Hi {$row['name']},\r\n\r\n".
-                        "Thank you for your feedback.\r\n\r\n".
-                        "Your Message:\r\n\"{$row['feedback']}\"\r\n\r\n".
-                        "[Insert your response here]\r\n\r\n".
-                        "Best regards,\r\n".
-                        "$adminName\r\n".
-                        "[Your Contact Information]"
-                      );
-                    ?>
-                    <tr>
-                      <td><?php echo htmlspecialchars($row['name']); ?></td>
-                      <td>
-                        <a href="mailto:<?= $to ?>?subject=<?= $subject ?>&body=<?= $body ?>" target="_blank">
-                          <?= $to ?>
-                        </a>
-                      </td>
-                      <td><?php echo htmlspecialchars($row['rating']); ?></td>
-                      <td class="contact-message"><span class="short-msg"><?php echo htmlspecialchars($row['feedback']); ?></span></td>
-                      <td><?php echo date("M j, Y", strtotime($row['created_at'])); ?></td>
-                      <td>
+                    <td class="rating-stars"><?= $stars ?></td>
+                    <td class="contact-message">
+                      <span class="short-msg">
+                        <?= htmlspecialchars(strlen($row['feedback']) > 50 ? substr($row['feedback'],0,50).'...' : $row['feedback']) ?>
+                      </span>
+                    </td>
+                    <td><?= date("M j, Y, g:i a", strtotime($row['created_at'])) ?></td>
+                    <td>
                       <button
                         class="view-btn view-more"
-                        data-message="<?php echo htmlspecialchars($row['feedback']); ?>"
-
-                        title="View More"
+                        data-message="<?= htmlspecialchars($row['feedback']) ?>"
+                        data-media='<?= htmlspecialchars($row['media']) ?>'
+                        title="View Full Message"
                       >
                         <i class="bi bi-eye-fill"></i>
                       </button>
-                      <button class="delete-btn" data-id="<?php echo $row['review_id']; ?>">
+                      <button class="delete-btn" data-id="<?= $row['review_id'] ?>">
                         <i class="bi bi-trash-fill"></i>
                       </button>
                     </td>
-                    </tr>
-                  <?php endwhile; ?>
-                <?php else: ?>
-                  <tr>
-                    <td colspan="6" style="text-align:center;">No messages found</td>
                   </tr>
-                <?php endif; ?>
+                <?php endwhile; ?>
+              <?php else: ?>
+                <tr>
+                  <td colspan="6" style="text-align:center;">No feedbacks found</td>
+                </tr>
+              <?php endif; ?>
               </tbody>
-          </table>
-        </div>
+                        </table>
+                      </div>
 
-          <!-- MODAL for full message -->
-          <div class="feedback-modal" id="feedbackModal">
-            <div class="modal-content">
-              <span class="close-modal">&times;</span>
-              <h2>Full Message</h2>
-              <p id="fullMessageText"></p>
-            </div>
-          </div>
-        </div>
-  </div>
+                        <!-- MODAL for full message -->
+              <div class="feedback-modal" id="feedbackModal">
+                  <div class="modal-content">
+                      <span class="close-modal">&times;</span>
+                      <h2>Full Message</h2>
+                      <p id="fullMessageText"></p>
+                      <div class="modal-gallery">
+                          <button class="prev-btn">&#10094;</button>
+                          <img id="modalImage" src="" alt="Media Preview" style="max-width:400px;">
+                          <button class="next-btn">&#10095;</button>
+                      </div>
+                  </div>
+              </div>
+                      </div>
+                </div>
         <!-- FEEDBACK -->
     
   <!-- FUNCTIONS -->
@@ -246,22 +254,80 @@
   </script>
 
   <script>
-  // 👁️ View More modal
-  const modal = document.getElementById("feedbackModal");
-  const fullMessageText = document.getElementById("fullMessageText");
-  const closeModalBtn = document.querySelector(".close-modal");
+      // 👁️ Modal with Prev/Next for images
+      const modal = document.getElementById("feedbackModal");
+      const fullMessageText = document.getElementById("fullMessageText");
+      const modalImage = document.getElementById("modalImage");
+      const closeModalBtn = document.querySelector(".close-modal");
+      const prevBtn = document.querySelector(".prev-btn");
+      const nextBtn = document.querySelector(".next-btn");
 
-  document.querySelectorAll(".view-more").forEach((button) => {
-    button.addEventListener("click", () => {
-      fullMessageText.textContent = button.getAttribute("data-message");
-      modal.style.display = "flex";
-    });
-  });
+      let mediaFiles = [];
+      let currentIndex = 0;
 
-  closeModalBtn.onclick = () => (modal.style.display = "none");
-  window.onclick = (e) => {
-    if (e.target === modal) modal.style.display = "none";
-  };
+      document.querySelectorAll(".view-more").forEach(button => {
+          button.addEventListener("click", () => {
+              // Full message
+              fullMessageText.textContent = button.getAttribute("data-message");
+
+              // Get media
+              const mediaData = button.getAttribute("data-media");
+              mediaFiles = [];
+              currentIndex = 0;
+
+              if(mediaData){
+                  try {
+                      mediaFiles = JSON.parse(mediaData);
+                      if(!Array.isArray(mediaFiles)) mediaFiles = [mediaData];
+                  } catch {
+                      mediaFiles = [mediaData];
+                  }
+              }
+
+              // Show first image/video
+              showMedia(currentIndex);
+
+              modal.style.display = "flex";
+          });
+      });
+
+      closeModalBtn.onclick = () => modal.style.display = "none";
+      window.onclick = e => { if(e.target === modal) modal.style.display = "none"; };
+
+      function showMedia(index) {
+          if(mediaFiles.length === 0) {
+              modalImage.style.display = "none";
+              return;
+          }
+
+          let file = mediaFiles[index];
+          const ext = file.split('.').pop().toLowerCase();
+
+          if(['jpg','jpeg','png','gif'].includes(ext)){
+              modalImage.src = '../../'+file;
+              modalImage.style.display = "block";
+          } else {
+              // For video, replace image with video element
+              const videoEl = document.createElement('video');
+              videoEl.src = '../../'+file;
+              videoEl.controls = true;
+              videoEl.style.maxWidth = '400px';
+              modalImage.replaceWith(videoEl);
+              modalImage = videoEl; // Update reference
+          }
+      }
+
+      prevBtn.addEventListener('click', () => {
+          if(mediaFiles.length === 0) return;
+          currentIndex = (currentIndex - 1 + mediaFiles.length) % mediaFiles.length;
+          showMedia(currentIndex);
+      });
+
+      nextBtn.addEventListener('click', () => {
+          if(mediaFiles.length === 0) return;
+          currentIndex = (currentIndex + 1) % mediaFiles.length;
+          showMedia(currentIndex);
+      });
   </script>
       
   <!-- FUNCTIONS -->

@@ -2,6 +2,7 @@
 $page_title = 'FAQ | Kesong Puti';
 require '../../connection.php';
 $current_page = 'FAQ'; 
+$isHomePage = ($current_page === 'home'); // check if this is the home page
 $page_subheader = "Let's get you an Answer";
 include ('../../includes/customer-dashboard.php');
 

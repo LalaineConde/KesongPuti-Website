@@ -153,8 +153,8 @@ $admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
             </a>
             <ul class="sub-menu">
               <li>
-                <a href="../superadmin/homepage.php" class="sub-tab" data-content="home-content"
-                  >Home Page</a
+                <a href="../superadmin/home.php" class="sub-tab" data-content="home-content"
+                  >Home</a
                 >
               </li>
               <li>
@@ -172,9 +172,12 @@ $admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
                   >Footer</a
                 >
               </li>
-              <li>
-                <a href="../superadmin/FAQ.php" class="sub-tab" data-content="faq-content">FAQ</a>
+              <li>  
+                <a href="../superadmin/faq.php" class="sub-tab" data-content="faq-content"
+                  >FAQ</a
+                >
               </li>
+
             </ul>
           </li>
           <!-- CMS -->
