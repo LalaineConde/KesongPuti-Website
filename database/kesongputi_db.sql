@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 19, 2025 at 07:17 AM
+-- Generation Time: Sep 24, 2025 at 01:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -78,7 +78,10 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`c.id`, `fullname`, `phone_number`, `email`, `address`) VALUES
-(1, 'Lara Fremista', '09957432998', 'larafremista21@gmail.com', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026');
+(1, 'Lara Fremista', '09957432998', 'larafremista21@gmail.com', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026'),
+(2, 'Lalaine Conde', '09123456789', 'lalaineconde@gmail.com', ''),
+(3, 'Juan Dela Cruz', '09152345678', 'juandelacruz@gmail.com', ''),
+(4, 'Stephen Strange', '09123456789', 'stephen@gmail.com', '');
 
 -- --------------------------------------------------------
 
@@ -178,10 +181,22 @@ CREATE TABLE `orders` (
   `order_date` datetime DEFAULT current_timestamp(),
   `total_amount` decimal(10,2) NOT NULL,
   `payment_status` enum('pending','paid','failed','refunded') DEFAULT 'pending',
+  `payment_method` varchar(50) DEFAULT 'cash',
+  `proof_of_payment` varchar(255) DEFAULT NULL,
   `order_status` enum('pending','processing','shipped','delivered','cancelled') DEFAULT 'pending',
   `delivery_address` varchar(255) NOT NULL,
   `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`, `payment_status`, `payment_method`, `proof_of_payment`, `order_status`, `delivery_address`, `owner_id`) VALUES
+(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'pending', 'cash', NULL, 'pending', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1),
+(2, 2, 0, '2025-09-19 17:32:55', 100.00, 'pending', 'cash', NULL, 'pending', '', 3),
+(3, 3, 0, '2025-09-19 17:38:40', 650.00, 'pending', 'cash', NULL, 'pending', '', 3),
+(4, 4, 0, '2025-09-24 02:20:19', 320.00, 'pending', 'gcash', 'proof_68d2e4e37cf5c.png', 'pending', '', 1);
 
 -- --------------------------------------------------------
 
@@ -196,6 +211,16 @@ CREATE TABLE `order_items` (
   `quantity` int(11) NOT NULL CHECK (`quantity` > 0),
   `price_at_purchase` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`order_item_id`, `o_id`, `product_id`, `quantity`, `price_at_purchase`) VALUES
+(1, 1, 34, 1, 190.00),
+(2, 2, 22, 1, 100.00),
+(3, 3, 31, 1, 650.00),
+(4, 4, 20, 1, 320.00);
 
 -- --------------------------------------------------------
 
@@ -230,6 +255,7 @@ INSERT INTO `page_headers` (`id`, `page_name`, `header_text`, `header_image`) VA
 CREATE TABLE `payment_methods` (
   `method_id` int(11) NOT NULL,
   `method_name` varchar(100) NOT NULL,
+  `method_type` varchar(100) DEFAULT NULL,
   `account_name` varchar(150) DEFAULT NULL,
   `account_number` varchar(150) DEFAULT NULL,
   `qr_code` varchar(255) DEFAULT NULL,
@@ -243,8 +269,11 @@ CREATE TABLE `payment_methods` (
 -- Dumping data for table `payment_methods`
 --
 
-INSERT INTO `payment_methods` (`method_id`, `method_name`, `account_name`, `account_number`, `qr_code`, `status`, `created_at`, `updated_at`, `recipient`) VALUES
-(4, 'bank', 'arlene macalinao', '09123456789', '1757398482_small tub.png', 'unpublished', '2025-09-09 06:14:42', '2025-09-09 06:15:05', 'superadmin_1');
+INSERT INTO `payment_methods` (`method_id`, `method_name`, `method_type`, `account_name`, `account_number`, `qr_code`, `status`, `created_at`, `updated_at`, `recipient`) VALUES
+(4, 'bank', NULL, 'arlene macalinao', '09123456789', '1757398482_small tub.png', 'published', '2025-09-09 06:14:42', '2025-09-20 04:19:23', 'super_1'),
+(5, 'bank', NULL, 'lara danielle', '09957432996', '1758277057_qr.jpg', 'published', '2025-09-19 10:17:37', '2025-09-19 10:17:37', 'admin_3'),
+(9, 'e-wallet', 'gcash', 'arlene macalinao', '09123456789', '1758705385_528149698_2466653143708497_6422652806459652480_n.jpg', 'published', '2025-09-24 09:16:25', '2025-09-24 09:16:25', 'super_1'),
+(11, 'e-wallet', 'paymaya', 'arlene macalinao', '09123456789', '1758706526_pint.png', 'published', '2025-09-24 09:35:26', '2025-09-24 09:35:26', 'super_1');
 
 -- --------------------------------------------------------
 
@@ -591,7 +620,7 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `c.id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `c.id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `faqs`
@@ -615,13 +644,13 @@ ALTER TABLE `inbox_messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `page_headers`
@@ -633,7 +662,7 @@ ALTER TABLE `page_headers`
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `products`
