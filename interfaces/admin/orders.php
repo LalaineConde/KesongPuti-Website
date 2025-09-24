@@ -17,7 +17,7 @@ if ($current_admin_id) {
                             o.delivery_address,
                             c.fullname, c.phone_number, c.email, c.address
                      FROM orders o 
-                     LEFT JOIN customers c ON o.c_id = c.`c.id`
+                     LEFT JOIN customers c ON o.c_id = c.`c_id`
                      WHERE o.owner_id = ? 
                      ORDER BY o.order_date DESC";
 
