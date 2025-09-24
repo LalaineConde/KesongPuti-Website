@@ -19,7 +19,7 @@ if ($_SESSION['role'] === 'superadmin') {
 if ($owner_filter !== null) {
     $orders_query = "SELECT o.*, c.fullname, c.phone_number, c.email, c.address
                      FROM orders o 
-                     LEFT JOIN customers c ON o.c_id = c.`c.id`
+                     LEFT JOIN customers c ON o.c_id = c.`c_id`
                      WHERE o.owner_id = ? 
                      ORDER BY o.order_date DESC";
 
