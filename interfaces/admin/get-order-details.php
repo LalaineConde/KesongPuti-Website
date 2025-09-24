@@ -64,7 +64,12 @@ mysqli_stmt_close($stmt);
 $order['items'] = $items;
 
 // Add payment method information (defaulting to cash for now)
-$order['payment_method'] = 'Cash on Delivery';
+if (empty($order['payment_method'])) {
+    $order['payment_method'] = 'Cash on Delivery';
+}
+
+$order['payment_method'] = $order['payment_method'] ?: 'Cash on Delivery';
+$order['proof_of_payment'] = $order['proof_of_payment'] ?? null;
 
 echo json_encode(['success' => true, 'order' => $order]);
 ?>

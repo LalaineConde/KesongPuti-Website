@@ -3,36 +3,35 @@ $page_title = 'Payment Method | Kesong Puti';
 require '../../connection.php';
 include ('../../includes/admin-dashboard.php');
 
-// Identify recipient (superadmin or admin)
+
+// Identify recipient
 if ($_SESSION['role'] === 'superadmin') {
-    $recipient = 'superadmin_' . $_SESSION['super_id'];
+    $recipient = 'super_' . $_SESSION['super_id'];
 } else {
     $recipient = 'admin_' . $_SESSION['admin_id'];
 }
 
-// CREATE (if not editing/deleting)
+// CREATE
 if ($_SERVER["REQUEST_METHOD"] === "POST" && !isset($_POST['edit_method_id']) && !isset($_POST['delete_method_id'])) {
     $method_name    = $_POST['method_name'] ?? '';
+    $method_type    = strtolower(trim($_POST['method_type'] ?? 'e-wallet')); 
     $account_name   = $_POST['account_name'] ?? null;
     $account_number = $_POST['account_number'] ?? null;
     $status         = $_POST['status'] ?? 'published';
 
-    // Upload QR code if provided
     $qr_code = null;
     if (!empty($_FILES['qr_code']['name'])) {
         $targetDir = "../../uploads/payment_qr/";
-        if (!is_dir($targetDir)) {
-            mkdir($targetDir, 0777, true);
-        }
+        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
         $filename = time() . "_" . basename($_FILES['qr_code']['name']);
         $qr_code  = $filename;
         move_uploaded_file($_FILES['qr_code']['tmp_name'], $targetDir . $filename);
     }
 
-    $sql = "INSERT INTO payment_methods (method_name, account_name, account_number, qr_code, status, recipient) 
-            VALUES (?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO payment_methods (method_name, method_type, account_name, account_number, qr_code, status, recipient) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = $connection->prepare($sql);
-    $stmt->bind_param("ssssss", $method_name, $account_name, $account_number, $qr_code, $status, $recipient);
+    $stmt->bind_param("sssssss", $method_name, $method_type, $account_name, $account_number, $qr_code, $status, $recipient);
     $stmt->execute();
     $stmt->close();
 }
@@ -51,27 +50,25 @@ if (isset($_POST['delete_method_id'])) {
 if (isset($_POST['edit_method_id'])) {
     $edit_id        = intval($_POST['edit_method_id']);
     $method_name    = $_POST['edit_method_name'];
+    $method_type    = strtolower(trim($_POST['edit_method_type'])); // normalize
     $account_name   = $_POST['edit_account_name'];
     $account_number = $_POST['edit_account_number'];
     $status         = $_POST['edit_status'];
     $qr_code        = $_POST['existing_qr_code'];
 
-    // Replace QR if uploaded
     if (!empty($_FILES['edit_qr_code']['name'])) {
         $targetDir = "../../uploads/payment_qr/";
-        if (!is_dir($targetDir)) {
-            mkdir($targetDir, 0777, true);
-        }
+        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
         $filename = time() . "_" . basename($_FILES['edit_qr_code']['name']);
         $qr_code  = $filename;
         move_uploaded_file($_FILES['edit_qr_code']['tmp_name'], $targetDir . $filename);
     }
 
     $updateSql = "UPDATE payment_methods 
-                  SET method_name=?, account_name=?, account_number=?, qr_code=?, status=?, updated_at=NOW() 
+                  SET method_name=?, method_type=?, account_name=?, account_number=?, qr_code=?, status=?, updated_at=NOW() 
                   WHERE method_id=? AND recipient=?";
     $stmt = $connection->prepare($updateSql);
-    $stmt->bind_param("sssssis", $method_name, $account_name, $account_number, $qr_code, $status, $edit_id, $recipient);
+    $stmt->bind_param("ssssssis", $method_name, $method_type, $account_name, $account_number, $qr_code, $status, $edit_id, $recipient);
     $stmt->execute();
     $stmt->close();
 }
@@ -83,6 +80,7 @@ $stmt->bind_param("s", $recipient);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -104,6 +102,10 @@ $result = $stmt->get_result();
       <div class="form-group">
         <label for="methodName">Method Name</label>
         <input type="text" id="methodName" name="method_name" required>
+      </div>
+      <div class="form-group">
+        <label for="methodType">Method Type</label>
+        <input type="text" id="methodType" name="method_type" placeholder="e-wallet, bank, cash" required>
       </div>
       <div class="form-group">
         <label for="accountName">Account Name</label>
@@ -134,6 +136,7 @@ $result = $stmt->get_result();
         <thead>
           <tr>
             <th>Method</th>
+            <th>Type</th>
             <th>Account Name</th>
             <th>Account Number</th>
             <th>QR Code</th>
@@ -146,6 +149,7 @@ $result = $stmt->get_result();
           <?php while ($row = $result->fetch_assoc()): ?>
             <tr>
               <td><?= htmlspecialchars($row['method_name']) ?></td>
+              <td><?= htmlspecialchars(ucfirst($row['method_type'])) ?></td>
               <td><?= htmlspecialchars($row['account_name']) ?></td>
               <td><?= htmlspecialchars($row['account_number']) ?></td>
               <td>
@@ -160,6 +164,7 @@ $result = $stmt->get_result();
                 <button class="update-btn"
                   data-id="<?= $row['method_id'] ?>"
                   data-method="<?= htmlspecialchars($row['method_name']) ?>"
+                  data-type="<?= htmlspecialchars($row['method_type']) ?>"
                   data-account="<?= htmlspecialchars($row['account_name']) ?>"
                   data-number="<?= htmlspecialchars($row['account_number']) ?>"
                   data-status="<?= htmlspecialchars($row['status']) ?>"
@@ -173,7 +178,7 @@ $result = $stmt->get_result();
             </tr>
           <?php endwhile; ?>
         <?php else: ?>
-          <tr><td colspan="6">No payment methods found.</td></tr>
+          <tr><td colspan="7">No payment methods found.</td></tr>
         <?php endif; ?>
         </tbody>
       </table>
@@ -221,7 +226,7 @@ document.querySelectorAll(".delete-btn").forEach(btn => {
 // Edit
 document.querySelectorAll(".update-btn").forEach(btn => {
   btn.addEventListener("click", () => {
-    const {id, method, account, number, status, qr} = btn.dataset;
+    const {id, method, type, account, number, status, qr} = btn.dataset;
 
     Swal.fire({
       title: "Edit Payment Method",
@@ -235,18 +240,8 @@ document.querySelectorAll(".update-btn").forEach(btn => {
           </div>
 
           <div style="margin-bottom:12px;">
-            <label style="font-weight:bold;">Account Name</label>
-            <input class="swal2-input" style="width:95%;" name="edit_account_name" value="${account}">
-          </div>
-
-          <div style="margin-bottom:12px;">
-            <label style="font-weight:bold;">Account Number</label>
-            <input class="swal2-input" style="width:95%;" name="edit_account_number" value="${number}">
-          </div>
-
-          <div style="margin-bottom:12px;">
-            <label style="font-weight:bold;">Status</label>
-            <select class="swal2-select" name="edit_status" style="
+            <label style="font-weight:bold;">Method Type</label>
+            <select class="swal2-select" name="edit_method_type" style="
               width:95%;
               padding:0.625em;
               border:1px solid #d9d9d9;
@@ -254,9 +249,20 @@ document.querySelectorAll(".update-btn").forEach(btn => {
               font-size:1.1em;
               color:#545454;
             ">
-              <option value="published" ${status==="published"?"selected":""}>Published</option>
-              <option value="unpublished" ${status==="unpublished"?"selected":""}>Unpublished</option>
+              <option value="e-wallet" ${type==="e-wallet"?"selected":""}>E-Wallet</option>
+              <option value="bank" ${type==="bank"?"selected":""}>Bank</option>
+              <option value="cash" ${type==="cash"?"selected":""}>Cash on Delivery</option>
             </select>
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <label style="font-weight:bold;">Account Name</label>
+            <input class="swal2-input" style="width:95%;" name="edit_account_name" value="${account}">
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <label style="font-weight:bold;">Account Number</label>
+            <input class="swal2-input" style="width:95%;" name="edit_account_number" value="${number}">
           </div>
 
           <div style="margin-bottom:12px;text-align:center;">
@@ -277,7 +283,7 @@ document.querySelectorAll(".update-btn").forEach(btn => {
       confirmButtonText: "Save Changes",
       cancelButtonText: "Cancel",
       confirmButtonColor: "#ff6b6b",
-      width: "600px", // makes modal wider
+      width: "600px",
       preConfirm: () => {
         return new Promise(resolve => {
           const form = document.getElementById("editForm");

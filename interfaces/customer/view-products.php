@@ -8,6 +8,7 @@ include ('../../includes/customer-dashboard.php');
 $page_title = 'Product Details | Kesong Puti';
 $page_header = 'Product Details';
 $page_breadcrumb_html = '<span>Home</span>  -  <span>Product Details</span>';
+$current_page = 'products';
 
 // Fetch product
 $product = null;

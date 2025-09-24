@@ -15,7 +15,7 @@ if (!$order_id) {
     exit;
 }
 
-// Determine user type and get appropriate owner filter (numeric owner_id)
+// Determine user type and get appropriate owner filter
 $current_user_id = null;
 $owner_filter = null;
 
@@ -30,7 +30,6 @@ if ($_SESSION['role'] === 'superadmin') {
     exit;
 }
 
-// Fetch order details with customer information
 // Fetch order details with customer information
 $order_query = "SELECT o.*, c.fullname, c.phone_number, c.email, c.address
                 FROM orders o 
@@ -77,8 +76,9 @@ mysqli_stmt_close($stmt);
 
 $order['items'] = $items;
 
-// Add payment method information (defaulting to cash for now)
-$order['payment_method'] = 'Cash on Delivery';
+if (empty($order['payment_method'])) {
+    $order['payment_method'] = 'Cash on Delivery'; 
+}
 
 echo json_encode(['success' => true, 'order' => $order]);
 ?>
