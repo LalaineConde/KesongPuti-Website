@@ -427,7 +427,7 @@ input[type="checkbox"]:hover {
 
  .featured-products h1 {
      text-align: center;
-     color: var(--white);
+     color: var(--second-heading-font-color) !important;
      font-family: var(--page-header-font) !important;
      font-size: 5rem;
 
@@ -531,7 +531,6 @@ input[type="checkbox"]:hover {
      padding: 0;
      margin: 0;
      line-height: 1;
-     color: #058240;
      /* -webkit-text-stroke: 10px black;
      paint-order: stroke fill; */
  }
@@ -592,7 +591,7 @@ input[type="checkbox"]:hover {
  }
 
  #reasons h1 {
-     color: var(--white);
+     color: var(--second-heading-font-color) !important;
      font-size: 5rem;
  }
 
@@ -653,7 +652,7 @@ input[type="checkbox"]:hover {
      padding: 0 20rem;
      text-align: center;
      margin-bottom: 20px;
-     color: #058240;
+     color: var(--heading-font-color) !important;
  }
 
  .learn-more-btn {
@@ -923,7 +922,7 @@ input[type="checkbox"]:hover {
  /* cta shop */
  #cta-buy {
      background-color: var(--wave-background) !important;
-     font-family: 'Lilita One', sans-serif;
+     font-family: var(--page-header-font) !important;
      padding: 5rem 20rem;
      text-align: center;
  }
@@ -938,7 +937,7 @@ input[type="checkbox"]:hover {
      font-size: 20px;
      padding: 0 10rem;
      color: var(--white);
-     font-family: 'Poppins', sans-serif;
+     font-family: var(--primary-font) !important;
  }
 
   .shop-now-btn {
@@ -970,7 +969,7 @@ input[type="checkbox"]:hover {
  }
 
  #teams {
-     font-family: 'Poppins', sans-serif;
+     font-family: var(--primary-font) !important;
      padding: 3rem 10rem 5rem 10rem;
  }
 
@@ -981,7 +980,7 @@ input[type="checkbox"]:hover {
  }
 
  .teams-container h1 {
-     font-family: 'Lilita One', sans-serif;
+     font-family: var(--page-header-font) !important;
      font-size: 80px;
      text-align: center;
  }
