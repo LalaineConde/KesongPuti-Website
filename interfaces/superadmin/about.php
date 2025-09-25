@@ -9,23 +9,33 @@ $toast_message = ''; // Initialize toast
 $default_sections = [
     'beginning' => [
         'quote' => 'It all began in our kitchen, where kesong puti was more than food — it was family, tradition, and togetherness.',
-        'content' => "Our story starts in the heart of our home, ...",
+        'content' => "Our story starts in the heart of our home, where the aroma of freshly made kesong puti would fill the air every morning. Long before this became a business, kesong puti was part of our family’s daily life — soft, creamy, and always served with warm pan de sal and a hot cup of coffee.
+
+It wasn’t just food; it was tradition. Each batch of cheese brought us together around the breakfast table, a reminder of simpler times when meals were about love and connection. For us, kesong puti was more than just nourishment — it was a way of keeping our family’s bond strong, generation after generation.",
     ],
     'tradition' => [
         'quote' => 'A recipe lovingly passed down through generations...',
-        'content' => "Our kesong puti is not just cheese...",
+        'content' => "Our kesong puti is not just cheese — it’s a family treasure. The recipe has been passed down from our grandparents, who learned the art of making it the traditional way: heating fresh carabao’s milk, curdling it naturally, and carefully shaping it by hand. The final touch was always wrapping it in banana leaves, a symbol of authenticity and respect for our Filipino roots.
+
+Over time, this recipe became more than just instructions — it became a symbol of our heritage. Every member of the family had a role to play, whether it was preparing the milk, stirring the curds, or helping pack the cheese. Through these small yet meaningful moments, we learned not only how to make kesong puti, but also how to value patience, craftsmanship, and love for tradition.",
     ],
     'business' => [
         'quote' => "From our table to our neighbors’...",
-        'content' => "At first, we made kesong puti only for ourselves...",
+        'content' => "At first, we made kesong puti only for ourselves. But as neighbors, friends, and even relatives from far away tasted it, they began to request more. What started as small gifts shared during gatherings and fiestas soon turned into regular orders.
+
+Encouraged by the joy on people’s faces, our family decided to take the leap — to transform our homemade recipe into a small business. We carried with us a promise: no shortcuts, no compromises. Just the same freshness, authenticity, and love that began in our home.",
     ],
     'support_farmers' => [
         'quote' => "Behind every piece of our kesong puti...",
-        'content' => "Our business grew hand in hand with the local farming community...",
+        'content' => "Our business grew hand in hand with the local farming community. By sourcing directly from small-scale dairy farmers, we not only ensure the freshness of our kesong puti but also support the livelihoods of hardworking families like ours.
+
+This partnership is more than business — it’s family helping family. It reflects our belief that when farmers thrive, traditions live on, and when traditions are preserved, communities grow stronger together.",
     ],
     'present' => [
         'quote' => "Though we’ve grown, our heart remains the same...",
-        'content' => "Today, our family business has reached more homes...",
+        'content' => "Today, our family business has reached more homes and more hearts, but our values remain unchanged. Every piece of kesong puti we make still carries the same authenticity, warmth, and care that started it all.
+
+With each bite, we hope you experience not just cheese, but a story — of tradition, of community, and of the love that binds families together across generations.",
     ]
 ];
 
@@ -168,6 +178,15 @@ if(isset($_POST['reset_about_btn'])){
     while($row = mysqli_fetch_assoc($result)){
         $file = "../../".$row['image_path'];
         if(file_exists($file)) unlink($file); // delete file
+    }
+
+        //RESET SECTIONS (quotes + content)
+    mysqli_query($connection, "DELETE FROM about_sections");
+    foreach($default_sections as $section => $data){
+        $quote = mysqli_real_escape_string($connection, $data['quote']);
+        $content = mysqli_real_escape_string($connection, $data['content']);
+        mysqli_query($connection, "INSERT INTO about_sections (section_name, quote, content) 
+            VALUES ('$section', '$quote', '$content')");
     }
 
     // RESET ALL SECTION IMAGES TO DEFAULT
