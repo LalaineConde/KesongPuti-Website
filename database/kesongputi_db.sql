@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 24, 2025 at 02:42 PM
+-- Generation Time: Sep 25, 2025 at 09:40 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,85 @@ SET time_zone = "+00:00";
 --
 -- Database: `kesongputi_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `about_images`
+--
+
+CREATE TABLE `about_images` (
+  `id` int(11) NOT NULL,
+  `section_name` varchar(50) NOT NULL,
+  `image_path` varchar(255) DEFAULT NULL,
+  `position` int(11) DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `about_images`
+--
+
+INSERT INTO `about_images` (`id`, `section_name`, `image_path`, `position`) VALUES
+(785, 'beginning', 'uploads/assets/default-team-1.png', 1),
+(786, 'beginning', 'uploads/assets/default-team-2.png', 2),
+(787, 'tradition', 'uploads/assets/default-team-3.png', 1),
+(788, 'tradition', 'uploads/assets/default-team-4.png', 2),
+(789, 'business', 'uploads/assets/default-team-5.png', 1),
+(790, 'business', 'uploads/assets/default-team-6.png', 2),
+(791, 'support_farmers', 'uploads/assets/default-team-1.png', 1),
+(792, 'support_farmers', 'uploads/assets/default-team-2.png', 2),
+(793, 'present', 'uploads/assets/default-team-3.png', 1),
+(794, 'present', 'uploads/assets/default-team-4.png', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `about_sections`
+--
+
+CREATE TABLE `about_sections` (
+  `id` int(11) NOT NULL,
+  `section_name` varchar(50) NOT NULL,
+  `quote` text DEFAULT NULL,
+  `content` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `about_sections`
+--
+
+INSERT INTO `about_sections` (`id`, `section_name`, `quote`, `content`) VALUES
+(331, 'beginning', 'It all began in our kitchen, where kesong puti was more than food — it was family, tradition, and togetherness.', 'Our story starts in the heart of our home, ...'),
+(332, 'tradition', 'A recipe lovingly passed down through generations...', 'Our kesong puti is not just cheese...'),
+(333, 'business', 'From our table to our neighbors’...', 'At first, we made kesong puti only for ourselves...'),
+(334, 'support_farmers', 'Behind every piece of our kesong puti...', 'Our business grew hand in hand with the local farming community...'),
+(335, 'present', 'Though we’ve grown, our heart remains the same...', 'Today, our family business has reached more homes...');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `about_team`
+--
+
+CREATE TABLE `about_team` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT 'OUR KESONG PUTI FAMILY',
+  `image_path` varchar(255) DEFAULT '',
+  `position` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `about_team`
+--
+
+INSERT INTO `about_team` (`id`, `title`, `image_path`, `position`, `created_at`) VALUES
+(160, 'OUR KESONG PUTI FAMILY', 'uploads/assets/default-team-1.png', 1, '2025-09-25 04:37:48'),
+(161, 'OUR KESONG PUTI FAMILY', 'uploads/assets/default-team-2.png', 2, '2025-09-25 04:37:48'),
+(162, 'OUR KESONG PUTI FAMILY', 'uploads/assets/default-team-3.png', 3, '2025-09-25 04:37:48'),
+(163, 'OUR KESONG PUTI FAMILY', 'uploads/assets/default-team-4.png', 4, '2025-09-25 04:37:48'),
+(164, 'OUR KESONG PUTI FAMILY', 'uploads/assets/default-team-5.png', 5, '2025-09-25 04:37:48'),
+(165, 'OUR KESONG PUTI FAMILY', 'uploads/assets/default-team-6.png', 6, '2025-09-25 04:37:48');
 
 -- --------------------------------------------------------
 
@@ -69,6 +148,26 @@ INSERT INTO `categories` (`category_id`, `category_name`, `description`, `owner_
 (30, 'Dairy Products', NULL, 1, 'admin', '2025-09-23 07:59:31'),
 (51, 'cheese', NULL, 1, 'admin', '2025-09-23 08:00:24'),
 (101, 'cheese', NULL, 1, 'admin', '2025-09-23 08:00:59');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cta_sections`
+--
+
+CREATE TABLE `cta_sections` (
+  `id` int(11) NOT NULL,
+  `heading` varchar(255) NOT NULL,
+  `paragraph` text NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cta_sections`
+--
+
+INSERT INTO `cta_sections` (`id`, `heading`, `paragraph`, `updated_at`) VALUES
+(1, 'Experience Authentic Filipino Flavor', 'Discover the creamy, wholesome taste of our kesong puti...', '2025-09-25 05:21:45');
 
 -- --------------------------------------------------------
 
@@ -257,8 +356,8 @@ CREATE TABLE `home_reasons` (
 --
 
 INSERT INTO `home_reasons` (`id`, `icon`, `title`, `subtitle`, `position`) VALUES
-(1, 'fa-solid fa-cow', 'Freshness and Simple Production', 'Kesong puti is a good choice because it\'s a fresh cheese without preservatives, offering a pure, natural flavor.', 1),
-(2, 'fa-solid fa-pills', 'Rich in Nutrients', 'It is a great source of essential nutrients, particularly protein and calcium, from the rich carabao\'s milk.', 2),
+(1, 'fa-solid fa-cow', 'Freshness and Simple Production', 'Kesong puti is a fresh cheese without preservatives, offering a pure, natural flavor.', 1),
+(2, 'fa-solid fa-pills', 'Rich in Nutrients', 'It is a great source of essential nutrients, particularly protein and calcium, from carabaos milk.', 2),
 (3, 'fa-solid fa-cheese', 'Cultural and Culinary Importance', 'Kesong puti is a cultural staple in the Philippines, often enjoyed as a classic breakfast food.', 3),
 (4, 'fa-solid fa-utensils', 'Versatility in the Kitchen', 'Its mild, slightly salty flavor makes it a versatile ingredient for both sweet and savory dishes.', 4);
 
@@ -279,17 +378,17 @@ CREATE TABLE `home_settings` (
 --
 
 INSERT INTO `home_settings` (`id`, `setting_key`, `setting_value`) VALUES
-(470, 'del_pick_image', ''),
-(473, 'home_header_font_color_part1', '#0D8540'),
-(474, 'home_header_font_color_part2', '#F4C40F'),
-(475, 'home_header_font_color_part3', '#0D8540'),
-(476, 'del_pick_font_color_title1', '#058240'),
-(477, 'del_pick_font_color_title2', '#058240'),
-(478, 'del_pick_font_color_title3', '#058240'),
-(479, 'del_pick_font_color_title4', '#F4C40F'),
-(480, 'home_featured_title', 'The Original & Classics'),
-(481, 'home_reasons_heading', 'Why is it Good?'),
-(482, 'about_heading', 'OUR FAMILY’S LEGACY OF KESONG PUTI');
+(1133, 'home_header_font_color_part1', '#0D8540'),
+(1134, 'home_header_font_color_part2', '#F4C40F'),
+(1135, 'home_header_font_color_part3', '#0D8540'),
+(1136, 'del_pick_font_color_title1', '#058240'),
+(1137, 'del_pick_font_color_title2', '#058240'),
+(1138, 'del_pick_font_color_title3', '#058240'),
+(1139, 'del_pick_font_color_title4', '#F4C40F'),
+(1140, 'del_pick_image', ''),
+(1141, 'home_featured_title', 'The Original & Classics'),
+(1142, 'home_reasons_heading', 'Why is it Good?'),
+(1143, 'about_heading', 'OUR FAMILY’S LEGACY OF KESONG PUTI');
 
 -- --------------------------------------------------------
 
@@ -426,10 +525,9 @@ CREATE TABLE `payment_methods` (
 --
 
 INSERT INTO `payment_methods` (`method_id`, `method_name`, `method_type`, `account_name`, `account_number`, `qr_code`, `status`, `created_at`, `updated_at`, `recipient`) VALUES
-(4, 'bank', NULL, 'arlene macalinao', '09123456789', '1757398482_small tub.png', 'published', '2025-09-09 06:14:42', '2025-09-20 04:19:23', 'super_1'),
 (5, 'bank', NULL, 'lara danielle', '09957432996', '1758277057_qr.jpg', 'published', '2025-09-19 10:17:37', '2025-09-19 10:17:37', 'admin_3'),
-(9, 'e-wallet', 'gcash', 'arlene macalinao', '09123456789', '1758705385_528149698_2466653143708497_6422652806459652480_n.jpg', 'published', '2025-09-24 09:16:25', '2025-09-24 09:16:25', 'super_1'),
-(11, 'e-wallet', 'paymaya', 'arlene macalinao', '09123456789', '1758706526_pint.png', 'published', '2025-09-24 09:35:26', '2025-09-24 09:35:26', 'super_1');
+(12, 'e-wallet', 'gcash', 'arlene macalinao', '09123456789', '1758719418_qr.jpg', 'published', '2025-09-24 13:10:18', '2025-09-24 13:10:18', 'super_1'),
+(13, 'bank', 'bdo', 'arlene macalinao', '09123456789', '1758719450_qr.jpg', 'published', '2025-09-24 13:10:50', '2025-09-24 13:10:50', 'super_1');
 
 -- --------------------------------------------------------
 
@@ -666,6 +764,27 @@ INSERT INTO `super_admin` (`super_id`, `username`, `store_name`, `email`, `passw
 --
 
 --
+-- Indexes for table `about_images`
+--
+ALTER TABLE `about_images`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_section_position` (`section_name`,`position`);
+
+--
+-- Indexes for table `about_sections`
+--
+ALTER TABLE `about_sections`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `section_name` (`section_name`);
+
+--
+-- Indexes for table `about_team`
+--
+ALTER TABLE `about_team`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_position` (`position`);
+
+--
 -- Indexes for table `admins`
 --
 ALTER TABLE `admins`
@@ -676,6 +795,12 @@ ALTER TABLE `admins`
 --
 ALTER TABLE `categories`
   ADD PRIMARY KEY (`category_id`);
+
+--
+-- Indexes for table `cta_sections`
+--
+ALTER TABLE `cta_sections`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `customers`
@@ -812,6 +937,24 @@ ALTER TABLE `super_admin`
 --
 
 --
+-- AUTO_INCREMENT for table `about_images`
+--
+ALTER TABLE `about_images`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=795;
+
+--
+-- AUTO_INCREMENT for table `about_sections`
+--
+ALTER TABLE `about_sections`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=516;
+
+--
+-- AUTO_INCREMENT for table `about_team`
+--
+ALTER TABLE `about_team`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=574;
+
+--
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
@@ -822,6 +965,12 @@ ALTER TABLE `admins`
 --
 ALTER TABLE `categories`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+
+--
+-- AUTO_INCREMENT for table `cta_sections`
+--
+ALTER TABLE `cta_sections`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `customers`
@@ -875,7 +1024,7 @@ ALTER TABLE `home_reasons`
 -- AUTO_INCREMENT for table `home_settings`
 --
 ALTER TABLE `home_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=483;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1144;
 
 --
 -- AUTO_INCREMENT for table `inbox_messages`
@@ -899,13 +1048,13 @@ ALTER TABLE `order_items`
 -- AUTO_INCREMENT for table `page_headers`
 --
 ALTER TABLE `page_headers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=421;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=426;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `products`

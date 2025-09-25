@@ -1393,7 +1393,7 @@ Form
 }
 
 
-.update-home-btn {
+.update_home_btn {
   background-color: #f4c400;
   border: 2px solid #000;
   color: #000;
@@ -1410,20 +1410,137 @@ Form
   transform: scale(1.05);
 }
 
-.reset-home-btn {
+.reset_home_btn {
   background: #dc3545;
   color: #fff;
   padding: 10px 18px;
-  border: none;
-  border-radius: 6px;
+  border: 2px solid #000;
+  border-radius: 25px;  
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s;
 }
 
-.reset-home-btn:hover {
+.reset_home_btn:hover {
   background: #b02a37;
 }
+
+/* ==============================
+   About Customization Styles
+   ============================== */
+
+.about-container{
+    max-width: 100% !important;
+    width: 95%;
+    margin: 0 auto;        /* centers the container */
+        /* adds space on sides */
+        padding: 20px 40px;
+   }
+
+   .about-form {
+    width: 100%;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+.settings-card.about {
+  border: 2px solid #000;
+  border-radius: 12px;
+  background-color: #fff;
+  margin: 0 auto 25px;   /* centers horizontally + bottom spacing */
+  box-shadow: 2px 3px 6px rgba(0,0,0,0.15);
+  transition: 0.3s;
+  /* max-width: 800px;       */
+  width: 100%;           /* responsive */
+}
+
+.section-content{
+padding: 20px;
+}
+
+
+.settings-card.about .settings-header {
+  background-color: #002d13;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1rem;
+  padding: 12px 18px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.settings-card.about .settings-body {
+  padding: 20px;
+}
+
+
+
+.font-color-section{
+  padding: 20px;
+}
+
+
+.settings-card.about h5, label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #064420;
+  margin: 5px 0 25px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
+.settings-card.about .form-select,
+.settings-card.about .form-control,
+.settings-card.about .form-control-color {
+  border: 2px solid #000;
+  border-radius: 6px;
+  font-size: 15px;
+  padding: 8px 12px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.settings-card.about .form-select:focus,
+.settings-card.about .form-control:focus,
+.settings-card.about .form-control-color:focus {
+  border-color: #0D8540;
+
+  outline: none;
+}
+
+
+.update_about_btn {
+  background-color: #f4c400;
+  border: 2px solid #000;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 25px;
+  box-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+.update-about-btn:hover {
+  background-color: #e0b200;
+  transform: scale(1.05);
+}
+
+.reset_about_btn {
+  background: #dc3545;
+  color: #fff;
+  padding: 10px 18px;
+  border: 2px solid #000;
+  border-radius: 25px;  
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.reset_about_btn:hover {
+  background: #b02a37;
+}
+
 
 
 
@@ -1846,13 +1963,11 @@ Form
   background: #dc3545;
   color: #fff;
   padding: 10px 18px;
-  border: none;
-  border-radius: 25px;
-  font-size: 15px;
-  font-weight: 500;
+  border: 2px solid #000;
+  border-radius: 25px;  
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  font-weight: bold;
+  transition: 0.3s;
 }
 
 .reset-btn:hover {

@@ -4,8 +4,47 @@ require '../../connection.php';
 include ('../../includes/superadmin-dashboard.php');
 
 $toast_message = '';
-if (isset($_POST['reset_home'])) {
-    // Default values
+
+// ---------- HELPER FUNCTIONS ----------
+function fetchSettings($connection) {
+    $settings = [];
+    $result = mysqli_query($connection, "SELECT setting_key, setting_value FROM home_settings");
+    while ($row = mysqli_fetch_assoc($result)) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
+    return $settings;
+}
+
+function fetchHero($connection) {
+    $items = [];
+    $result = mysqli_query($connection, "SELECT * FROM home_hero ORDER BY position ASC");
+    while($row = mysqli_fetch_assoc($result)) $items[$row['position']] = $row;
+    return $items;
+}
+
+function fetchFeatured($connection) {
+    $items = [];
+    $result = mysqli_query($connection, "SELECT * FROM home_featured ORDER BY position ASC");
+    while($row = mysqli_fetch_assoc($result)) $items[$row['position']] = $row;
+    return $items;
+}
+
+function fetchReasons($connection) {
+    $items = [];
+    $result = mysqli_query($connection, "SELECT * FROM home_reasons ORDER BY position ASC");
+    while($row = mysqli_fetch_assoc($result)) $items[$row['position']] = $row;
+    return $items;
+}
+
+function fetchAboutSlider($connection) {
+    $items = [];
+    $result = mysqli_query($connection, "SELECT * FROM home_about_slider ORDER BY position ASC");
+    while($row = mysqli_fetch_assoc($result)) $items[] = $row;
+    return $items;
+}
+
+// ---------- RESET HOME ----------
+if (isset($_POST['reset_home_btn'])) {
     $defaults = [
         'part1' => 'PURE',
         'part2' => 'CHEESE',
@@ -18,26 +57,22 @@ if (isset($_POST['reset_home'])) {
             'del_pick_font_color_title2' => '#058240',
             'del_pick_font_color_title3' => '#058240',
             'del_pick_font_color_title4' => '#F4C40F',
-            'del_pick_image' => '', // reset delivery/pickup image
+            'del_pick_image' => '',
             'home_featured_title' => 'The Original & Classics',
             'home_reasons_heading' => 'Why is it Good?',
             'about_heading' => "OUR FAMILY’S LEGACY OF KESONG PUTI"
         ]
     ];
 
-    // Reset homepage header parts
     mysqli_query($connection, "UPDATE page_headers 
         SET part1='{$defaults['part1']}', part2='{$defaults['part2']}', part3='{$defaults['part3']}'
         WHERE page_name='home'");
 
-    // Reset all settings
     foreach ($defaults['settings'] as $key => $value) {
-        mysqli_query($connection, "UPDATE home_settings 
-            SET setting_value='$value' 
-            WHERE setting_key='$key'");
+        mysqli_query($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES ('$key', '$value')");
     }
 
-    // Reset Hero images
+    // Hero
     mysqli_query($connection, "TRUNCATE TABLE home_hero");
     mysqli_query($connection, "INSERT INTO home_hero (image_path, subtitle, position) VALUES
         ('uploads/assets/default-pic-1.png', 'SOFT CREAMY AND FRESH', 1),
@@ -45,28 +80,25 @@ if (isset($_POST['reset_home'])) {
         ('uploads/assets/default-pic-3.png', 'FRESH WHITE CHEESE', 3),
         ('uploads/assets/default-pic-4.png', 'SNACKS AND APPETIZERS', 4)");
 
-    // Reset Featured items
+    // Featured
     mysqli_query($connection, "TRUNCATE TABLE home_featured");
     mysqli_query($connection, "INSERT INTO home_featured (image_path, title, position) VALUES
         ('uploads/assets/default-featured-1.png', 'Kesorbetes', 1),
         ('uploads/assets/default-featured-2.png', 'Kesong Puti', 2)");
 
-    // Reset Delivery/Pickup section
+    // Delivery/Pickup
     mysqli_query($connection, "UPDATE home_delivery_pickup 
-        SET title1='THE', 
-            title2='CHOICE', 
-            title3='IS YOURS:', 
-            title4='GO OR STAY'
-        WHERE id=1");
+        SET title1='THE', title2='CHOICE', title3='IS YOURS:', title4='GO OR STAY' WHERE id=1");
 
-    // Reset Reasons
+    // Reasons
     mysqli_query($connection, "TRUNCATE TABLE home_reasons");
-mysqli_query($connection, "INSERT INTO home_reasons (icon, title, subtitle, position) VALUES
-    ('fa-solid fa-cow', 'Freshness and Simple Production', 'Kesong puti is a good choice because it\'s a fresh cheese without preservatives, offering a pure, natural flavor.', 1),
-    ('fa-solid fa-pills', 'Rich in Nutrients', 'It is a great source of essential nutrients, particularly protein and calcium, from the rich carabao\'s milk.', 2),
-    ('fa-solid fa-cheese', 'Cultural and Culinary Importance', 'Kesong puti is a cultural staple in the Philippines, often enjoyed as a classic breakfast food.', 3),
-    ('fa-solid fa-utensils', 'Versatility in the Kitchen', 'Its mild, slightly salty flavor makes it a versatile ingredient for both sweet and savory dishes.', 4)");
-    // Reset About slider
+    mysqli_query($connection, "INSERT INTO home_reasons (icon, title, subtitle, position) VALUES
+        ('fa-solid fa-cow', 'Freshness and Simple Production', 'Kesong puti is a fresh cheese without preservatives, offering a pure, natural flavor.', 1),
+        ('fa-solid fa-pills', 'Rich in Nutrients', 'It is a great source of essential nutrients, particularly protein and calcium, from carabao\'s milk.', 2),
+        ('fa-solid fa-cheese', 'Cultural and Culinary Importance', 'Kesong puti is a cultural staple in the Philippines, often enjoyed as a classic breakfast food.', 3),
+        ('fa-solid fa-utensils', 'Versatility in the Kitchen', 'Its mild, slightly salty flavor makes it a versatile ingredient for both sweet and savory dishes.', 4)");
+
+    // About slider
     mysqli_query($connection, "TRUNCATE TABLE home_about_slider");
     mysqli_query($connection, "INSERT INTO home_about_slider (image_path, position) VALUES
         ('uploads/assets/default-team-1.png', 1),
@@ -78,80 +110,40 @@ mysqli_query($connection, "INSERT INTO home_reasons (icon, title, subtitle, posi
     $toast_message = "Homepage has been fully reset.";
 }
 
+// ---------- FETCH DATA ----------
+$settings = fetchSettings($connection);
 
-/* ========== FETCH SETTINGS ========== */
-$settings = [];
-$result = mysqli_query($connection, "SELECT * FROM home_settings");
-while ($row = mysqli_fetch_assoc($result)) {
-    $settings[$row['setting_key']] = $row['setting_value'];
-}
-
-/* ========== FETCH HEADER PARTS ========== */
 $home_header_part1 = "PURE";
 $home_header_part2 = "CHEESE";
 $home_header_part3 = "BLISS";
 
-$result = mysqli_query($connection, "SELECT part1, part2, part3 FROM page_headers WHERE page_name='home' LIMIT 1");
-if ($row = mysqli_fetch_assoc($result)) {
+$row = mysqli_fetch_assoc(mysqli_query($connection, "SELECT part1, part2, part3 FROM page_headers WHERE page_name='home' LIMIT 1"));
+if($row){
     $home_header_part1 = $row['part1'] ?? $home_header_part1;
     $home_header_part2 = $row['part2'] ?? $home_header_part2;
     $home_header_part3 = $row['part3'] ?? $home_header_part3;
 }
 
-/* ========== FETCH HERO ITEMS ========== */
-$hero_items = [];
-$result = mysqli_query($connection, "SELECT * FROM home_hero ORDER BY position ASC");
-while($row = mysqli_fetch_assoc($result)){
-    $hero_items[$row['position']] = $row;
-}
-
-/* ========== FETCH FEATURED PRODUCTS ========== */
-$settings = [];
-$result = mysqli_query($connection, "SELECT setting_key, setting_value FROM home_settings");
-while ($row = mysqli_fetch_assoc($result)) {
-    $settings[$row['setting_key']] = $row['setting_value'];
-}
+$hero_items = fetchHero($connection);
+$featured_items = fetchFeatured($connection);
+$reasons = fetchReasons($connection);
+$about_slider = fetchAboutSlider($connection);
+$del_pick = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM home_delivery_pickup LIMIT 1"));
 
 $featured_title = $settings['home_featured_title'] ?? "The Original & Classics";
 $reasons_heading = $settings['home_reasons_heading'] ?? "Why is it Good?";
-
-$featured_items = [];
-$result = mysqli_query($connection, "SELECT * FROM home_featured ORDER BY position ASC");
-while($row = mysqli_fetch_assoc($result)){
-    $featured_items[$row['position']] = $row;
-}
-
-// Delivery/Pickup Section
-$del_pick = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM home_delivery_pickup LIMIT 1"));
-
-$reasons = [];
-$result = mysqli_query($connection, "SELECT * FROM home_reasons ORDER BY position ASC");
-while($row = mysqli_fetch_assoc($result)){
-    $reasons[$row['position']] = $row;
-}
-
 $about_heading = $settings['about_heading'] ?? "OUR FAMILY’S LEGACY OF KESONG PUTI";
 
-$about_slider = [];
-$result = mysqli_query($connection, "SELECT * FROM home_about_slider ORDER BY position ASC");
-while ($row = mysqli_fetch_assoc($result)) {
-    $about_slider[] = $row;
-}
+// ---------- UPDATE HOME ----------
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_home_btn'])){
 
-
-/* ========== UPDATE HOME ========== */
-if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_home'])){
-
-    // ---- Header Text ----
-    $part1 = $_POST['part1'];
-    $part2 = $_POST['part2'];
-    $part3 = $_POST['part3'];
+    // Header
     $stmt = mysqli_prepare($connection, "UPDATE page_headers SET part1=?, part2=?, part3=? WHERE page_name='home'");
-    mysqli_stmt_bind_param($stmt, 'sss', $part1, $part2, $part3);
+    mysqli_stmt_bind_param($stmt, 'sss', $_POST['part1'], $_POST['part2'], $_POST['part3']);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
-    // ---- Header Colors ----
+    // Settings
     if(!empty($_POST['settings'])){
         foreach($_POST['settings'] as $key => $value){
             $stmt = mysqli_prepare($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES (?, ?)");
@@ -161,176 +153,130 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_home'])){
         }
     }
 
-    // Inside your update_home POST handler:
-if (!empty($_POST['featured_title_main'])) {
-    $stmt = mysqli_prepare($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES ('home_featured_title', ?)");
-    mysqli_stmt_bind_param($stmt, 's', $_POST['featured_title_main']);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-}
+    // Featured section title
+    if(!empty($_POST['featured_title_main'])){
+        $stmt = mysqli_prepare($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES ('home_featured_title', ?)");
+        mysqli_stmt_bind_param($stmt, 's', $_POST['featured_title_main']);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
 
-    // ---- Hero Images & Subtitles ----
-    for($i=1; $i<=4; $i++){
+    // Hero Images
+    for($i=1;$i<=4;$i++){
         $subtitle = $_POST['hero_subtitle'][$i] ?? '';
         $image_path = $hero_items[$i]['image_path'] ?? '';
+
         if(!empty($_FILES['hero_image']['name'][$i])){
             $tmp_name = $_FILES['hero_image']['tmp_name'][$i];
             $ext = pathinfo($_FILES['hero_image']['name'][$i], PATHINFO_EXTENSION);
-            $name = 'uploads/assets/home_hero_'.time().'_'.$i.'.'.$ext;
+            $name = 'uploads/uploaded/home_hero_'.time().'_'.$i.'.'.$ext;
             move_uploaded_file($tmp_name, '../../'.$name);
             $image_path = $name;
         }
-        $stmt = mysqli_prepare($connection, "REPLACE INTO home_hero (id, image_path, subtitle, position) VALUES (
-            (SELECT id FROM (SELECT id FROM home_hero WHERE position=?) AS tmp), ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, 'issi', $i, $image_path, $subtitle, $i);
+
+        // UPDATE instead of INSERT
+        $stmt = mysqli_prepare($connection, "UPDATE home_hero SET image_path=?, subtitle=? WHERE position=?");
+        mysqli_stmt_bind_param($stmt, 'ssi', $image_path, $subtitle, $i);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
 
-    // ---- Featured Products ----
-    for($i=1; $i<=2; $i++){
+    // Featured items
+    for($i=1;$i<=2;$i++){
         $title = $_POST['featured_title'][$i] ?? '';
         $image_path = $featured_items[$i]['image_path'] ?? '';
+
         if(!empty($_FILES['featured_image']['name'][$i])){
             $tmp_name = $_FILES['featured_image']['tmp_name'][$i];
             $ext = pathinfo($_FILES['featured_image']['name'][$i], PATHINFO_EXTENSION);
-            $name = 'uploads/assets/featured_'.time().'_'.$i.'.'.$ext;
+            $name = 'uploads/uploaded/featured_'.time().'_'.$i.'.'.$ext;
             move_uploaded_file($tmp_name, '../../'.$name);
             $image_path = $name;
         }
-        $stmt = mysqli_prepare($connection, "REPLACE INTO home_featured (id, image_path, title, position) VALUES (
-            (SELECT id FROM (SELECT id FROM home_featured WHERE position=?) AS tmp), ?, ?, ?)");
-        mysqli_stmt_bind_param($stmt, 'issi', $i, $image_path, $title, $i);
+
+        $stmt = mysqli_prepare($connection, "INSERT INTO home_featured (position, image_path, title) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE image_path=VALUES(image_path), title=VALUES(title)");
+        mysqli_stmt_bind_param($stmt, 'iss', $i, $image_path, $title);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
 
-    // ---- Delivery/Pickup Section ----
-    $title1 = $_POST['del_title1'];
-    $title2 = $_POST['del_title2'];
-    $title3 = $_POST['del_title3'];
-    $title4 = $_POST['del_title4'];
-
-    $stmt = mysqli_prepare($connection, 
-        "UPDATE home_delivery_pickup 
-         SET title1=?, title2=?, title3=?, title4=? 
-         WHERE id=1");
-    mysqli_stmt_bind_param($stmt, "ssss", $title1, $title2, $title3, $title4);
+    // Delivery/Pickup titles
+    $stmt = mysqli_prepare($connection, "UPDATE home_delivery_pickup SET title1=?, title2=?, title3=?, title4=? WHERE id=1");
+    mysqli_stmt_bind_param($stmt, 'ssss', $_POST['del_title1'], $_POST['del_title2'], $_POST['del_title3'], $_POST['del_title4']);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
-
- if (!empty($_FILES['del_pick_image']['name'])) {
-    $targetDir = "../../uploads/assets/";
-    if (!is_dir($targetDir)) {
-        mkdir($targetDir, 0777, true);
-    }
-    $fileName = time() . "_" . basename($_FILES["del_pick_image"]["name"]);
-    $targetFile = $targetDir . $fileName;
-
-    if (move_uploaded_file($_FILES["del_pick_image"]["tmp_name"], $targetFile)) {
-        $key = "del_pick_image";
-        $dbPath = "uploads/assets/" . $fileName; 
-        $stmt = mysqli_prepare($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES (?, ?)");
-        mysqli_stmt_bind_param($stmt, 'ss', $key, $dbPath);
-        mysqli_stmt_execute($stmt);
-        mysqli_stmt_close($stmt);
-    }
-}
-
-
-// ---- Reasons Section ----
-for ($i = 1; $i <= 4; $i++) {
-    $icon = $_POST['reason_icon'][$i] ?? '';
-    $title = $_POST['reason_title'][$i] ?? '';
-    $subtitle = $_POST['reason_subtitle'][$i] ?? '';
-
-    $stmt = mysqli_prepare($connection, "
-        REPLACE INTO home_reasons (id, icon, title, subtitle, position) 
-        VALUES (
-            (SELECT id FROM (SELECT id FROM home_reasons WHERE position=?) AS tmp), 
-            ?, ?, ?, ?
-        )
-    ");
-    mysqli_stmt_bind_param($stmt, 'isssi', $i, $icon, $title, $subtitle, $i);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-}
-
-if (!empty($_POST['reasons_heading'])) {
-    $stmt = mysqli_prepare($connection, 
-        "REPLACE INTO home_settings (setting_key, setting_value) VALUES ('home_reasons_heading', ?)");
-    mysqli_stmt_bind_param($stmt, 's', $_POST['reasons_heading']);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-}
-
-
-// Update heading
-if (!empty($_POST['about_heading'])) {
-    $stmt = mysqli_prepare($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES ('about_heading', ?)");
-    mysqli_stmt_bind_param($stmt, 's', $_POST['about_heading']);
-    mysqli_stmt_execute($stmt);
-    mysqli_stmt_close($stmt);
-}
-
-// Handle multiple slider images
-if (!empty($_FILES['about_images']['name'][0])) {
-    foreach ($_FILES['about_images']['tmp_name'] as $key => $tmp_name) {
-        if ($_FILES['about_images']['error'][$key] === UPLOAD_ERR_OK) {
-            $ext = pathinfo($_FILES['about_images']['name'][$key], PATHINFO_EXTENSION);
-            $filename = 'uploads/assets/about_' . time() . '_' . $key . '.' . $ext;
-            move_uploaded_file($tmp_name, '../../' . $filename);
-
-            $stmt = mysqli_prepare($connection, "INSERT INTO home_about_slider (image_path, position) VALUES (?, ?)");
-            $pos = $key + 1;
-            mysqli_stmt_bind_param($stmt, 'si', $filename, $pos);
+    // Delivery/Pickup image
+    if(!empty($_FILES['del_pick_image']['name'])){
+        $targetDir = "../../uploads/uploaded/";
+        if(!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+        $fileName = time().'_'.basename($_FILES['del_pick_image']['name']);
+        $targetFile = $targetDir.$fileName;
+        if(move_uploaded_file($_FILES['del_pick_image']['tmp_name'], $targetFile)){
+            $dbPath = "uploads/uploaded/".$fileName;
+            $stmt = mysqli_prepare($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES ('del_pick_image', ?)");
+            mysqli_stmt_bind_param($stmt, 's', $dbPath);
             mysqli_stmt_execute($stmt);
             mysqli_stmt_close($stmt);
         }
     }
-}
 
-    // ---- Re-fetch for immediate preview ----
-    $home_header_part1 = "PURE";
-    $home_header_part2 = "CHEESE";
-    $home_header_part3 = "BLISS";
+    // Reasons
+    for($i=1;$i<=4;$i++){
+        $icon = $_POST['reason_icon'][$i] ?? '';
+        $title = $_POST['reason_title'][$i] ?? '';
+        $subtitle = $_POST['reason_subtitle'][$i] ?? '';
 
-    $result = mysqli_query($connection, "SELECT part1, part2, part3 FROM page_headers WHERE page_name='home' LIMIT 1");
-    if ($row = mysqli_fetch_assoc($result)) {
-        $home_header_part1 = $row['part1'] ?? $home_header_part1;
-        $home_header_part2 = $row['part2'] ?? $home_header_part2;
-        $home_header_part3 = $row['part3'] ?? $home_header_part3;
+        $stmt = mysqli_prepare($connection, "INSERT INTO home_reasons (position, icon, title, subtitle) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE icon=VALUES(icon), title=VALUES(title), subtitle=VALUES(subtitle)");
+        mysqli_stmt_bind_param($stmt, 'isss', $i, $icon, $title, $subtitle);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
     }
 
-
-    $hero_items = [];
-    $result = mysqli_query($connection, "SELECT * FROM home_hero ORDER BY position ASC");
-    while($row = mysqli_fetch_assoc($result)) $hero_items[$row['position']] = $row;
-
-    $settings = [];
-    $result = mysqli_query($connection, "SELECT setting_key, setting_value FROM home_settings");
-    while ($row = mysqli_fetch_assoc($result)) {
-        $settings[$row['setting_key']] = $row['setting_value'];
+    // Reasons heading
+    if(!empty($_POST['reasons_heading'])){
+        $stmt = mysqli_prepare($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES ('home_reasons_heading', ?)");
+        mysqli_stmt_bind_param($stmt, 's', $_POST['reasons_heading']);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
     }
 
-    $featured_title = $settings['home_featured_title'] ?? "The Original & Classics";
-    $reasons_heading = $settings['home_reasons_heading'] ?? "Why is it Good?";
+    // About heading
+    if(!empty($_POST['about_heading'])){
+        $stmt = mysqli_prepare($connection, "REPLACE INTO home_settings (setting_key, setting_value) VALUES ('about_heading', ?)");
+        mysqli_stmt_bind_param($stmt, 's', $_POST['about_heading']);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
 
-    $featured_items = [];
-    $result = mysqli_query($connection, "SELECT * FROM home_featured ORDER BY position ASC");
-    while($row = mysqli_fetch_assoc($result)) $featured_items[$row['position']] = $row;
+    // About slider images
+    if(!empty($_FILES['about_images']['name'][0])){
+        foreach($_FILES['about_images']['tmp_name'] as $key=>$tmp_name){
+            if($_FILES['about_images']['error'][$key]===UPLOAD_ERR_OK){
+                $ext = pathinfo($_FILES['about_images']['name'][$key], PATHINFO_EXTENSION);
+                $filename = 'uploads/uploaded/about_'.time().'_'.$key.'.'.$ext;
+                move_uploaded_file($tmp_name, '../../'.$filename);
 
-    // Delivery/Pickup Section
-    $del_pick = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM home_delivery_pickup LIMIT 1"));
-
-    $reasons = [];
-    $result = mysqli_query($connection, "SELECT * FROM home_reasons ORDER BY position ASC");
-    while($row = mysqli_fetch_assoc($result)){
-    $reasons[$row['position']] = $row;
-}
+                $stmt = mysqli_prepare($connection, "INSERT INTO home_about_slider (image_path, position) VALUES (?, ?)");
+                $pos = count($about_slider)+1;
+                mysqli_stmt_bind_param($stmt, 'si', $filename, $pos);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+            }
+        }
+    }
 
     $toast_message = "Homepage updated successfully!";
+    // Refetch
+    $settings = fetchSettings($connection);
+    $hero_items = fetchHero($connection);
+    $featured_items = fetchFeatured($connection);
+    $reasons = fetchReasons($connection);
+    $about_slider = fetchAboutSlider($connection);
+    $del_pick = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM home_delivery_pickup LIMIT 1"));
+    $home_header_part1 = $_POST['part1'];
+    $home_header_part2 = $_POST['part2'];
+    $home_header_part3 = $_POST['part3'];
 }
 ?>
 
@@ -534,8 +480,8 @@ if (!empty($_FILES['about_images']['name'][0])) {
       </div>
     </div>
 
-    <button type="submit" name="update_home" class="update-home-btn">Update Homepage</button>
-    <button type="submit" name="reset_home" class="reset-home-btn">Reset to Defaults</button>
+    <button type="submit" name="update_home_btn" class="update_home_btn">Update Homepage</button>
+    <button type="submit" name="reset_home_btn" class="reset_home_btn">Reset to Defaults</button>
   </form>
 </div>
 
@@ -661,27 +607,23 @@ document.getElementById('about_images').addEventListener('change', function(){
     });
 });
 
-// ✅ Delete already-saved images (from DB + server)
+// Delete already-saved images (from DB + server)
 document.querySelectorAll('.delete-about-img').forEach(btn => {
-    btn.addEventListener('click', function(){
+    btn.addEventListener('click', function() {
         const imgId = this.getAttribute('data-id');
-        const parentDiv = this.closest('div');
+        const parent = this.closest('div');
 
-        if(confirm("Are you sure you want to delete this image?")){
+        if(confirm("Delete this image?")) {
             fetch('delete-about-image.php', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'id=' + encodeURIComponent(imgId)
+                headers: {'Content-Type':'application/x-www-form-urlencoded'},
+                body: 'id=' + imgId + '&table=home_about_slider'
             })
             .then(res => res.text())
             .then(data => {
-                if(data.trim() === 'success'){
-                    parentDiv.remove();
-                } else {
-                    alert("Failed to delete image.");
-                }
-            })
-            .catch(err => console.error(err));
+                if(data.trim() === 'success') parent.remove();
+                else alert("Failed to delete image.");
+            });
         }
     });
 });

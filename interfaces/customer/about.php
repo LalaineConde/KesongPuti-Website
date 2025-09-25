@@ -11,6 +11,41 @@ include ('../../includes/customer-dashboard.php');
 $result = mysqli_query($connection, "SELECT header_text FROM page_headers WHERE page_name='$current_page' LIMIT 1");
 $row = mysqli_fetch_assoc($result);
 
+// Fetch all sections
+$sections = [];
+$secQuery = mysqli_query($connection, "SELECT * FROM about_sections");
+while($row = mysqli_fetch_assoc($secQuery)) {
+    $sections[$row['section_name']] = $row;
+}
+
+// Fetch images for each section
+$images = [];
+$imgQuery = mysqli_query($connection, "SELECT * FROM about_images ORDER BY section_name, position ASC");
+while($row = mysqli_fetch_assoc($imgQuery)) {
+    $images[$row['section_name']][] = $row['image_path'];
+}
+
+
+// Fetch existing team data
+$teamData = [];
+$teamTitle = "OUR KESONG PUTI FAMILY"; // default
+$result = mysqli_query($connection, "SELECT * FROM about_team ORDER BY position ASC");
+if($result){
+    while($row = mysqli_fetch_assoc($result)){
+        $teamData[$row['position']] = $row['image_path'];
+        $teamTitle = $row['title']; // assume all rows have same title
+    }
+}
+
+
+$ctaData = ['heading' => '', 'paragraph' => ''];
+$result = mysqli_query($connection, "SELECT * FROM cta_sections WHERE id=1 LIMIT 1");
+if($row = mysqli_fetch_assoc($result)){
+    $ctaData['heading'] = $row['heading'];
+    $ctaData['paragraph'] = $row['paragraph'];
+}
+?>
+
 
 ?>
 
@@ -47,267 +82,49 @@ $row = mysqli_fetch_assoc($result);
 
 
     <!-- STORY -->
-    <section id="story">
-      <div class="container story-container">
-        <!-- beginning -->
-        <div class="beginning">
-          <!-- quotes -->
-          <div class="quotes">
-            <i class="fa-solid fa-quote-left"></i>
-            <h1>
-              It all began in our kitchen, where kesong puti was more than food
-              — it was family, tradition, and togetherness.
-            </h1>
-            <i class="fa-solid fa-quote-right"></i>
-          </div>
+<section id="story">
+  <div class="container story-container">
+    <?php 
+    $section_order = ['beginning','tradition','business','support_farmers','present'];
+    foreach($section_order as $sec): 
+        $secData = $sections[$sec] ?? ['quote'=>'','content'=>''];
+        $secImages = !empty($images[$sec]) ? $images[$sec] : ['uploads/assets/default-'.$sec.'-1.png']; 
+        $isRight = in_array($sec, ['beginning','business','present']); // align images
+    ?>
+    <div class="<?= $sec ?> mt-5">
+      <!-- quotes -->
+      <div class="quotes">
+        <i class="fa-solid fa-quote-left"></i>
+        <h1><?= htmlspecialchars($secData['quote']) ?></h1>
+        <i class="fa-solid fa-quote-right"></i>
+      </div>
 
-          <!-- contents -->
-          <div class="row mt-4">
-            <!-- text -->
-            <div class="col-lg-7">
-              <p>
-                Our story starts in the heart of our home, where the aroma of
-                freshly made kesong puti would fill the air every morning. Long
-                before this became a business, kesong puti was part of our
-                family’s daily life — soft, creamy, and always served with warm
-                pan de sal and a hot cup of coffee.
-                <br /><br />
-                It wasn’t just food; it was tradition. Each batch of cheese
-                brought us together around the breakfast table, a reminder of
-                simpler times when meals were about love and connection. For us,
-                kesong puti was more than just nourishment — it was a way of
-                keeping our family’s bond strong, generation after generation.
-              </p>
-            </div>
-
-            <!-- images -->
-            <div class="col-lg-5 other-images">
-              <div class="image-slider right-image">
-                <img src="../../assets/team1.png" alt="" class="active" />
-                <img src="../../assets/team2.png" alt="" />
-                <img src="../../assets/team3.png" alt="" />
-                <img src="../../assets/team4.png" alt="" />
-              </div>
-              <!-- arrows -->
-              <div class="slider-controls">
-                <button class="prev">
-                  <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="next">
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              </div>
-            </div>
-          </div>
+      <!-- contents -->
+      <div class="row mt-4">
+        <!-- text -->
+        <div class="col-lg-7 <?= $isRight ? '' : 'order-lg-2' ?>">
+          <p><?= nl2br(htmlspecialchars($secData['content'])) ?></p>
         </div>
 
-        <!-- tradition -->
-        <div class="tradition mt-5">
-          <!-- quotes -->
-          <div class="quotes">
-            <i class="fa-solid fa-quote-left"></i>
-            <h1>
-              A recipe lovingly passed down through generations, carrying with
-              it the flavors of home and the values of our family.
-            </h1>
-            <i class="fa-solid fa-quote-right"></i>
+        <!-- images -->
+        <div class="col-lg-5 other-images <?= $isRight ? '' : 'order-lg-1' ?>">
+          <div class="image-slider <?= $isRight ? 'right-image' : 'left-image' ?>">
+            <?php foreach($secImages as $i => $img): ?>
+              <img src="../../<?= htmlspecialchars($img) ?>" alt="" class="<?= $i === 0 ? 'active' : '' ?>" />
+            <?php endforeach; ?>
           </div>
-
-          <!-- contents -->
-          <div class="row mt-4">
-            <!-- images -->
-            <div class="col-lg-5 other-images">
-              <div class="image-slider left-image">
-                <img src="../../assets/team1.png" alt="" class="active" />
-                <img src="../../assets/team2.png" alt="" />
-                <img src="../../assets/team3.png" alt="" />
-                <img src="../../assets/team4.png" alt="" />
-              </div>
-              <!-- controls OUTSIDE the image -->
-              <div class="slider-controls">
-                <button class="prev">
-                  <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="next">
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- text -->
-            <div class="col-lg-7">
-              <p>
-                Our kesong puti is not just cheese — it’s a family treasure. The
-                recipe has been passed down from our grandparents, who learned
-                the art of making it the traditional way: heating fresh
-                carabao’s milk, curdling it naturally, and carefully shaping it
-                by hand. The final touch was always wrapping it in banana
-                leaves, a symbol of authenticity and respect for our Filipino
-                roots.
-                <br /><br />
-                Over time, this recipe became more than just instructions — it
-                became a symbol of our heritage. Every member of the family had
-                a role to play, whether it was preparing the milk, stirring the
-                curds, or helping pack the cheese. Through these small yet
-                meaningful moments, we learned not only how to make kesong puti,
-                but also how to value patience, craftsmanship, and love for
-                tradition.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- business -->
-        <div class="business mt-5">
-          <!-- quotes -->
-          <div class="quotes">
-            <i class="fa-solid fa-quote-left"></i>
-            <h1>
-              From our table to our neighbors’, our kesong puti grew from a
-              family favorite into a tradition we wanted to share with everyone.
-            </h1>
-            <i class="fa-solid fa-quote-right"></i>
-          </div>
-
-          <!-- contents -->
-          <div class="row mt-4">
-            <!-- text -->
-            <div class="col-lg-7">
-              <p>
-                At first, we made kesong puti only for ourselves. But as
-                neighbors, friends, and even relatives from far away tasted it,
-                they began to request more. What started as small gifts shared
-                during gatherings and fiestas soon turned into regular orders.
-                <br /><br />
-                Encouraged by the joy on people’s faces, our family decided to
-                take the leap — to transform our homemade recipe into a small
-                business. We carried with us a promise: no shortcuts, no
-                compromises. Just the same freshness, authenticity, and love
-                that began in our home.
-              </p>
-            </div>
-
-            <!-- images -->
-            <div class="col-lg-5 other-images">
-              <div class="image-slider right-image">
-                <img src="../../assets/team1.png" alt="" class="active" />
-                <img src="../../assets/team2.png" alt="" />
-                <img src="../../assets/team3.png" alt="" />
-                <img src="../../assets/team4.png" alt="" />
-              </div>
-              <!-- controls OUTSIDE the image -->
-              <div class="slider-controls">
-                <button class="prev">
-                  <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="next">
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- supporting farmers -->
-        <div class="support-farmers mt-5">
-          <!-- quotes -->
-          <div class="quotes">
-            <i class="fa-solid fa-quote-left"></i>
-            <h1>
-              Behind every piece of our kesong puti are hardworking farmers and
-              a community built on trust and tradition.
-            </h1>
-            <i class="fa-solid fa-quote-right"></i>
-          </div>
-
-          <!-- contents -->
-          <div class="row mt-4">
-            <!-- images -->
-            <div class="col-lg-5 other-images">
-              <div class="image-slider left-image">
-                <img src="../../assets/team1.png" alt="" class="active" />
-                <img src="../../assets/team2.png" alt="" />
-                <img src="../../assets/team3.png" alt="" />
-                <img src="../../assets/team4.png" alt="" />
-              </div>
-              <!-- controls OUTSIDE the image -->
-              <div class="slider-controls">
-                <button class="prev">
-                  <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="next">
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              </div>
-            </div>
-
-            <!-- text -->
-            <div class="col-lg-7">
-              <p>
-                Our business grew hand in hand with the local farming community.
-                By sourcing directly from small-scale dairy farmers, we not only
-                ensure the freshness of our kesong puti but also support the
-                livelihoods of hardworking families like ours.
-                <br /><br />
-                This partnership is more than business — it’s family helping
-                family. It reflects our belief that when farmers thrive,
-                traditions live on, and when traditions are preserved,
-                communities grow stronger together.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- present -->
-        <div class="present mt-5">
-          <!-- quotes -->
-          <div class="quotes">
-            <i class="fa-solid fa-quote-left"></i>
-            <h1>
-              Though we’ve grown, our heart remains the same — to make kesong
-              puti with love, tradition, and the taste of home.
-            </h1>
-            <i class="fa-solid fa-quote-right"></i>
-          </div>
-
-          <!-- contents -->
-          <div class="row mt-4">
-            <!-- text -->
-            <div class="col-lg-7">
-              <p>
-                Today, our family business has reached more homes and more
-                hearts, but our values remain unchanged. Every piece of kesong
-                puti we make still carries the same authenticity, warmth, and
-                care that started it all.
-                <br /><br />
-                With each bite, we hope you experience not just cheese, but a
-                story — of tradition, of community, and of the love that binds
-                families together across generations.
-              </p>
-            </div>
-
-            <!-- images -->
-            <div class="col-lg-5 other-images">
-              <div class="image-slider right-image">
-                <img src="../../assets/team1.png" alt="" class="active" />
-                <img src="../../assets/team2.png" alt="" />
-                <img src="../../assets/team3.png" alt="" />
-                <img src="../../assets/team4.png" alt="" />
-              </div>
-              <!-- controls OUTSIDE the image -->
-              <div class="slider-controls">
-                <button class="prev">
-                  <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <button class="next">
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              </div>
-            </div>
+          <!-- arrows -->
+          <div class="slider-controls">
+            <button class="prev"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="next"><i class="fa-solid fa-chevron-right"></i></button>
           </div>
         </div>
       </div>
-    </section>
+    </div>
+    <?php endforeach; ?>
+  </div>
+</section>
+
     <!-- STORY -->
 
     <!-- VINE SEPARATOR 1 -->
@@ -341,31 +158,24 @@ $row = mysqli_fetch_assoc($result);
     </div>
 
     <!-- TEAMS -->
-    <section id="teams">
-      <div class="teams-container">
-        <h1 class="mb-5">OUR KESONG PUTI FAMILY</h1>
-        <div class="row cards-container">
-          <div class="col-lg-4 member-image">
-            <img src="" alt="" />
-          </div>
-          <div class="col-lg-4 member-image">
-            <img src="" alt="" />
-          </div>
-          <div class="col-lg-4 member-image">
-            <img src="" alt="" />
-          </div>
-          <div class="col-lg-4 member-image">
-            <img src="" alt="" />
-          </div>
-          <div class="col-lg-4 member-image">
-            <img src="" alt="" />
-          </div>
-          <div class="col-lg-4 member-image">
-            <img src="" alt="" />
-          </div>
-        </div>
+<section id="teams">
+  <div class="teams-container">
+    <h1 class="mb-5"><?= htmlspecialchars($teamTitle) ?></h1>
+    <div class="row cards-container">
+      <?php 
+        // Loop through team members (max 6)
+        for($i = 1; $i <= 6; $i++): 
+            $imgSrc = isset($teamData[$i]) 
+          ? '../../' . $teamData[$i]  // prepend ../../ to match your folder structure
+          : '../../uploads/assets/default-member.png';
+      ?>
+      <div class="col-lg-4 member-image mb-3">
+        <img src="<?= htmlspecialchars($imgSrc) ?>" alt="Team Member <?= $i ?>" class="img-fluid rounded">
       </div>
-    </section>
+      <?php endfor; ?>
+    </div>
+  </div>
+</section>
     <!-- TEAMS -->
 
     <!-- VINE SEPARATOR 1 -->
@@ -401,12 +211,8 @@ $row = mysqli_fetch_assoc($result);
 
     <!-- CTA -->
     <section id="cta-buy">
-      <h1>Experience Authentic Filipino Flavor</h1>
-      <p>
-        Discover the creamy, wholesome taste of our kesong puti — a true
-        Filipino delicacy made with love and tradition. Browse our shop today
-        and bring home a piece of heritage that will delight every table.
-      </p>
+      <h1><?= htmlspecialchars($ctaData['heading']) ?></h1>
+        <p><?= htmlspecialchars($ctaData['paragraph']) ?></p>
       <button class="shop-now-btn mt-4">Shop Now</button>
     </section>
     <!-- CTA -->
