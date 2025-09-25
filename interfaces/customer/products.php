@@ -112,10 +112,10 @@ $store_result = mysqli_query($connection, $store_sql);
     >
 
     <!-- ICONS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+   <link
       rel="stylesheet"
-    >
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
 
     <!-- CSS -->
     <link rel="stylesheet" href="../../css/styles.css" >
@@ -132,36 +132,17 @@ $store_result = mysqli_query($connection, $store_sql);
     <section id="branding-section">
       <div class="container">
         <div class="row g-4">
-          <!--  -->
-          <div class="col-lg-4 branding">
-            <i class="bi bi-heart"></i>
-            <h2>Authentic Filipino Tradition</h2>
-            <p>
-              Taste a Piece of Filipino Heritage. Our kesong puti is crafted
-              with a time-honored recipe passed down through generations
-            </p>
-          </div>
-
-          <!--  -->
-          <div class="col-lg-4 branding">
-            <i class="bi bi-person"></i>
-            <h2>Freshness from Local Farms</h2>
-            <p>
-              Farm-Fresh Goodness. We use carabao’s milk sourced daily from
-              local farmers to ensure maximum freshness and flavor.
-            </p>
-          </div>
-
-          <!--  -->
-          <div class="col-lg-4 branding">
-            <i class="bi bi-leaf"></i>
-            <h2>Simple, Pure Ingredients</h2>
-            <p>
-              Pure and Simple. Absolutely Delicious. Made only with fresh
-              carabao’s milk, salt, and rennet, our cheese has no
-              preservatives—just natural flavor.
-            </p>
-          </div>
+          <?php
+          // Branding section query
+$branding_result = mysqli_query($connection, "SELECT * FROM branding_sections_products ORDER BY position ASC");
+          while($row = mysqli_fetch_assoc($branding_result)): ?>
+              <div class="col-lg-4 branding text-center">
+                  <i class="<?= htmlspecialchars($row['icon_class']) ?>" 
+                    style="color: <?= htmlspecialchars($row['icon_color']) ?>; font-size:40px;"></i>
+                  <h2><?= htmlspecialchars($row['heading']) ?></h2>
+                  <p><?= htmlspecialchars($row['paragraph']) ?></p>
+              </div>
+          <?php endwhile; ?>
         </div>
       </div>
     </section>
@@ -262,7 +243,7 @@ $store_result = mysqli_query($connection, $store_sql);
                     <a 
                       href="view-products.php?id=<?= $row['product_id'] ?>" 
                       class="btn-view mb-1">
-                      <i class="bi bi-eye"></i> View
+                      View
                     </a>
 
                     <form method="POST" action="add-to-cart.php" class="cart-form-btn">

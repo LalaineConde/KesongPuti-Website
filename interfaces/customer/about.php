@@ -213,7 +213,7 @@ if($row = mysqli_fetch_assoc($result)){
     <section id="cta-buy">
       <h1><?= htmlspecialchars($ctaData['heading']) ?></h1>
         <p><?= htmlspecialchars($ctaData['paragraph']) ?></p>
-      <button class="shop-now-btn mt-4">Shop Now</button>
+      <a href="products.php" class="shop-now-btn mt-4">Shop Now </a>
     </section>
     <!-- CTA -->
 

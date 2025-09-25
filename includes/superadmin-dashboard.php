@@ -163,6 +163,11 @@ $admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
                 >
               </li>
               <li>
+                <a href="../superadmin/products-cms.php" class="sub-tab" data-content="products-content"
+                  >Products</a
+                >
+              </li>
+              <li>
                 <a href="../superadmin/contact.php" class="sub-tab" data-content="contact-content"
                   >Contacts</a
                 >

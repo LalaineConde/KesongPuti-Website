@@ -1097,7 +1097,7 @@ input[type="checkbox"]:hover {
  .branding i {
      font-weight: bold;
      font-size: 50px;
-     color: var(--icon-color) !important;
+     
  }
 
  .branding h2 {

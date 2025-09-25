@@ -293,7 +293,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_home_btn'])){
 <body>
 
 <div  id="home-content" class="home-container">
-  <h1>Customize Homepage</h1>
+  <h1>Homepage</h1>
 
   <form method="POST" enctype="multipart/form-data" class="home-form">
 

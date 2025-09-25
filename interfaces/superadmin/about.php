@@ -61,7 +61,7 @@ $default_team = [
 
 $default_cta = [
     'heading' => 'Experience Authentic Filipino Flavor',
-    'paragraph' => 'Discover the creamy, wholesome taste of our kesong puti...'
+    'paragraph' => 'Discover the creamy, wholesome taste of our kesong puti — a true Filipino delicacy made with love and tradition. Browse our shop today and bring home a piece of heritage that will delight every table.'
 ];
 
 // --- FETCH DATA ---
