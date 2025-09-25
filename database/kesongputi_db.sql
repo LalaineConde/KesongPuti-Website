@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 25, 2025 at 09:40 AM
+-- Generation Time: Sep 25, 2025 at 05:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,16 +39,16 @@ CREATE TABLE `about_images` (
 --
 
 INSERT INTO `about_images` (`id`, `section_name`, `image_path`, `position`) VALUES
-(785, 'beginning', 'uploads/assets/default-team-1.png', 1),
-(786, 'beginning', 'uploads/assets/default-team-2.png', 2),
-(787, 'tradition', 'uploads/assets/default-team-3.png', 1),
-(788, 'tradition', 'uploads/assets/default-team-4.png', 2),
-(789, 'business', 'uploads/assets/default-team-5.png', 1),
-(790, 'business', 'uploads/assets/default-team-6.png', 2),
-(791, 'support_farmers', 'uploads/assets/default-team-1.png', 1),
-(792, 'support_farmers', 'uploads/assets/default-team-2.png', 2),
-(793, 'present', 'uploads/assets/default-team-3.png', 1),
-(794, 'present', 'uploads/assets/default-team-4.png', 2);
+(915, 'beginning', 'uploads/assets/default-team-1.png', 1),
+(916, 'beginning', 'uploads/assets/default-team-2.png', 2),
+(917, 'tradition', 'uploads/assets/default-team-3.png', 1),
+(918, 'tradition', 'uploads/assets/default-team-4.png', 2),
+(919, 'business', 'uploads/assets/default-team-5.png', 1),
+(920, 'business', 'uploads/assets/default-team-6.png', 2),
+(921, 'support_farmers', 'uploads/assets/default-team-1.png', 1),
+(922, 'support_farmers', 'uploads/assets/default-team-2.png', 2),
+(923, 'present', 'uploads/assets/default-team-3.png', 1),
+(924, 'present', 'uploads/assets/default-team-4.png', 2);
 
 -- --------------------------------------------------------
 
@@ -68,11 +68,11 @@ CREATE TABLE `about_sections` (
 --
 
 INSERT INTO `about_sections` (`id`, `section_name`, `quote`, `content`) VALUES
-(331, 'beginning', 'It all began in our kitchen, where kesong puti was more than food — it was family, tradition, and togetherness.', 'Our story starts in the heart of our home, ...'),
-(332, 'tradition', 'A recipe lovingly passed down through generations...', 'Our kesong puti is not just cheese...'),
-(333, 'business', 'From our table to our neighbors’...', 'At first, we made kesong puti only for ourselves...'),
-(334, 'support_farmers', 'Behind every piece of our kesong puti...', 'Our business grew hand in hand with the local farming community...'),
-(335, 'present', 'Though we’ve grown, our heart remains the same...', 'Today, our family business has reached more homes...');
+(561, 'beginning', 'It all began in our kitchen, where kesong puti was more than food — it was family, tradition, and togetherness.', 'Our story starts in the heart of our home, where the aroma of freshly made kesong puti would fill the air every morning. Long before this became a business, kesong puti was part of our family’s daily life — soft, creamy, and always served with warm pan de sal and a hot cup of coffee.\r\n\r\nIt wasn’t just food; it was tradition. Each batch of cheese brought us together around the breakfast table, a reminder of simpler times when meals were about love and connection. For us, kesong puti was more than just nourishment — it was a way of keeping our family’s bond strong, generation after generation.'),
+(562, 'tradition', 'A recipe lovingly passed down through generations...', 'Our kesong puti is not just cheese — it’s a family treasure. The recipe has been passed down from our grandparents, who learned the art of making it the traditional way: heating fresh carabao’s milk, curdling it naturally, and carefully shaping it by hand. The final touch was always wrapping it in banana leaves, a symbol of authenticity and respect for our Filipino roots.\r\n\r\nOver time, this recipe became more than just instructions — it became a symbol of our heritage. Every member of the family had a role to play, whether it was preparing the milk, stirring the curds, or helping pack the cheese. Through these small yet meaningful moments, we learned not only how to make kesong puti, but also how to value patience, craftsmanship, and love for tradition.'),
+(563, 'business', 'From our table to our neighbors’...', 'At first, we made kesong puti only for ourselves. But as neighbors, friends, and even relatives from far away tasted it, they began to request more. What started as small gifts shared during gatherings and fiestas soon turned into regular orders.\r\n\r\nEncouraged by the joy on people’s faces, our family decided to take the leap — to transform our homemade recipe into a small business. We carried with us a promise: no shortcuts, no compromises. Just the same freshness, authenticity, and love that began in our home.'),
+(564, 'support_farmers', 'Behind every piece of our kesong puti...', 'Our business grew hand in hand with the local farming community. By sourcing directly from small-scale dairy farmers, we not only ensure the freshness of our kesong puti but also support the livelihoods of hardworking families like ours.\r\n\r\nThis partnership is more than business — it’s family helping family. It reflects our belief that when farmers thrive, traditions live on, and when traditions are preserved, communities grow stronger together.'),
+(565, 'present', 'Though we’ve grown, our heart remains the same...', 'Today, our family business has reached more homes and more hearts, but our values remain unchanged. Every piece of kesong puti we make still carries the same authenticity, warmth, and care that started it all.\r\n\r\nWith each bite, we hope you experience not just cheese, but a story — of tradition, of community, and of the love that binds families together across generations.');
 
 -- --------------------------------------------------------
 
@@ -126,6 +126,30 @@ INSERT INTO `admins` (`admin_id`, `username`, `store_name`, `email`, `password`)
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `branding_sections_products`
+--
+
+CREATE TABLE `branding_sections_products` (
+  `id` int(11) NOT NULL,
+  `icon_class` varchar(100) NOT NULL,
+  `icon_color` varchar(20) DEFAULT '#000000',
+  `heading` varchar(255) NOT NULL,
+  `paragraph` text NOT NULL,
+  `position` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `branding_sections_products`
+--
+
+INSERT INTO `branding_sections_products` (`id`, `icon_class`, `icon_color`, `heading`, `paragraph`, `position`) VALUES
+(1, 'fa-solid fa-heart', '#0D8540', 'Authentic Filipino Tradition', 'Taste a Piece of Filipino Heritage. Our kesong puti is crafted with a time-honored recipe passed down through generations', 1),
+(2, 'fa-solid fa-leaf', '#0D8540', 'Freshness from Local Farms', 'Farm-Fresh Goodness. We use carabao’s milk sourced daily from local farmers to ensure maximum freshness and flavor.', 2),
+(3, 'fa-solid fa-cheese', '#0D8540', 'Simple, Pure Ingredients', 'Pure and Simple. Absolutely Delicious. Made only with fresh carabao’s milk, salt, and rennet, our cheese has no preservatives—just natural flavor.', 3);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `categories`
 --
 
@@ -167,7 +191,7 @@ CREATE TABLE `cta_sections` (
 --
 
 INSERT INTO `cta_sections` (`id`, `heading`, `paragraph`, `updated_at`) VALUES
-(1, 'Experience Authentic Filipino Flavor', 'Discover the creamy, wholesome taste of our kesong puti...', '2025-09-25 05:21:45');
+(1, 'Experience Authentic Filipino Flavor', 'Discover the creamy, wholesome taste of our kesong puti — a true Filipino delicacy made with love and tradition. Browse our shop today and bring home a piece of heritage that will delight every table.', '2025-09-25 13:11:17');
 
 -- --------------------------------------------------------
 
@@ -791,6 +815,12 @@ ALTER TABLE `admins`
   ADD PRIMARY KEY (`admin_id`);
 
 --
+-- Indexes for table `branding_sections_products`
+--
+ALTER TABLE `branding_sections_products`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `categories`
 --
 ALTER TABLE `categories`
@@ -940,25 +970,31 @@ ALTER TABLE `super_admin`
 -- AUTO_INCREMENT for table `about_images`
 --
 ALTER TABLE `about_images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=795;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=925;
 
 --
 -- AUTO_INCREMENT for table `about_sections`
 --
 ALTER TABLE `about_sections`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=516;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=566;
 
 --
 -- AUTO_INCREMENT for table `about_team`
 --
 ALTER TABLE `about_team`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=574;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=682;
 
 --
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
   MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `branding_sections_products`
+--
+ALTER TABLE `branding_sections_products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `categories`
@@ -1024,7 +1060,7 @@ ALTER TABLE `home_reasons`
 -- AUTO_INCREMENT for table `home_settings`
 --
 ALTER TABLE `home_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1144;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1145;
 
 --
 -- AUTO_INCREMENT for table `inbox_messages`
