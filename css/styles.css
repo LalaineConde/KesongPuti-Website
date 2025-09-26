@@ -2473,24 +2473,25 @@ input[type="checkbox"]:hover {
 
  /* STORE DETAILS */
  #store-details {
-     min-height: 80vh;
      background-color: var(--wave-background) !important;
-     position: relative;
+     padding: 3rem 0 6rem 0;
  }
 
  .store-details h2 {
+     font-size: 5rem;
      font-family: var(--page-header-font) !important;
      text-align: center;
      color: var(--second-heading-font-color);
  }
 
- .carousel-inner {
+  .store-details .carousel-inner {
      padding: 20px;
      background-color: #035f2e;
-     border-radius: 20px;
+     border-radius: 20px;     
+     height: auto;
  }
 
- .store-card {
+  .store-details .store-card {
      border-radius: 16px;
      overflow: hidden;
      background: var(--white);
@@ -2500,28 +2501,30 @@ input[type="checkbox"]:hover {
      font-family: var(--primary-font) !important;
  }
 
- .store-card:hover {
+  .store-details .store-card:hover {
      transform: translateY(-6px);
  }
 
- .card-header-bar {
+  .store-details .card-header-bar {
      background: var(--yellow);
      padding: 1rem;
      display: flex;
      justify-content: center;
      align-items: center;
+     height: 15vh;
  }
 
- .card-header-bar i {
+  .store-details .card-header-bar i {
      font-size: 5rem;
      color: var(--black);
  }
 
- .card-body {
+  .store-details .card-body {
      padding: 1.2rem;
+     text-align: center;
  }
 
- .store-name {
+ .store-details .store-name {
      font-weight: 700;
      color: var(--green);
      font-size: 1.2rem;
@@ -2529,22 +2532,39 @@ input[type="checkbox"]:hover {
      text-align: center;
  }
 
- .store-info {
+ .store-details .store-info {
      font-size: 0.9rem;
+     color: var(--black);
      margin: 0.3rem 0;
+     border-bottom: 1px solid var(--black);
  }
 
     .store-info a {
     color: var(--body-font-color);
     text-decoration: none;
     }
+     .store-details .social-icons {
+     margin-top: 1rem;
+     display: flex;
+     justify-content: center;
+     gap: 12px;
+ }
 
- .carousel-control-prev,
- .carousel-control-next {
+     .store-details .social-icons a {
+     color: var(--icon-color) !important;
+     font-size: 1.2rem;
+     transition: color 0.3s ease;
+ }
+
+    .store-details .social-icons a:hover {
+     color: var(--yellow);
+ }
+
+ .store-details .carousel-control-prev,
+ .store-details .carousel-control-next {
      width: 50px;
      height: 50px;
-     top: 50%;
-     transform: translateY(-50%);
+     top: 45%;
      background-color: var(--white);
      border-radius: 50%;
      display: flex;
@@ -2555,32 +2575,30 @@ input[type="checkbox"]:hover {
      z-index: 10;
  }
 
- .carousel-control-prev {
+ .store-details .carousel-control-prev {
      left: -60px;
  }
 
- .carousel-control-next {
+ .store-details .carousel-control-next {
      right: -60px;
  }
 
- .carousel-control-prev:hover,
- .carousel-control-next:hover {
+ .store-details .carousel-control-prev:hover,
+ .store-details .carousel-control-next:hover {
      background-color: var(--white);
      color: var(--black);
  }
 
-@media (max-width: 768px) {
-  /* Hide all store cards inside carousel on mobile */
-  .carousel-item .col-md-4 {
-    display: none;
-  }
+ @media (max-width: 768px) {
+     .store-details .carousel-item .store {
+         display: none;
+     }
 
-  /* Show only the first one, full width */
-  .carousel-item .col-md-4:first-child {
-    display: block;
-    width: 100%;
-  }
-}
+     .store-details .carousel-item .store:first-child {
+         display: block;
+         width: 100%;
+     }
+ }
 
  /* STORE DETAILS */
 
@@ -2658,6 +2676,7 @@ input[type="checkbox"]:hover {
     display: flex;
     justify-content: center;
     gap: 15px;
+    
 }
 
 .social-circle {

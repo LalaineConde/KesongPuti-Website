@@ -2,35 +2,56 @@
 $page_title = 'Contact | Kesong Puti';
 require '../../connection.php';
 
-
 $toast_message = '';
-
-
 
 // ADD CONTACT
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_contact'])) {
     $store_name = $_POST['store_name'];
+    $owner = $_POST['owner'] ?? 'N/A';
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $address = $_POST['address'];
-
-    mysqli_query($connection, "INSERT INTO store_contacts (store_name,email,phone,address) 
-                               VALUES ('$store_name','$email','$phone','$address')");
+    $facebook = $_POST['facebook'];
+    $twitter = $_POST['twitter'];
+    $instagram = $_POST['instagram'];
+    
+    mysqli_query($connection, "INSERT INTO store_contacts 
+        (store_name, owner, email, phone, address, facebook, twitter, instagram) 
+        VALUES 
+        ('$store_name','$owner','$email','$phone','$address','$facebook','$twitter','$instagram')");
     $toast_message = "Contact added successfully!";
 }
 
-// EDIT CONTACT
+// EDIT CONTACT (via fetch)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_contact'])) {
-    $id = $_POST['id'];
+    $id = intval($_POST['id']);
     $store_name = $_POST['store_name'];
+    $owner = $_POST['owner'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
     $address = $_POST['address'];
+    $facebook = $_POST['facebook'];
+    $twitter = $_POST['twitter'];
+    $instagram = $_POST['instagram'];
 
-    mysqli_query($connection, "UPDATE store_contacts 
-                               SET store_name='$store_name', email='$email', phone='$phone', address='$address' 
-                               WHERE id=$id");
-    $toast_message = "Contact updated successfully!";
+    $query = "UPDATE store_contacts 
+              SET store_name='$store_name',
+                  owner='$owner',
+                  email='$email',
+                  phone='$phone',
+                  address='$address',
+                  facebook='$facebook',
+                  twitter='$twitter',
+                  instagram='$instagram'
+              WHERE id=$id";
+
+    if (mysqli_query($connection, $query)) {
+        echo "success"; // ✅ return success for JS
+        exit;
+    } else {
+        echo "DB Error: " . mysqli_error($connection);
+        exit;
+    }
 }
 
 // DELETE CONTACT
@@ -40,17 +61,13 @@ if (isset($_GET['delete'])) {
     $toast_message = "Contact deleted successfully!";
 }
 
-// Fetch contacts (all)
+// Fetch contacts
 $contacts_query = mysqli_query($connection, "SELECT * FROM store_contacts ORDER BY id DESC");
 $contacts = mysqli_fetch_all($contacts_query, MYSQLI_ASSOC);
 
 include ('../../includes/superadmin-dashboard.php');
-
 mysqli_close($connection);
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -58,30 +75,26 @@ mysqli_close($connection);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact | Kesong Puti</title>
-     <!-- BOOTSTRAP ICONS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
-    />
 
-    <link rel="stylesheet" href="../../css/admin.css"/>
-
-</head>
+  <!-- BOOTSTRAP ICONS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"/>
+  <link rel="stylesheet" href="../../css/admin.css"/>
 </head>
 <body>
-<div class="box" id="footer-content">
-  <h1>Customize Footer</h1>
-
-
-  
+<div class="box" id="contact-content">
+  <h1>Contacts</h1>
 
   <!-- Add Contact -->
-  <form method="post" id="footer-content">  
+  <form method="post" id="contact-content">  
     <h3>Add Store Contact</h3>
     <input type="text" name="store_name" placeholder="Store Name" required><br>
+    <input type="text" name="owner" placeholder="Owner/Username"><br>
     <input type="email" name="email" placeholder="Email" required><br>
     <input type="text" name="phone" placeholder="Phone" required><br>
     <textarea name="address" placeholder="Address" required></textarea><br>
+    <input type="url" name="facebook" placeholder="Facebook Link"><br>
+    <input type="url" name="twitter" placeholder="Twitter Link"><br>
+    <input type="url" name="instagram" placeholder="Instagram Link"><br>
     <div class="btn-wrapper">
         <button type="submit" name="add_contact">
             <i class="bi bi-check-circle"></i> Add Contact
@@ -89,73 +102,84 @@ mysqli_close($connection);
     </div>
   </form>
 
+  <!-- Contacts Table -->
+  <h3>Contact List</h3>
+  <div class="contact-table-wrapper">
+    <table class="contact-table">
+      <thead>
+        <tr>
+          <th>Store Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Social Media</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($contacts)): ?>
+          <?php foreach ($contacts as $c): ?>
+            <tr>
+              <td><?= htmlspecialchars($c['store_name']) ?></td>
+              <td><?= htmlspecialchars($c['owner']) ?></td>
+              <td><?= htmlspecialchars($c['email']) ?></td>
+              <td><?= htmlspecialchars($c['phone']) ?></td>
+              <td><?= htmlspecialchars($c['address']) ?></td>
+              <td>
+                <div class="social-icons">
+                  <?php if (!empty($c['facebook'])): ?>
+                    <a href="<?= htmlspecialchars($c['facebook']) ?>" target="_blank">
+                      <i class="bi bi-facebook"></i>
+                    </a>
+                  <?php endif; ?>
+                  <?php if (!empty($c['twitter'])): ?>
+                    <a href="<?= htmlspecialchars($c['twitter']) ?>" target="_blank">
+                      <i class="bi bi-twitter-x"></i>
+                    </a>
+                  <?php endif; ?>
+                  <?php if (!empty($c['instagram'])): ?>
+                    <a href="<?= htmlspecialchars($c['instagram']) ?>" target="_blank">
+                      <i class="bi bi-instagram"></i>
+                    </a>
+                  <?php endif; ?>
+                </div>
+              </td>
+              <td>
+                <!-- Edit -->
+                <button class="update-btn" 
+                        data-id="<?= $c['id'] ?>" 
+                        data-store="<?= htmlspecialchars($c['store_name'], ENT_QUOTES) ?>" 
+                        data-owner="<?= htmlspecialchars($c['owner'], ENT_QUOTES) ?>" 
+                        data-email="<?= htmlspecialchars($c['email'], ENT_QUOTES) ?>" 
+                        data-phone="<?= htmlspecialchars($c['phone'], ENT_QUOTES) ?>" 
+                        data-address="<?= htmlspecialchars($c['address'], ENT_QUOTES) ?>"
+                        data-facebook="<?= htmlspecialchars($c['facebook'], ENT_QUOTES) ?>"
+                        data-twitter="<?= htmlspecialchars($c['twitter'], ENT_QUOTES) ?>"
+                        data-instagram="<?= htmlspecialchars($c['instagram'], ENT_QUOTES) ?>">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
 
-
-<!-- Contacts Table -->
-<h3>Contact List</h3>
-<div class="footer-table-wrapper">
-  <table class="footer-table">
-    <thead>
-      <tr>
-        <th>Store Name</th>
-        <th>Email</th>
-        <th>Phone</th>
-        <th>Address</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php if (!empty($contacts)): ?>
-        <?php foreach ($contacts as $c): ?>
-          <tr>
-            <td><?= htmlspecialchars($c['store_name']) ?></td>
-            <td><?= htmlspecialchars($c['email']) ?></td>
-            <td><?= htmlspecialchars($c['phone']) ?></td>
-            <td><?= htmlspecialchars($c['address']) ?></td>
-            <td>
-              <!-- Edit -->
-            <button class="update-btn" 
-                    data-id="<?= $c['id'] ?>" 
-                    data-store="<?= htmlspecialchars($c['store_name'], ENT_QUOTES) ?>" 
-                    data-email="<?= htmlspecialchars($c['email'], ENT_QUOTES) ?>" 
-                    data-phone="<?= htmlspecialchars($c['phone'], ENT_QUOTES) ?>" 
-                    data-address="<?= htmlspecialchars($c['address'], ENT_QUOTES) ?>">
-                <i class="bi bi-pencil-square"></i>
-            </button>
-
-              <!-- Delete -->
-              <button class="delete-btn" href="?delete=<?= $c['id'] ?>" >              
+                <!-- Delete -->
+                <a class="delete-btn" href="?delete=<?= $c['id'] ?>">              
                     <i class="bi bi-trash-fill"></i>
-              </button>
-            </td>
-          </tr>
-        <?php endforeach; ?>
-      <?php else: ?>
-        <tr><td colspan="5" class="text-center text-muted">No contacts available</td></tr>
-      <?php endif; ?>
-    </tbody>
-  </table>
-</div>
-
-<!-- Edit Contact Modal -->
-<div id="editModal" style="display:none;">
-  <h3>Edit Contact</h3>
-  <form method="post">
-    <input type="hidden" name="id" id="edit_id">
-    <input type="text" name="store_name" id="edit_store_name" required><br>
-    <input type="email" name="email" id="edit_email" required><br>
-    <input type="text" name="phone" id="edit_phone" required><br>
-    <textarea name="address" id="edit_address" required></textarea><br>
-    <button type="submit" name="edit_contact">Update</button>
-    <button type="button" onclick="closeEditModal()">Cancel</button>
-  </form>
+                </a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr><td colspan="7" class="text-center text-muted">No contacts available</td></tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    // ✅ Toast after Add
+    // ✅ Toast after Add/Delete
     var toastMessage = "<?= $toast_message ?>";
     if (toastMessage) {
         Swal.fire({
@@ -192,39 +216,51 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.addEventListener("click", function() {
             const id = this.getAttribute("data-id");
             const oldStore = this.getAttribute("data-store");
+            const oldOwner = this.getAttribute("data-owner");
             const oldEmail = this.getAttribute("data-email");
             const oldPhone = this.getAttribute("data-phone");
             const oldAddress = this.getAttribute("data-address");
+            const oldFacebook = this.getAttribute("data-facebook");
+            const oldTwitter = this.getAttribute("data-twitter");
+            const oldInstagram = this.getAttribute("data-instagram");
 
             Swal.fire({
                 title: "Edit Contact",
                 html: `
                     <input id="swal-store" class="swal2-input" value="${oldStore}" placeholder="Store Name">
+                    <input id="swal-owner" class="swal2-input" value="${oldOwner}" placeholder="Owner">
                     <input id="swal-email" class="swal2-input" value="${oldEmail}" placeholder="Email">
                     <input id="swal-phone" class="swal2-input" value="${oldPhone}" placeholder="Phone">
                     <textarea id="swal-address" class="swal2-textarea" placeholder="Address">${oldAddress}</textarea>
+                    <input id="swal-facebook" class="swal2-input" value="${oldFacebook}" placeholder="Facebook Link">
+                    <input id="swal-twitter" class="swal2-input" value="${oldTwitter}" placeholder="Twitter Link">
+                    <input id="swal-instagram" class="swal2-input" value="${oldInstagram}" placeholder="Instagram Link">
                 `,
                 focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: "Save",
                 preConfirm: () => {
                     const store = document.getElementById("swal-store").value;
+                    const owner = document.getElementById("swal-owner").value;
                     const email = document.getElementById("swal-email").value;
                     const phone = document.getElementById("swal-phone").value;
                     const address = document.getElementById("swal-address").value;
+                    const facebook = document.getElementById("swal-facebook").value;
+                    const twitter = document.getElementById("swal-twitter").value;
+                    const instagram = document.getElementById("swal-instagram").value;
 
-                    if (!store || !email || !phone || !address) {
-                        Swal.showValidationMessage("All fields are required");
+                    if (!store || !owner || !email || !phone || !address) {
+                        Swal.showValidationMessage("Store, Owner, Email, Phone, and Address are required");
                         return false;
                     }
-                    return { store, email, phone, address };
+                    return { store, owner, email, phone, address, facebook, twitter, instagram };
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch("edit-contact.php", {
+                    fetch("", { // same PHP file
                         method: "POST",
                         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                        body: `id=${id}&store_name=${encodeURIComponent(result.value.store)}&email=${encodeURIComponent(result.value.email)}&phone=${encodeURIComponent(result.value.phone)}&address=${encodeURIComponent(result.value.address)}`
+                        body: `id=${id}&store_name=${encodeURIComponent(result.value.store)}&owner=${encodeURIComponent(result.value.owner)}&email=${encodeURIComponent(result.value.email)}&phone=${encodeURIComponent(result.value.phone)}&address=${encodeURIComponent(result.value.address)}&facebook=${encodeURIComponent(result.value.facebook)}&twitter=${encodeURIComponent(result.value.twitter)}&instagram=${encodeURIComponent(result.value.instagram)}&edit_contact=1`
                     })
                     .then(res => res.text())
                     .then(data => {
@@ -241,6 +277,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 </script>
-
 </body>
 </html>

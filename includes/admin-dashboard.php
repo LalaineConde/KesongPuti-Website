@@ -3,12 +3,15 @@
 
 // Check if the user is logged in
 if (!isset($_SESSION['email'])) {
-    header('Location: ../login.php'); // Redirect to login if not logged in
+    // If no session, force login
+    header('Location: ../login.php');
     exit();
 }
 
-// Retrieve the admin's username from the session
-$admin_name = isset($_SESSION['username']) ? $_SESSION['username'] : 'Admin';
+$email = $_SESSION['email'];
+$result = mysqli_query($connection, "SELECT username FROM admins WHERE email='$email' LIMIT 1");
+$row = mysqli_fetch_assoc($result);
+$admin_name = $row ? $row['username'] : 'Admin';
 
 
 ?>

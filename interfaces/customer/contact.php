@@ -35,9 +35,9 @@ $page_header = $row['header_text'] ?? "WELCOME";
 
     <!-- ICONS -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       rel="stylesheet"
-    >
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    />
 
     <!-- CSS -->
     <link rel="stylesheet" href="../../css/styles.css" >
@@ -193,21 +193,19 @@ $page_header = $row['header_text'] ?? "WELCOME";
               <div class="col-md-4">
                 <div class="store-card">
                   <div class="card-header-bar">
-                    <i class="bi bi-shop"></i>
+                    <i class="fa-solid fa-shop"></i>
                   </div>
                   <div class="card-body">
                     <h5 class="store-name"><?= htmlspecialchars($contact['store_name']) ?></h5>
-                    <p class="store-info">
-                      <strong>Location:</strong>
-                      <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($contact['address']) ?>" 
-                        target="_blank" 
-                        class="text-decoration-none">
-                        <?= htmlspecialchars($contact['address']) ?>
-                      </a>
-                    </p>
+
+                    <!-- Owner -->
+                    <strong>Owner:</strong> <br />
+                    <p class="store-info"> <?= htmlspecialchars($contact['owner'] ?? 'N/A') ?></p>
+
+          
                     <!-- Email (mailto link) -->
                     <p class="store-info">
-                      <strong>Email:</strong>
+                      <strong>Email:</strong> <br />
                       <a href="mailto:<?= htmlspecialchars($contact['email']) ?>?subject=Kesong%20Puti%20Customer%20Inquiry&body=Good%20day,%0D%0A%0D%0AI%20would%20like%20to%20inquire%20about..."
                         class="text-decoration-none">
                         <?= htmlspecialchars($contact['email']) ?>
@@ -216,12 +214,41 @@ $page_header = $row['header_text'] ?? "WELCOME";
 
                     <!-- Phone (tel link) -->
                     <p class="store-info">
-                      <strong>Contact:</strong>
+                      <strong>Contact:</strong> <br />
                       <a href="tel:<?= htmlspecialchars($contact['phone']) ?>" class="text-decoration-none">
                         <?= htmlspecialchars($contact['phone']) ?>
                       </a>
                     </p>
-                    <p class="store-info"><strong>Owner:</strong> <?= htmlspecialchars($contact['owner'] ?? 'N/A') ?></p>
+
+                    <p class="store-info">
+                      <strong>Location:</strong> <br />
+                      <a href="https://www.google.com/maps/search/?api=1&query=<?= urlencode($contact['address']) ?>" 
+                        target="_blank" 
+                        class="text-decoration-none">
+                        <?= htmlspecialchars($contact['address']) ?>
+                      </a>
+                    </p>
+
+                    <div class="social-icons"> 
+                      <?php if (!empty($contact['facebook'])): ?>
+                        <a href="<?= htmlspecialchars($contact['facebook']) ?>" target="_blank">
+                          <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                      <?php endif; ?>
+
+                      <?php if (!empty($contact['twitter'])): ?>
+                        <a href="<?= htmlspecialchars($contact['twitter']) ?>" target="_blank">
+                          <i class="fa-brands fa-twitter"></i>
+                        </a>
+                      <?php endif; ?>
+
+                      <?php if (!empty($contact['instagram'])): ?>
+                        <a href="<?= htmlspecialchars($contact['instagram']) ?>" target="_blank">
+                          <i class="fa-brands fa-instagram"></i>
+                        </a>
+                      <?php endif; ?>
+                    </div>
+                    
                   </div>
                 </div>
               </div>

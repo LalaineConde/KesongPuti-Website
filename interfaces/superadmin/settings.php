@@ -173,7 +173,7 @@ include ('../../includes/superadmin-dashboard.php');
 </head>
 <body class="p-4 bg-light">
 <div class="settings-container">
-  <h2 class="mb-4">Admin Settings</h2>
+  <h2 class="mb-4">General Settings</h2>
 
   <?php if (isset($_GET['success'])): ?>
   <script>
@@ -188,12 +188,36 @@ include ('../../includes/superadmin-dashboard.php');
   </script>
 <?php endif; ?>
 
+
+    <!-- Page Headers -->
+    <div class="col-md-6">
+      <div class="settings-card general">
+        <div class="settings-header">Page Header</div>
+        <div class="settings-body">
+          <form method="POST">
+            <?php
+            $pages = ['home','products','FAQ','contact','feedback'];
+            foreach ($pages as $page): ?>
+              <div class="mb-3">
+                <label class="form-label"><?= ucfirst($page) ?> Page Header</label>
+                <input type="text" class="form-control"
+                       name="headers[<?= $page ?>]"
+                       value="<?= htmlspecialchars($headers[$page] ?? '') ?>">
+              </div>
+            <?php endforeach; ?>
+
+            <button type="submit" name="save_headers" class="settings-btn">Save Page Headers</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
   <div class="row">
-    <!-- General Settings -->
+
 <!-- General Settings -->
 <div class="col-md-6">
 <div class="settings-card general">
-  <div class="settings-header">General Settings</div>
+  <div class="settings-header">General</div>
   <div class="settings-body">
 
     <form method="POST" enctype="multipart/form-data">
@@ -383,28 +407,7 @@ include ('../../includes/superadmin-dashboard.php');
 
 
 
-    <!-- Page Headers -->
-    <div class="col-md-6">
-      <div class="settings-card general">
-        <div class="settings-header">Page Header</div>
-        <div class="settings-body">
-          <form method="POST">
-            <?php
-            $pages = ['home','products','FAQ','contact','feedback'];
-            foreach ($pages as $page): ?>
-              <div class="mb-3">
-                <label class="form-label"><?= ucfirst($page) ?> Page Header</label>
-                <input type="text" class="form-control"
-                       name="headers[<?= $page ?>]"
-                       value="<?= htmlspecialchars($headers[$page] ?? '') ?>">
-              </div>
-            <?php endforeach; ?>
 
-            <button type="submit" name="save_headers" class="settings-btn">Save Page Headers</button>
-          </form>
-        </div>
-      </div>
-    </div>
 
       <!-- Reset All Settings -->
 <form method="post">

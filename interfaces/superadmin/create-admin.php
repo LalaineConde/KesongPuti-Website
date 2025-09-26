@@ -5,6 +5,9 @@ include ('../../includes/superadmin-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
+
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $username = isset($_POST['username']) ? mysqli_real_escape_string($connection, $_POST['username']) : '';
 $store_name = isset($_POST['store_name']) ? mysqli_real_escape_string($connection, $_POST['store_name']) : '';
@@ -51,6 +54,10 @@ $loggedInAdminId = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
 $admins_query = "SELECT admin_id, username, store_name, email FROM admins";
 $admins_result = mysqli_query($connection, $admins_query);
 
+// Fetch all super admins
+$super_admins_query = "SELECT super_id, username, store_name, email FROM super_admin";
+$super_admins_result = mysqli_query($connection, $super_admins_query);
+
 // Close the connection
 mysqli_close($connection);
 
@@ -77,6 +84,9 @@ mysqli_close($connection);
 
 </head>
 <body>
+
+
+
 
 
 
@@ -119,6 +129,50 @@ mysqli_close($connection);
 
       <br>
       <br>
+
+
+<!-- SUPER ADMIN TABLE -->
+<h1>Super Admin List</h1>
+<div class="admin-table-wrapper">
+<table class="contact-table">
+    <thead>
+        <tr>
+            <th>Super ID</th>
+            <th>Username</th>
+            <th>Store Name</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php if (mysqli_num_rows($super_admins_result) > 0): ?>
+        <?php while ($row = mysqli_fetch_assoc($super_admins_result)): ?>
+            <tr>
+                <td><?php echo $row['super_id']; ?></td>
+                <td><?php echo $row['username']; ?></td>
+                <td><?php echo $row['store_name']; ?></td>
+                <td><?php echo $row['email']; ?></td>
+                <td>
+                  <!-- Update Button -->
+                  <button 
+                    class="update-super-btn" 
+                    data-id="<?php echo $row['super_id']; ?>"
+                    data-username="<?php echo htmlspecialchars($row['username']); ?>"
+                    data-store="<?php echo htmlspecialchars($row['store_name']); ?>"
+                    data-email="<?php echo htmlspecialchars($row['email']); ?>"
+                    title="Update Super Admin"
+                  >
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                </td>
+            </tr>
+        <?php endwhile; ?>
+    <?php else: ?>
+        <tr><td colspan="5">No super admins found.</td></tr>
+    <?php endif; ?>
+    </tbody>
+</table>
+</div>
 
 
     <!-- ADMINS TABLE -->
@@ -193,6 +247,54 @@ mysqli_close($connection);
     </script>   
 
     <script>
+
+        // UPDATE SUPER ADMIN
+document.querySelectorAll(".update-super-btn").forEach(button => {
+    button.addEventListener("click", function() {
+        let superId = this.getAttribute("data-id");
+        let currentUsername = this.getAttribute("data-username");
+        let currentStore = this.getAttribute("data-store");
+        let currentEmail = this.getAttribute("data-email");
+
+        Swal.fire({
+            title: "Update Super Admin",
+            html: `
+                <input id="swal-super-username" class="swal2-input" placeholder="Username" value="${currentUsername}">
+                <input id="swal-super-store" class="swal2-input" placeholder="Store Name" value="${currentStore}">
+                <input id="swal-super-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}">
+            `,
+            confirmButtonText: "Update",
+            showCancelButton: true,
+            preConfirm: () => {
+                return {
+                    username: document.getElementById("swal-super-username").value,
+                    store: document.getElementById("swal-super-store").value,
+                    email: document.getElementById("swal-super-email").value
+                };
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("update-super-admin.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "update_super=1" + 
+                        "&id=" + superId + 
+                        "&username=" + encodeURIComponent(result.value.username) + 
+                        "&store_name=" + encodeURIComponent(result.value.store) + 
+                        "&email=" + encodeURIComponent(result.value.email)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    Swal.fire("Updated!", data, "success")
+                        .then(() => location.reload());
+                });
+            }
+        });
+    });
+});
+    </script>
+
+    <script>
 document.addEventListener("DOMContentLoaded", function() {
     
     // DELETE ADMIN
@@ -254,7 +356,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     fetch("update-admin.php", {
                         method: "POST",
                         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                        body: "id=" + adminId + 
+                        body: "update_admin=1" + 
+                            "&id=" + adminId + 
                             "&username=" + encodeURIComponent(result.value.username) + 
                             "&store_name=" + encodeURIComponent(result.value.store) + 
                             "&email=" + encodeURIComponent(result.value.email)
