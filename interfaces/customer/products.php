@@ -411,7 +411,7 @@ $branding_result = mysqli_query($connection, "SELECT * FROM branding_sections_pr
           'All Stores <i class="bi bi-chevron-down"></i>';
       }
     </script>
-
+    <?php include('../../includes/floating-button.php'); ?>
     <?php include('../../includes/footer.php'); ?>
   </body>
 </html>

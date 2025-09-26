@@ -326,11 +326,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 
 
-    <!-- FLOATING BUTTON -->
-    <button id="backToTop">
-      <i class="fas fa-chevron-up"></i>
-    </button>
-    <!-- FLOATING BUTTON -->
+
 
 
 
@@ -493,29 +489,8 @@ while ($row = mysqli_fetch_assoc($result)) {
       window.addEventListener("resize", updateSlide);
     </script>
 
-    <!-- BUTTON UP -->
-    <script>
-      const backToTop = document.getElementById("backToTop");
 
-      // Show button when scrolled down
-      window.addEventListener("scroll", () => {
-        if (window.scrollY > 300) {
-          backToTop.classList.add("show");
-        } else {
-          backToTop.classList.remove("show");
-        }
-      });
-
-      // Scroll to top when clicked
-      backToTop.addEventListener("click", () => {
-        window.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      });
-    </script>
-
-
+<?php include('../../includes/floating-button.php'); ?>
 <?php include('../../includes/footer.php'); ?>
   </body>
 </html>

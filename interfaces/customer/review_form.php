@@ -356,7 +356,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 </script>
-
+<?php include('../../includes/floating-button.php'); ?>
 <?php include('../../includes/footer.php'); ?>
 </body>
 </html>

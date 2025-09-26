@@ -151,7 +151,7 @@ function openMediaCarousel(mediaFiles, startIndex = 0) {
     modal.show();
 }
 </script>
-
+<?php include('../../includes/floating-button.php'); ?>
 <?php include('../../includes/footer.php'); ?>
 </body>
 </html>

@@ -1,6 +1,8 @@
 <?php
 $page_title = 'Customer Products | Kesong Puti';
 require '../../connection.php';
+$current_page = 'products';
+$isHomePage = ($current_page === 'home'); // check if this is the home page
 $page_header = "PRODUCTS";
 include ('../../includes/customer-dashboard.php');
 
@@ -66,7 +68,9 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
     <link rel="stylesheet" href="../../css/styles.css" >
     
   
+</head>
 
+  <body>
 
     <!-- PRODUCT DETAILS -->
     <div class="container py-5">
@@ -114,6 +118,7 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
             </div>
           </div>
         </div>
+      
 
         <!-- Product Details -->
         <div class="col-md-6">
@@ -184,6 +189,7 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
             </div>
         </div>
       </div>
+      
 
       <!-- More Details -->
       <section id="details" class="mt-3">
@@ -309,10 +315,13 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
               ?>
             </div>
           </div>
+        </div>
+        </div>
+      </section>
+    
 
     <!-- PRODUCT DETAILS -->
 
-    <?php include('../../includes/footer.php'); ?>
 
 
     <!-- BOOTSTRAP JS -->
@@ -417,6 +426,9 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
         <?php endif; ?>
       }
     </script>
-    
+
+
+        <?php include('../../includes/floating-button.php'); ?>
+    <?php include('../../includes/footer.php'); ?>
   </body>
 </html>

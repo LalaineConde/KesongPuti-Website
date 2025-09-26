@@ -219,7 +219,7 @@ $faqs = $connection->query("SELECT * FROM faqs ORDER BY id ASC");
 
 
     </script>
-
+        <?php include('../../includes/floating-button.php'); ?>
         <?php include('../../includes/footer.php'); ?>
   </body>
 </html>

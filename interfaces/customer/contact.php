@@ -327,7 +327,7 @@ $page_header = $row['header_text'] ?? "WELCOME";
 
 
 
-
+      <?php include('../../includes/floating-button.php'); ?>
       <?php include('../../includes/footer.php'); ?>
 </body>
 

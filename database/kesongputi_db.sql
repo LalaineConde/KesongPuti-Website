@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 25, 2025 at 05:44 PM
+-- Generation Time: Sep 26, 2025 at 03:01 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -119,7 +119,7 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`admin_id`, `username`, `store_name`, `email`, `password`) VALUES
-(1, 'lalaine conde', 'Noel Lucena Kesong Puti', 'lalaineconde23@gmail.com', '$2y$10$9Dy/b9srwpwLGt6.BEbVGOZdWo4vY5SeUjaXuMTQ8Os09KOcHl7My'),
+(1, 'lalaine conde', 'Noel Lucena Kesong Puti', 'lalainecondes23@gmail.com', '$2y$10$9Dy/b9srwpwLGt6.BEbVGOZdWo4vY5SeUjaXuMTQ8Os09KOcHl7My'),
 (3, 'lara danielle', 'Garin Kesong Puti', 'larafremista21@gmail.com', '$2y$10$79rq0jOVXhyYsyvodZ7cO.iFhO5dTwadoMy97Bo6RiOsCr3PnWQFi'),
 (7, 'JB Alico', 'Mommy Lodie Kesong Puti', 'jaironbartalico@gmail.com', '$2y$10$RTJTk4ja/R7Agmm3ZBgAC.EmEadBa7p/XoKhGgxx3CwfYAawpFxcq');
 
@@ -745,9 +745,13 @@ INSERT INTO `store` (`store_id`, `store_name`, `recipient`, `owner_id`, `super_i
 CREATE TABLE `store_contacts` (
   `id` int(11) NOT NULL,
   `store_name` varchar(255) NOT NULL,
+  `owner` varchar(100) DEFAULT NULL,
   `email` text DEFAULT NULL,
   `phone` text DEFAULT NULL,
   `address` text DEFAULT NULL,
+  `facebook` varchar(255) DEFAULT NULL,
+  `twitter` varchar(255) DEFAULT NULL,
+  `instagram` varchar(255) DEFAULT NULL,
   `latitude` decimal(10,8) DEFAULT NULL,
   `longitude` decimal(11,8) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -756,11 +760,12 @@ CREATE TABLE `store_contacts` (
 -- Dumping data for table `store_contacts`
 --
 
-INSERT INTO `store_contacts` (`id`, `store_name`, `email`, `phone`, `address`, `latitude`, `longitude`) VALUES
-(1, 'Mommy Lodie Kesong Puti', 'lodie@gmail.com', '091233455678', '123 sdjfhakjs fsdhafj', NULL, NULL),
-(5, 'sample store', 'lalaineconde11@gmail.com', '09123432874', '123 sample address', NULL, NULL),
-(8, 'sample store', 'lalaineconde11@gmail.com', '09123432874', 'sample address', NULL, NULL),
-(9, 'sample storesss', 'lalaineconde23@gmail.com', '09123432874', '4883 Bagumbayan Road, Santa Cruz, 4009 Laguna', NULL, NULL);
+INSERT INTO `store_contacts` (`id`, `store_name`, `owner`, `email`, `phone`, `address`, `facebook`, `twitter`, `instagram`, `latitude`, `longitude`) VALUES
+(1, 'Mommy Lodie Kesong Puti', NULL, 'lodie@gmail.com', '091233455678', '123 sdjfhakjs fsdhafj', NULL, NULL, NULL, NULL, NULL),
+(5, 'sample store', NULL, 'lalaineconde11@gmail.com', '09123432874', '123 sample address', NULL, NULL, NULL, NULL, NULL),
+(8, 'sample store', NULL, 'lalaineconde11@gmail.com', '09123432874', 'sample address', NULL, NULL, NULL, NULL, NULL),
+(9, 'sample storessssss', 'secret', 'lalaineconde23@gmail.com', '09123432874', '4883 Bagumbayan Road, Santa Cruz, 4009 Laguna', 'https://www.facebook.com/lalaine.conde19', 'https://www.facebook.com/lalaine.conde19', 'https://www.facebook.com/lalaine.conde19', NULL, NULL),
+(10, 'keso store', 'lalaine conde', 'lalaineconde23@gmail.com', '09123432874', '321', 'https://www.facebook.com/lalaine.conde19', '', '', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -781,7 +786,7 @@ CREATE TABLE `super_admin` (
 --
 
 INSERT INTO `super_admin` (`super_id`, `username`, `store_name`, `email`, `password`) VALUES
-(1, 'arlene macalinao', 'Arlene Macalinao Kesong Puti', 'lalaineconde22@gmail.com', '$2y$10$qirbMehtP/lX3wHhZbPBbOekAx0Vq/S09tBWDlzXavFsZsIZA22oy');
+(1, 'arlene macalinao', 'Arlene Macalinao Kesong Puti', 'arlene.sample@gmail.com', '$2y$10$qirbMehtP/lX3wHhZbPBbOekAx0Vq/S09tBWDlzXavFsZsIZA22oy');
 
 --
 -- Indexes for dumped tables
@@ -1114,7 +1119,7 @@ ALTER TABLE `store`
 -- AUTO_INCREMENT for table `store_contacts`
 --
 ALTER TABLE `store_contacts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `super_admin`

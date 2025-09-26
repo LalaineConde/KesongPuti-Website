@@ -386,7 +386,7 @@ if($row = mysqli_fetch_assoc($result)){
       });
     </script>
 
-
+<?php include('../../includes/floating-button.php'); ?>
 <?php include('../../includes/footer.php'); ?>
   </body>
 </html>
