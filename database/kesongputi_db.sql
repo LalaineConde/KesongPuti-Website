@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 26, 2025 at 03:01 PM
+-- Generation Time: Sep 30, 2025 at 02:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -458,7 +458,7 @@ CREATE TABLE `orders` (
   `payment_status` enum('pending','paid','failed','refunded') DEFAULT 'pending',
   `payment_method` varchar(50) DEFAULT 'cash',
   `proof_of_payment` varchar(255) DEFAULT NULL,
-  `order_status` enum('pending','processing','shipped','delivered','cancelled') DEFAULT 'pending',
+  `order_status` enum('pending','verified','payment-failed','processing','ready-to-pick-up','out-for-delivery','completed','declined-area','cancelled','returned') DEFAULT 'pending',
   `delivery_address` varchar(255) NOT NULL,
   `owner_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -468,7 +468,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`, `payment_status`, `payment_method`, `proof_of_payment`, `order_status`, `delivery_address`, `owner_id`) VALUES
-(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'pending', 'cash', NULL, 'pending', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1),
+(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'pending', 'cash', NULL, 'completed', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1),
 (2, 2, 0, '2025-09-19 17:32:55', 100.00, 'pending', 'cash', NULL, 'pending', '', 3),
 (3, 3, 0, '2025-09-19 17:38:40', 650.00, 'pending', 'cash', NULL, 'pending', '', 3),
 (4, 4, 0, '2025-09-24 02:20:19', 320.00, 'pending', 'gcash', 'proof_68d2e4e37cf5c.png', 'pending', '', 1);

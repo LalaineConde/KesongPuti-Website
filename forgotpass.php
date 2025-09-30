@@ -53,7 +53,7 @@ if (isset($_POST['send_otp'])) {
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
             $mail->Username = 'kesongputiscl@gmail.com';
-            $mail->Password = 'jslt royn kkrg ocww';
+            $mail->Password = 'ivdd tinn xstc negk'; // Use app password if 2FA is enabled
             $mail->Port = 465;
             $mail->SMTPSecure = 'ssl';
             $mail->isHTML(true);

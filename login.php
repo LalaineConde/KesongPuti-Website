@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['username'] = $super_admin['username'];
             $_SESSION['email'] = $super_admin['email'];
             $_SESSION['role'] = 'superadmin';
-            header('Location: interfaces/superadmin/superadmin-overview.php');
+            header('Location: interfaces/superadmin/index.php');
             exit();
         } else {
             $toast_message = "Incorrect password for super admin.";
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['username'] = $admin['username'];
                 $_SESSION['email'] = $admin['email'];
                 $_SESSION['role'] = 'admin';
-                header('Location: interfaces/admin/admin-overview.php');
+                header('Location: interfaces/admin/index.php');
                 exit();
             } else {
                 $toast_message = "Incorrect password for admin.";

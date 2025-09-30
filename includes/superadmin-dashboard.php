@@ -65,7 +65,7 @@ $admin_name = $row ? $row['username'] : 'Admin';
             <ul class="sub-menu">
               <li>
                 <a
-                  href="../superadmin/superadmin-overview.php"
+                  href="../superadmin/index.php"
                   class="sub-tab active-sub"
                   data-content="overview-content"
                   >Overview</a
