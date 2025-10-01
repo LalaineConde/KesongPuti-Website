@@ -13,7 +13,6 @@ try {
     $fullname     = trim($_POST['fullname'] ?? '');
     $email        = trim($_POST['email'] ?? '');
     $phone_number = trim($_POST['phone'] ?? '');
-    $address      = trim($_POST['address'] ?? '');
 
     $owner_id       = intval($_POST['owner_id'] ?? 0);
     $payment_method = trim($_POST['payment_method'] ?? '');
@@ -21,13 +20,37 @@ try {
     $total_amount   = floatval($_POST['total'] ?? 0);      
     $items          = json_decode($_POST['cart'] ?? '[]', true); 
 
-    // Required fields validation
-    if (!$fullname || !$email || !$phone_number || !$address || !$payment_method || empty($items)) {
-        echo json_encode(['status'=>'error','message'=>'Missing required fields']);
+    // --- Validation (common fields)
+    if (!$fullname || !$email || !$phone_number || !$payment_method || empty($items)) {
+        echo json_encode(['status'=>'error','message'=>'Missing required fields (customer/payment/items)']);
         exit;
     }
 
-    // Insert customer
+    // --- Validate & build address / pickup details
+    $address = '';
+    if ($order_type === 'delivery') {
+        if (empty($_POST['house']) || empty($_POST['street']) || empty($_POST['barangay']) ||
+            empty($_POST['city']) || empty($_POST['province']) || empty($_POST['zip'])) {
+            echo json_encode(['status'=>'error','message'=>'Missing required fields (delivery address)']);
+            exit;
+        }
+
+        $address = $_POST['house'] . ', ' . $_POST['street'] . ', ' . $_POST['barangay'] . ', ' .
+                   $_POST['city'] . ', ' . $_POST['province'] . ' ' . $_POST['zip'];
+
+    } elseif ($order_type === 'pickup') {
+        if (empty($_POST['pickup-date']) || empty($_POST['pickup-time'])) {
+            echo json_encode(['status'=>'error','message'=>'Missing required fields (pickup details)']);
+            exit;
+        }
+
+        $address = "Pickup on " . $_POST['pickup-date'] . " at " . $_POST['pickup-time'];
+    } else {
+        echo json_encode(['status'=>'error','message'=>'Invalid order type']);
+        exit;
+    }
+
+    // --- Insert customer
     $stmt = mysqli_prepare($connection, 
         "INSERT INTO customers (fullname, phone_number, email, address) VALUES (?, ?, ?, ?)"
     );
@@ -36,9 +59,8 @@ try {
     $c_id = mysqli_insert_id($connection);
     mysqli_stmt_close($stmt);
 
-    // Handle proof of payment upload
+    // --- Handle proof of payment upload
     $payment_proof = null;
-
     if (!empty($_FILES['payment_proof']['name'])) {
         $targetDir = "../../uploads/payment_proofs/";
         if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
@@ -56,7 +78,7 @@ try {
         }
     }
 
-    // Insert order
+    // --- Insert order
     $stmt = mysqli_prepare($connection, 
         "INSERT INTO orders (c_id, total_amount, payment_method, proof_of_payment, delivery_address, owner_id, order_type) 
          VALUES (?, ?, ?, ?, ?, ?, ?)"
@@ -68,7 +90,7 @@ try {
     $order_id = mysqli_insert_id($connection);
     mysqli_stmt_close($stmt);
 
-    // Insert items
+    // --- Insert items
     $stmt = mysqli_prepare($connection, 
         "INSERT INTO order_items (o_id, product_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?)"
     );

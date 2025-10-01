@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 01, 2025 at 07:48 PM
+-- Generation Time: Oct 01, 2025 at 08:32 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -224,13 +224,7 @@ INSERT INTO `customers` (`c_id`, `fullname`, `phone_number`, `email`, `address`)
 (10, 'Jaira Bautista', '09154587632', 'jaira@example.com', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
 (11, 'Russell Garcia', '09234751220', 'russell@example.com', 'B-8 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
 (12, 'JB Alico', '09551223482', 'jb@example.com', 'B- 20 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
-(13, 'JB Alico', '09551147445', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
-(14, 'JB Alico', '09551144752', 'jb@exaxmple.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
-(15, 'JB Alico', '09551155234', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
-(16, 'JB Alico', '09551244587', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
-(17, 'JB Alico', '09551145277', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
-(18, 'JB Alico', '09551147554', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
-(19, 'JB Alico', '09551123224', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030');
+(20, 'Trisha Lopez', '09164457812', 'trisha@example.com', 'Pickup on 2025-10-11 at 16:30');
 
 -- --------------------------------------------------------
 
@@ -493,13 +487,7 @@ INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`
 (13, 10, 0, '2025-10-01 02:22:48', 160.00, 'ewallet', NULL, 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
 (14, 11, 0, '2025-10-01 02:36:16', 100.00, 'bank', '1759257376_68dc2320750cf.png', 'pending', 'B-8 L-10, N/A, Anos, Los Baños, Laguna, 4030', 3, 'delivery'),
 (15, 12, 0, '2025-10-02 00:52:56', 320.00, 'ewallet', '1759337576_68dd5c68c541a.jpg', 'pending', 'B- 20 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(16, 13, 0, '2025-10-02 01:11:48', 320.00, 'ewallet', '1759338708_68dd60d4d6c87.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(17, 14, 0, '2025-10-02 01:13:15', 320.00, 'ewallet', '1759338795_68dd612b7258c.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(18, 15, 0, '2025-10-02 01:15:04', 320.00, 'ewallet', '1759338904_68dd61989705e.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(19, 16, 0, '2025-10-02 01:16:53', 320.00, 'ewallet', '1759339013_68dd62055f2f7.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(20, 17, 0, '2025-10-02 01:18:08', 320.00, 'ewallet', '1759339088_68dd6250538c0.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(21, 18, 0, '2025-10-02 01:19:31', 320.00, 'ewallet', '1759339171_68dd62a37d647.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(22, 19, 0, '2025-10-02 01:26:13', 320.00, 'ewallet', NULL, 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery');
+(23, 20, 0, '2025-10-02 02:29:47', 160.00, 'ewallet', NULL, 'pending', 'Pickup on 2025-10-11 at 16:30', 1, 'pickup');
 
 -- --------------------------------------------------------
 
@@ -530,13 +518,7 @@ INSERT INTO `order_items` (`order_item_id`, `o_id`, `product_id`, `quantity`, `p
 (210, 13, 19, 1, 160.00),
 (211, 14, 22, 1, 100.00),
 (212, 15, 20, 1, 320.00),
-(213, 16, 20, 1, 320.00),
-(214, 17, 20, 1, 320.00),
-(215, 18, 20, 1, 320.00),
-(216, 19, 20, 1, 320.00),
-(217, 20, 20, 1, 320.00),
-(218, 21, 20, 1, 320.00),
-(219, 22, 20, 1, 320.00);
+(220, 23, 19, 1, 160.00);
 
 -- --------------------------------------------------------
 
@@ -1059,7 +1041,7 @@ ALTER TABLE `cta_sections`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `faqs`
@@ -1119,13 +1101,13 @@ ALTER TABLE `inbox_messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=220;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
 
 --
 -- AUTO_INCREMENT for table `page_headers`

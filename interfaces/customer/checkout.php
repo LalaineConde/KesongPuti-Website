@@ -272,14 +272,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // Address / Pickup toggle
-  document.getElementById('delivery').addEventListener('change', ()=>{ 
-    document.getElementById('address-section').style.display='block'; 
-    document.getElementById('pickup-section').style.display='none'; 
-  });
-  document.getElementById('pickup').addEventListener('change', ()=>{ 
-    document.getElementById('address-section').style.display='none'; 
-    document.getElementById('pickup-section').style.display='block'; 
-  });
+      document.getElementById('delivery').addEventListener('change', ()=>{ 
+      document.getElementById('address-section').style.display='block'; 
+      document.getElementById('pickup-section').style.display='none'; 
+
+      // Require only address fields
+      ['house','street','barangay','city','province','zip'].forEach(id=>{
+        document.getElementById(id).required = true;
+      });
+      ['pickup-date','pickup-time'].forEach(id=>{
+        document.getElementById(id).required = false;
+      });
+    });
+
+    document.getElementById('pickup').addEventListener('change', ()=>{ 
+      document.getElementById('address-section').style.display='none'; 
+      document.getElementById('pickup-section').style.display='block'; 
+
+      // Require only pickup fields
+      ['pickup-date','pickup-time'].forEach(id=>{
+        document.getElementById(id).required = true;
+      });
+      ['house','street','barangay','city','province','zip'].forEach(id=>{
+        document.getElementById(id).required = false;
+      });
+    });
 
   // Payment toggle
   document.querySelectorAll('input[name="payment"]').forEach(r=>{

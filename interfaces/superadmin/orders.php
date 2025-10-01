@@ -273,8 +273,8 @@ function displayOrderDetails(order) {
         </p>
         <p><strong>Proof of Payment:</strong><br>
             ${order.proof_of_payment 
-              ? `<a href="../../uploads/payment_proofs/${order.proof_of_payment}" target="_blank">
-                     <img src="../../uploads/payment_proofs/${order.proof_of_payment}" 
+              ? `<a href="../../uploads/payment_proof/${order.proof_of_payment}" target="_blank">
+                     <img src="../../uploads/payment_proof/${order.proof_of_payment}" 
                           alt="Proof of Payment" style="max-width:200px; margin-top:8px; border:1px solid #ccc; border-radius:6px;">
                  </a>`
               : '<span style="color:#888;">None</span>'
