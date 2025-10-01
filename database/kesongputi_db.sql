@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 30, 2025 at 02:40 PM
+-- Generation Time: Oct 01, 2025 at 07:48 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -215,7 +215,22 @@ INSERT INTO `customers` (`c_id`, `fullname`, `phone_number`, `email`, `address`)
 (1, 'Lara Fremista', '09957432998', 'larafremista21@gmail.com', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026'),
 (2, 'Lalaine Conde', '09123456789', 'lalaineconde@gmail.com', ''),
 (3, 'Juan Dela Cruz', '09152345678', 'juandelacruz@gmail.com', ''),
-(4, 'Stephen Strange', '09123456789', 'stephen@gmail.com', '');
+(4, 'Stephen Strange', '09123456789', 'stephen@gmail.com', ''),
+(5, 'Jaira Bautista', '09154852394', 'jaira@example.com', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
+(6, 'Jaira Bautista', '09154587632', 'jaira@example.com', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
+(7, 'Jaira Bautista', '09154587632', 'jaira@example.com', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
+(8, 'Jaira Bautista', '09154587632', 'jaira@example.com', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
+(9, 'Andrea Flores', '09551874453', 'andrea@example.com', 'B-48 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
+(10, 'Jaira Bautista', '09154587632', 'jaira@example.com', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
+(11, 'Russell Garcia', '09234751220', 'russell@example.com', 'B-8 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
+(12, 'JB Alico', '09551223482', 'jb@example.com', 'B- 20 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
+(13, 'JB Alico', '09551147445', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
+(14, 'JB Alico', '09551144752', 'jb@exaxmple.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
+(15, 'JB Alico', '09551155234', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
+(16, 'JB Alico', '09551244587', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
+(17, 'JB Alico', '09551145277', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
+(18, 'JB Alico', '09551147554', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030'),
+(19, 'JB Alico', '09551123224', 'jb@example.com', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030');
 
 -- --------------------------------------------------------
 
@@ -455,23 +470,36 @@ CREATE TABLE `orders` (
   `handled_by` int(11) NOT NULL,
   `order_date` datetime DEFAULT current_timestamp(),
   `total_amount` decimal(10,2) NOT NULL,
-  `payment_status` enum('pending','paid','failed','refunded') DEFAULT 'pending',
   `payment_method` varchar(50) DEFAULT 'cash',
   `proof_of_payment` varchar(255) DEFAULT NULL,
   `order_status` enum('pending','verified','payment-failed','processing','ready-to-pick-up','out-for-delivery','completed','declined-area','cancelled','returned') DEFAULT 'pending',
   `delivery_address` varchar(255) NOT NULL,
-  `owner_id` int(11) NOT NULL
+  `owner_id` int(11) NOT NULL,
+  `order_type` enum('delivery','pickup') DEFAULT 'delivery'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`, `payment_status`, `payment_method`, `proof_of_payment`, `order_status`, `delivery_address`, `owner_id`) VALUES
-(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'pending', 'cash', NULL, 'completed', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1),
-(2, 2, 0, '2025-09-19 17:32:55', 100.00, 'pending', 'cash', NULL, 'pending', '', 3),
-(3, 3, 0, '2025-09-19 17:38:40', 650.00, 'pending', 'cash', NULL, 'pending', '', 3),
-(4, 4, 0, '2025-09-24 02:20:19', 320.00, 'pending', 'gcash', 'proof_68d2e4e37cf5c.png', 'pending', '', 1);
+INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`, `payment_method`, `proof_of_payment`, `order_status`, `delivery_address`, `owner_id`, `order_type`) VALUES
+(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'cash', NULL, 'pending', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1, 'delivery'),
+(2, 2, 0, '2025-09-19 17:32:55', 100.00, 'cash', NULL, 'pending', '', 3, 'delivery'),
+(3, 3, 0, '2025-09-19 17:38:40', 650.00, 'cash', NULL, 'pending', '', 3, 'delivery'),
+(4, 4, 0, '2025-09-24 02:20:19', 320.00, 'gcash', 'proof_68d2e4e37cf5c.png', 'pending', '', 1, 'delivery'),
+(10, 7, 0, '2025-10-01 01:14:59', 190.00, 'bank', '1759252499_522845871_740647665242049_262399641837452041_n.jpg', 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 0, 'delivery'),
+(11, 8, 0, '2025-10-01 01:30:01', 180.00, 'bank', '1759253401_522845871_740647665242049_262399641837452041_n.jpg', 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 0, 'delivery'),
+(12, 9, 0, '2025-10-01 02:18:08', 190.00, 'bank', NULL, 'pending', 'B-48 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(13, 10, 0, '2025-10-01 02:22:48', 160.00, 'ewallet', NULL, 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(14, 11, 0, '2025-10-01 02:36:16', 100.00, 'bank', '1759257376_68dc2320750cf.png', 'pending', 'B-8 L-10, N/A, Anos, Los Baños, Laguna, 4030', 3, 'delivery'),
+(15, 12, 0, '2025-10-02 00:52:56', 320.00, 'ewallet', '1759337576_68dd5c68c541a.jpg', 'pending', 'B- 20 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(16, 13, 0, '2025-10-02 01:11:48', 320.00, 'ewallet', '1759338708_68dd60d4d6c87.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(17, 14, 0, '2025-10-02 01:13:15', 320.00, 'ewallet', '1759338795_68dd612b7258c.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(18, 15, 0, '2025-10-02 01:15:04', 320.00, 'ewallet', '1759338904_68dd61989705e.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(19, 16, 0, '2025-10-02 01:16:53', 320.00, 'ewallet', '1759339013_68dd62055f2f7.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(20, 17, 0, '2025-10-02 01:18:08', 320.00, 'ewallet', '1759339088_68dd6250538c0.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(21, 18, 0, '2025-10-02 01:19:31', 320.00, 'ewallet', '1759339171_68dd62a37d647.jpg', 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
+(22, 19, 0, '2025-10-02 01:26:13', 320.00, 'ewallet', NULL, 'pending', 'B-20 L-15, Gold, Anos, Los Baños, Laguna, 4030', 1, 'delivery');
 
 -- --------------------------------------------------------
 
@@ -495,7 +523,20 @@ INSERT INTO `order_items` (`order_item_id`, `o_id`, `product_id`, `quantity`, `p
 (1, 1, 34, 1, 190.00),
 (2, 2, 22, 1, 100.00),
 (3, 3, 31, 1, 650.00),
-(4, 4, 20, 1, 320.00);
+(4, 4, 20, 1, 320.00),
+(207, 10, 34, 1, 190.00),
+(208, 11, 35, 1, 180.00),
+(209, 12, 34, 1, 190.00),
+(210, 13, 19, 1, 160.00),
+(211, 14, 22, 1, 100.00),
+(212, 15, 20, 1, 320.00),
+(213, 16, 20, 1, 320.00),
+(214, 17, 20, 1, 320.00),
+(215, 18, 20, 1, 320.00),
+(216, 19, 20, 1, 320.00),
+(217, 20, 20, 1, 320.00),
+(218, 21, 20, 1, 320.00),
+(219, 22, 20, 1, 320.00);
 
 -- --------------------------------------------------------
 
@@ -550,8 +591,9 @@ CREATE TABLE `payment_methods` (
 
 INSERT INTO `payment_methods` (`method_id`, `method_name`, `method_type`, `account_name`, `account_number`, `qr_code`, `status`, `created_at`, `updated_at`, `recipient`) VALUES
 (5, 'bank', NULL, 'lara danielle', '09957432996', '1758277057_qr.jpg', 'published', '2025-09-19 10:17:37', '2025-09-19 10:17:37', 'admin_3'),
-(12, 'e-wallet', 'gcash', 'arlene macalinao', '09123456789', '1758719418_qr.jpg', 'published', '2025-09-24 13:10:18', '2025-09-24 13:10:18', 'super_1'),
-(13, 'bank', 'bdo', 'arlene macalinao', '09123456789', '1758719450_qr.jpg', 'published', '2025-09-24 13:10:50', '2025-09-24 13:10:50', 'super_1');
+(14, 'e-wallet', 'gcash', 'arlene macalinao', '09123456789', '1759153031_528149698_2466653143708497_6422652806459652480_n.jpg', 'published', '2025-09-29 13:37:11', '2025-09-29 13:37:11', 'super_1'),
+(15, 'bank', 'bdo', 'arlene macalinao', '09123456789', '1759153045_528149698_2466653143708497_6422652806459652480_n.jpg', 'published', '2025-09-29 13:37:25', '2025-09-29 13:37:25', 'super_1'),
+(18, 'e-wallet', 'paymaya', 'arlene macalinao', '09123456789', '1759258565_banana-leaf.png', 'published', '2025-09-30 18:56:05', '2025-09-30 18:56:05', 'super_1');
 
 -- --------------------------------------------------------
 
@@ -731,7 +773,7 @@ CREATE TABLE `store` (
 --
 
 INSERT INTO `store` (`store_id`, `store_name`, `recipient`, `owner_id`, `super_id`) VALUES
-(1, 'Arlene Macalinao Kesong Puti', 'super_1', NULL, 1),
+(1, 'Arlene Macalinao Kesong Puti', 'super_1', 1, 1),
 (2, 'Noel Lucena Kesong Puti', 'admin_1', 1, NULL),
 (3, 'Garin Kesong Puti', 'admin_3', 3, NULL),
 (4, 'Mommy Lodie Kesong Puti', 'admin_7', 7, NULL);
@@ -1017,7 +1059,7 @@ ALTER TABLE `cta_sections`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `faqs`
@@ -1077,13 +1119,13 @@ ALTER TABLE `inbox_messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=220;
 
 --
 -- AUTO_INCREMENT for table `page_headers`
@@ -1095,7 +1137,7 @@ ALTER TABLE `page_headers`
 -- AUTO_INCREMENT for table `payment_methods`
 --
 ALTER TABLE `payment_methods`
-  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `method_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `products`

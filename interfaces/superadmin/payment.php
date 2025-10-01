@@ -3,7 +3,6 @@ $page_title = 'Payment Method | Kesong Puti';
 require '../../connection.php';
 include ('../../includes/superadmin-dashboard.php');
 
-
 // Identify recipient
 if ($_SESSION['role'] === 'superadmin') {
     $recipient = 'super_' . $_SESSION['super_id'];
@@ -74,7 +73,7 @@ if (isset($_POST['edit_method_id'])) {
 }
 
 // FETCH
-$listSql = "SELECT * FROM payment_methods WHERE recipient = ? ORDER BY created_at DESC";
+$listSql = "SELECT * FROM payment_methods WHERE recipient = ? ORDER BY method_id DESC";
 $stmt = $connection->prepare($listSql);
 $stmt->bind_param("s", $recipient);
 $stmt->execute();

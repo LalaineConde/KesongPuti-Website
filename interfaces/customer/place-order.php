@@ -1,116 +1,89 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require '../../connection.php';
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    echo json_encode(['ok' => false, 'error' => 'invalid_method']);
-    exit;
-}
+mysqli_report(MYSQLI_REPORT_OFF);
 
-$data = json_decode($_POST['payload'] ?? '', true);
-if (!is_array($data)) {
-    echo json_encode(['ok'=>false,'error'=>'invalid_json']);
-    exit;
-}
+try {
+    // Customer info
+    $fullname     = trim($_POST['fullname'] ?? '');
+    $email        = trim($_POST['email'] ?? '');
+    $phone_number = trim($_POST['phone'] ?? '');
+    $address      = trim($_POST['address'] ?? '');
 
-$customer = $data['customer'] ?? [];
-$items = $data['items'] ?? [];
-$paymentMethod = trim($data['payment_method'] ?? 'cash');
-$orderType = in_array($data['order_type'] ?? '', ['delivery','pickup']) ? $data['order_type'] : 'delivery';
-$deliveryAddress = trim($data['delivery_address'] ?? '');
-$recipient = trim($data['recipient'] ?? '');
-$storeName = trim($data['store_name'] ?? '');
+    $owner_id       = intval($_POST['owner_id'] ?? 0);
+    $payment_method = trim($_POST['payment_method'] ?? '');
+    $order_type     = trim($_POST['delivery_type'] ?? ''); 
+    $total_amount   = floatval($_POST['total'] ?? 0);      
+    $items          = json_decode($_POST['cart'] ?? '[]', true); 
 
-if (!$items) {
-    echo json_encode(['ok'=>false,'error'=>'empty_cart']);
-    exit;
-}
+    // Required fields validation
+    if (!$fullname || !$email || !$phone_number || !$address || !$payment_method || empty($items)) {
+        echo json_encode(['status'=>'error','message'=>'Missing required fields']);
+        exit;
+    }
 
-$firstName = trim($customer['first_name'] ?? '');
-$lastName  = trim($customer['last_name'] ?? '');
-$email     = trim($customer['email'] ?? '');
-$phone     = trim($customer['phone'] ?? '');
-if (!$firstName || !$lastName || !$email || !$phone) {
-    echo json_encode(['ok'=>false,'error'=>'missing_customer_info']);
-    exit;
-}
-
-// Resolve recipient -> ownerId
-$ownerId = null;
-if ($recipient && preg_match('/^(admin|super)_?(\d+)$/', $recipient, $m)) {
-    $ownerId = intval($m[2]);
-}
-
-// ---- Save or find customer ----
-$customerId = null;
-$fullName = "$firstName $lastName";
-
-// check existing
-$stmt = mysqli_prepare($connection,'SELECT id FROM customers WHERE email=? LIMIT 1');
-mysqli_stmt_bind_param($stmt,'s',$email);
-mysqli_stmt_execute($stmt);
-$res = mysqli_stmt_get_result($stmt);
-if ($row = mysqli_fetch_assoc($res)) $customerId = $row['id'];
-mysqli_stmt_close($stmt);
-
-if (!$customerId) {
-    $stmt = mysqli_prepare($connection,'INSERT INTO customers (fullname, phone_number, email, address) VALUES (?,?,?,?)');
-    mysqli_stmt_bind_param($stmt,'ssss',$fullName,$phone,$email,$deliveryAddress);
-    if (mysqli_stmt_execute($stmt)) $customerId = mysqli_insert_id($connection);
+    // Insert customer
+    $stmt = mysqli_prepare($connection, 
+        "INSERT INTO customers (fullname, phone_number, email, address) VALUES (?, ?, ?, ?)"
+    );
+    mysqli_stmt_bind_param($stmt, "ssss", $fullname, $phone_number, $email, $address);
+    mysqli_stmt_execute($stmt);
+    $c_id = mysqli_insert_id($connection);
     mysqli_stmt_close($stmt);
-}
 
-if (!$customerId) { echo json_encode(['ok'=>false,'error'=>'customer_save_failed']); exit; }
+    // Handle proof of payment upload
+    $payment_proof = null;
 
-// ---- Compute total ----
-$total = 0.0;
-foreach ($items as $it) {
-    $qty = intval($it['qty'] ?? $it['quantity'] ?? 1);
-    $price = floatval($it['price'] ?? 0);
-    $total += $qty * $price;
-}
+    if (!empty($_FILES['payment_proof']['name'])) {
+        $targetDir = "../../uploads/payment_proofs/";
+        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
 
-// ---- Handle proof upload ----
-$proofFile = null;
-$uploadDir = '../../uploads/payment_proofs/';
-if (!is_dir($uploadDir)) mkdir($uploadDir,0777,true);
+        $ext = pathinfo($_FILES['payment_proof']['name'], PATHINFO_EXTENSION);
+        $allowed = ['jpg','jpeg','png','gif','webp'];
 
-foreach (['ewallet_proof','bank_proof'] as $field) {
-    if (isset($_FILES[$field]) && $_FILES[$field]['error']===UPLOAD_ERR_OK) {
-        $ext = pathinfo($_FILES[$field]['name'],PATHINFO_EXTENSION);
-        $filename = uniqid('proof_') . '.' . strtolower($ext);
-        if (move_uploaded_file($_FILES[$field]['tmp_name'], $uploadDir.$filename)) {
-            $proofFile = $filename;
+        if (in_array(strtolower($ext), $allowed)) {
+            $fileName = time() . "_" . uniqid() . "." . $ext;
+            $targetFile = $targetDir . $fileName;
+
+            if (move_uploaded_file($_FILES['payment_proof']['tmp_name'], $targetFile)) {
+                $payment_proof = $fileName;
+            }
         }
     }
-}
 
-// ---- Insert order ----
-$orderSql = 'INSERT INTO orders (c_id, owner_id, total_amount, payment_status, order_status, delivery_address, payment_method, proof_of_payment) VALUES (?,?,?,?,?,?,?,?)';
-$stmt = mysqli_prepare($connection,$orderSql);
-$paymentStatus = 'pending';
-$orderStatus = 'pending';
-mysqli_stmt_bind_param($stmt,'iddsssss',$customerId,$ownerId,$total,$paymentStatus,$orderStatus,$deliveryAddress,$paymentMethod,$proofFile);
-if (!mysqli_stmt_execute($stmt)) {
-    echo json_encode(['ok'=>false,'error'=>'order_insert_failed','mysql_error'=>mysqli_stmt_error($stmt)]);
-    exit;
-}
-$orderId = mysqli_insert_id($connection);
-mysqli_stmt_close($stmt);
+    // Insert order
+    $stmt = mysqli_prepare($connection, 
+        "INSERT INTO orders (c_id, total_amount, payment_method, proof_of_payment, delivery_address, owner_id, order_type) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)"
+    );
+    mysqli_stmt_bind_param($stmt, "idsssis", 
+        $c_id, $total_amount, $payment_method, $payment_proof, $address, $owner_id, $order_type
+    );
+    mysqli_stmt_execute($stmt);
+    $order_id = mysqli_insert_id($connection);
+    mysqli_stmt_close($stmt);
 
-// ---- Insert items ----
-$stmt = mysqli_prepare($connection,'INSERT INTO order_items (o_id, product_id, quantity, price_at_purchase) VALUES (?,?,?,?)');
-foreach ($items as $it) {
-    $productId = intval($it['id'] ?? $it['product_id'] ?? 0);
-    $qty = intval($it['qty'] ?? $it['quantity'] ?? 1);
-    $price = floatval($it['price'] ?? 0);
-    if ($productId>0 && $qty>0) {
-        mysqli_stmt_bind_param($stmt,'iiid',$orderId,$productId,$qty,$price);
+    // Insert items
+    $stmt = mysqli_prepare($connection, 
+        "INSERT INTO order_items (o_id, product_id, quantity, price_at_purchase) VALUES (?, ?, ?, ?)"
+    );
+    foreach ($items as $item) {
+        $product_id = intval($item['product_id'] ?? 0);
+        $quantity   = intval($item['qty'] ?? $item['quantity'] ?? 1);
+        $price      = floatval($item['price'] ?? 0);
+        mysqli_stmt_bind_param($stmt, "iiid", $order_id, $product_id, $quantity, $price);
         mysqli_stmt_execute($stmt);
     }
-}
-mysqli_stmt_close($stmt);
+    mysqli_stmt_close($stmt);
 
-$redirect = (strpos($recipient,'admin_')===0)? '../../interfaces/admin/orders.php':'../../interfaces/superadmin/orders.php';
-echo json_encode(['ok'=>true,'order_id'=>$orderId,'redirect'=>$redirect]);
+    echo json_encode(['status'=>'success','order_id'=>$order_id]);
+
+} catch (Exception $e) {
+    echo json_encode(['status'=>'error','message'=>$e->getMessage()]);
+}
 ?>

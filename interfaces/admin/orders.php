@@ -7,35 +7,37 @@ $toast_message = ''; // Initialize variable for toast message
 
 // Get current admin info from session
 $current_admin_id = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
-$current_store_name = isset($_SESSION['store_name']) ? $_SESSION['store_name'] : null;
 
-// Fetch orders for this admin's store (filter by numeric owner_id)
 $orders = [];
+
 if ($current_admin_id) {
-    $orders_query = "SELECT o.o_id, o.order_date, o.order_status, o.payment_status, 
+    $orders_query = "SELECT o.o_id, o.order_date, o.order_status, o.order_status, 
                             o.total_amount, o.payment_method, o.proof_of_payment, 
                             o.delivery_address,
                             c.fullname, c.phone_number, c.email, c.address
                      FROM orders o 
-                     LEFT JOIN customers c ON o.c_id = c.`c_id`
+                     LEFT JOIN customers c ON o.c_id = c.c_id
                      WHERE o.owner_id = ? 
                      ORDER BY o.order_date DESC";
 
     $stmt = mysqli_prepare($connection, $orders_query);
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, 'i', $current_admin_id);
+        mysqli_stmt_bind_param($stmt, "i", $current_admin_id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        while ($row = mysqli_fetch_assoc($result)) {
-            $orders[] = $row;
+        if ($result) {
+            $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
         mysqli_stmt_close($stmt);
     }
 }
 
-// Close the connection
 mysqli_close($connection);
 ?>
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -75,6 +77,8 @@ mysqli_close($connection);
   <div class="box" id="orders-content">
     <h1>Orders Overview</h1>
 
+
+
     <div class="orders-container">
       <div class="orders-header">
         <input type="text" id="orderSearch" placeholder="Search by customer or order ID..."/>
@@ -92,6 +96,10 @@ mysqli_close($connection);
           <option value="delivery">Delivery</option>
         </select>
       </div>
+
+
+
+
 
       <div class="orders-table-wrapper">
         <table class="orders-table">
@@ -111,6 +119,12 @@ mysqli_close($connection);
             <?php if (empty($orders)): ?>
               <tr>
                 <td colspan="8" style="text-align: center; padding: 20px;">No orders found</td>
+
+
+
+
+
+
               </tr>
             <?php else: ?>
               <?php foreach ($orders as $order): ?>
@@ -145,6 +159,7 @@ mysqli_close($connection);
   </div>
 </div>
 
+
 <!-- Proof Image Modal -->
 <div id="imageModal" class="modal" style="display:none;">
   <div class="modal-content" style="max-width:600px;">
@@ -173,6 +188,7 @@ const orderRows = document.querySelectorAll("#ordersTableBody tr");
 function filterOrders() {
   const searchTerm = orderSearch.value.toLowerCase();
   const selectedStatus = orderStatusFilter.value;
+
 
   orderRows.forEach((row) => {
     const customerName = row.children[1].textContent.toLowerCase();
@@ -239,18 +255,13 @@ function displayOrderDetails(order) {
                         ${order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1)}
                     </span>
                 </p>
-                <p><strong>Payment Status:</strong> 
-                    <span class="status ${order.payment_status}">
-                        ${order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1)}
-                    </span>
-                </p>
                 <p><strong>Payment Method:</strong> 
                     <span class="payment-method">${order.payment_method || 'Cash'}</span>
                 </p>
                 <p><strong>Proof of Payment:</strong><br>
                     ${order.proof_of_payment 
-                        ? `<a href="../../uploads/payment_proofs/${order.proof_of_payment}" target="_blank">
-                               <img src="../../uploads/payment_proofs/${order.proof_of_payment}" 
+                        ? `<a href="../../uploads/payment_proof/${order.proof_of_payment}" target="_blank">
+                               <img src="../../uploads/payment_proof/${order.proof_of_payment}" 
                                     alt="Proof of Payment" style="max-width:200px; margin-top:8px; border:1px solid #ccc; border-radius:6px;">
                            </a>`
                         : '<span style="color:#888;">None</span>'
@@ -265,7 +276,6 @@ function displayOrderDetails(order) {
                 <p><strong>Phone Number:</strong> ${order.phone_number || 'N/A'}</p>
                 <p><strong>Delivery Address:</strong> ${order.delivery_address || order.address || 'N/A'}</p>
             </div>
-
             <div class="order-section">
                 <h3>Order Items</h3>
                 <table class="order-items-table">
@@ -279,6 +289,7 @@ function displayOrderDetails(order) {
                     </thead>
                     <tbody>
                         ${order.items.map(item => `
+
                             <tr>
                                 <td>${item.product_name || 'Unknown Product'}</td>
                                 <td>${item.quantity}</td>

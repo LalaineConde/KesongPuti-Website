@@ -335,241 +335,172 @@ body {
 
     <!-- CART SIDEBAR -->
     <script>
-      // Cart sidebar functionality
+      // --- Cart Sidebar Functionality ---
       const cartBtn = document.getElementById("cartBtn");
       const cartSidebar = document.getElementById("cartSidebar");
       const closeCart = document.getElementById("closeCart");
       const overlay = document.getElementById("overlay");
 
-      cartBtn.addEventListener("click", () => {
-        cartSidebar.classList.add("active");
-        overlay.classList.add("active");
-      });
-
+      if (cartBtn) {
+          cartBtn.addEventListener("click", () => {
+              cartSidebar.classList.add("active");
+              overlay.classList.add("active");
+          });
+      }
       closeCart.addEventListener("click", () => {
-        cartSidebar.classList.remove("active");
-        overlay.classList.remove("active");
+          cartSidebar.classList.remove("active");
+          overlay.classList.remove("active");
       });
-
       overlay.addEventListener("click", () => {
-        cartSidebar.classList.remove("active");
-        overlay.classList.remove("active");
+          cartSidebar.classList.remove("active");
+          overlay.classList.remove("active");
       });
 
+      // --- Cart Logic ---
+      const cartContainer = document.getElementById("cartItems");
+      const cartTotalEl = document.getElementById("cartTotal");
+      const cartBadge = document.getElementById("cartCount");
 
-      // Quantity controls
-      document.addEventListener("click", function (e) {
-        if (e.target.classList.contains("plus")) {
-          let qtyEl = e.target.previousElementSibling;
-          let qty = parseInt(qtyEl.textContent);
-          qty++;
-          qtyEl.textContent = qty;
+      // Load cart from localStorage or empty array
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-          let priceEl = e.target
-            .closest(".cart-item")
-            .querySelector(".item-price");
-          let pricePerItem =
-            parseFloat(priceEl.getAttribute("data-price")) / (qty - 1);
-          let newPrice = qty * pricePerItem;
-          priceEl.setAttribute("data-price", newPrice);
-          priceEl.textContent = `₱${newPrice}`;
-          updateCartTotal();
-        }
-
-        if (e.target.classList.contains("minus")) {
-          let qtyEl = e.target.nextElementSibling;
-          let qty = parseInt(qtyEl.textContent);
-          if (qty > 1) {
-            qty--;
-            qtyEl.textContent = qty;
-
-            let priceEl = e.target
-              .closest(".cart-item")
-              .querySelector(".item-price");
-            let pricePerItem =
-              parseFloat(priceEl.getAttribute("data-price")) / (qty + 1);
-            let newPrice = qty * pricePerItem;
-            priceEl.setAttribute("data-price", newPrice);
-            priceEl.textContent = `₱${newPrice}`;
-          }
-          updateCartTotal();
-        }
-
-        if (e.target.closest(".btn-delete")) {
-          e.target.closest(".cart-item").remove();
-          updateCartTotal();
-        }
-      });
-
-      // Checkbox updates
-      document.addEventListener("change", function (e) {
-        if (e.target.classList.contains("cart-check")) {
-          updateCartTotal();
-        }
-
-        if (e.target.id === "selectAll") {
-          let checked = e.target.checked;
-          document.querySelectorAll(".cart-check").forEach((cb) => {
-            cb.checked = checked;
-          });
-          updateCartTotal();
-        }
-      });
-
-      updateCartTotal();
-    </script>
-
-
-      <script>
-        const cartContainer = document.getElementById("cartItems");
-        const cartTotalEl = document.getElementById("cartTotal");
-        const cartBadge = document.getElementById("cartCount");
-
-        // Load cart from localStorage or empty array
-        let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-        // Save to localStorage
-        function saveCart() {
+      // Save to localStorage
+      function saveCart() {
           localStorage.setItem("cart", JSON.stringify(cart));
-        }
+      }
 
-        // Update cart badge (icon number)
-        function updateCartBadge() {
+      // Update cart badge (icon number)
+      function updateCartBadge() {
           let totalQty = cart.reduce((sum, p) => sum + p.qty, 0);
-          cartBadge.textContent = totalQty;
-        }
+          if (cartBadge) cartBadge.textContent = totalQty;
+      }
 
-        // Render cart items
-        function renderCart() {
+      // Render cart items
+      function renderCart() {
           cartContainer.innerHTML = "";
-
           if (cart.length === 0) {
-            cartContainer.innerHTML += `<p class="text-muted empty-message">Your cart is empty.</p>`;
-            cartTotalEl.textContent = "₱0.00";
-            updateCartBadge();
-            return;
+              cartContainer.innerHTML += `<p class="text-muted empty-message">Your cart is empty.</p>`;
+              cartTotalEl.textContent = "₱0.00";
+              updateCartBadge();
+              return;
           }
-
           cart.forEach(product => {
-            const item = document.createElement("div");
-            item.classList.add("cart-item", "d-flex", "align-items-center", "border-bottom", "py-2");
-            item.setAttribute("data-id", product.id);
-            item.innerHTML = `
-              <input type="checkbox" class="cart-check me-2" checked />
-              <img src="${product.image}" alt="${product.name}" class="cart-img me-2" width="50"/>
-              <div class="flex-grow-1">
-                <h6 class="mb-1">${product.name}</h6>
-                <div class="d-flex align-items-center">
-                  <button class="btn-qty minus">−</button>
-                  <span class="qty mx-2">${product.qty}</span>
-                  <button class="btn-qty plus">+</button>
-                </div>
-                <strong class="item-price d-block mt-1" data-price="${product.price}">
-                  ₱${(product.price * product.qty).toFixed(2)}
-                </strong>
-                <span class="cart-branch">${product.store}</span>
-              </div>
-              <button class="btn-delete"><i class="bi bi-trash"></i></button>
-            `;
-            cartContainer.appendChild(item);
+              const item = document.createElement("div");
+              item.classList.add("cart-item", "d-flex", "align-items-center", "border-bottom", "py-2");
+              item.setAttribute("data-id", product.id);
+              item.innerHTML = `
+                  <input type="checkbox" class="cart-check me-2" checked />
+                  <img src="${product.image}" alt="${product.name}" class="cart-img me-2" width="50"/>
+                  <div class="flex-grow-1">
+                      <h6 class="mb-1">${product.name}</h6>
+                      <div class="d-flex align-items-center">
+                          <button class="btn-qty minus">−</button>
+                          <span class="qty mx-2">${product.qty}</span>
+                          <button class="btn-qty plus">+</button>
+                      </div>
+                      <strong class="item-price d-block mt-1" data-price="${product.price}">
+                          ₱${(product.price * product.qty).toFixed(2)}
+                      </strong>
+                      <span class="cart-branch">${product.store}</span>
+                  </div>
+                  <button class="btn-delete"><i class="bi bi-trash"></i></button>
+              `;
+              cartContainer.appendChild(item);
           });
-
           updateCartTotal();
           updateCartBadge();
-        }
+      }
 
-        // Update total
-        function updateCartTotal() {
+      // Update total
+      function updateCartTotal() {
           let total = cart.reduce((sum, p) => sum + (p.price * p.qty), 0);
           cartTotalEl.textContent = `₱${total.toFixed(2)}`;
-        }
+      }
 
-        // Add to cart
-        function addToCart(product) {
-          // Validate and sanitize product data
+      // Add to cart function - CORRECTED!
+      function addToCart(product) {
+          // Validate and sanitize product data, INCLUDE product_id!
           const validatedProduct = {
-            id: String(product.id || ''),
-            name: String(product.name || 'Unknown Product'),
-            price: parseFloat(product.price) || 0,
-            image: String(product.image || '../../assets/kesong puti.png'),
-            store: String(product.store || 'Unknown Store'),
-            recipient: String(product.recipient || ''),
-            storeId: String(product.storeId || ''),
-            qty: Math.max(1, parseInt(product.qty) || 1)
+              id: String(product.id || ''),
+              product_id: String(product.product_id || product.id || ''), // <-- CORRECTED LINE
+              name: String(product.name || 'Unknown Product'),
+              price: parseFloat(product.price) || 0,
+              image: String(product.image || '../../assets/kesong puti.png'),
+              store: String(product.store || 'Unknown Store'),
+              recipient: String(product.recipient || ''),
+              storeId: String(product.storeId || ''),
+              qty: Math.max(1, parseInt(product.qty) || 1)
           };
 
           // Single-store cart
           if (cart.length > 0) {
-            const currentStore = cart[0].store || '';
-            if (validatedProduct.store !== currentStore) {
-              if (window.Swal) {
-                Swal.fire({
-                  icon: 'warning',
-                  title: 'Single-store cart',
-                  text: 'You can only add items from one store per cart. Please checkout or clear your cart to add from a different store.',
-                  confirmButtonColor: '#ff6b6b'
-                });
-              } else {
-                alert('You can only add items from one store per cart. Please checkout or clear your cart to add from a different store.');
+              const currentStore = cart[0].store || '';
+              if (validatedProduct.store !== currentStore) {
+                  if (window.Swal) {
+                      Swal.fire({
+                          icon: 'warning',
+                          title: 'Single-store cart',
+                          text: 'You can only add items from one store per cart. Please checkout or clear your cart to add from a different store.',
+                          confirmButtonColor: '#ff6b6b'
+                      });
+                  } else {
+                      alert('You can only add items from one store per cart. Please checkout or clear your cart to add from a different store.');
+                  }
+                  return; 
               }
-              return; 
-            }
           }
 
           let existing = cart.find(p => p.id === validatedProduct.id);
           if (existing) {
-            existing.qty += validatedProduct.qty;
+              existing.qty += validatedProduct.qty;
           } else {
-            cart.push(validatedProduct);
+              cart.push(validatedProduct);
           }
           saveCart();
           renderCart();
-        }
+      }
 
-        // Event delegation for plus/minus/delete
-        document.addEventListener("click", e => {
+      // Event delegation for plus/minus/delete
+      document.addEventListener("click", e => {
           let itemEl = e.target.closest(".cart-item");
           if (!itemEl) return;
           let id = itemEl.dataset.id;
           let product = cart.find(p => p.id === id);
 
           if (e.target.classList.contains("plus")) {
-            product.qty++;
+              product.qty++;
           }
-
           if (e.target.classList.contains("minus")) {
-            if (product.qty > 1) {
-              product.qty--;
-            } else {
-              cart = cart.filter(p => p.id !== id);
-            }
+              if (product.qty > 1) {
+                  product.qty--;
+              } else {
+                  cart = cart.filter(p => p.id !== id);
+              }
           }
-
           if (e.target.closest(".btn-delete")) {
-            cart = cart.filter(p => p.id !== id);
+              cart = cart.filter(p => p.id !== id);
           }
 
           saveCart();
           renderCart();
-        });
+      });
 
-        // Checkbox updates
-        document.addEventListener("change", function (e) {
+      // Checkbox updates
+      document.addEventListener("change", function (e) {
           if (e.target.classList.contains("cart-check")) {
-            updateCartTotal();
+              updateCartTotal();
           }
-
           if (e.target.id === "selectAll") {
-            let checked = e.target.checked;
-            document.querySelectorAll(".cart-check").forEach((cb) => {
-              cb.checked = checked;
-            });
-            updateCartTotal();
+              let checked = e.target.checked;
+              document.querySelectorAll(".cart-check").forEach((cb) => {
+                  cb.checked = checked;
+              });
+              updateCartTotal();
           }
-        });
+      });
 
-        // Global handler for "Add to Cart" buttons
-        document.addEventListener("click", function (e) {
+      // Global handler for "Add to Cart" buttons
+      document.addEventListener("click", function (e) {
           const btn = e.target.closest(".add-to-cart");
           if (!btn) return;
 
@@ -577,45 +508,45 @@ body {
           const chosenQty = qtyTarget ? parseInt(qtyTarget.value || "1") : 1;
 
           const product = {
-            id: String(btn.dataset.id || ""),
-            name: btn.dataset.name || "",
-            price: parseFloat(btn.dataset.price || "0"),
-            image: btn.dataset.image || "",
-            store: btn.dataset.store || "",
-            recipient: btn.dataset.recipient || "",
-            storeId: btn.dataset.storeId || "",
-            qty: isNaN(chosenQty) ? 1 : Math.max(1, chosenQty)
+              id: String(btn.dataset.id || ""),
+              product_id: String(btn.dataset.product_id || btn.dataset.id || ""), // <-- CORRECTED LINE
+              name: btn.dataset.name || "",
+              price: parseFloat(btn.dataset.price || "0"),
+              image: btn.dataset.image || "",
+              store: btn.dataset.store || "",
+              recipient: btn.dataset.recipient || "",
+              storeId: btn.dataset.storeId || "",
+              qty: isNaN(chosenQty) ? 1 : Math.max(1, chosenQty)
           };
 
           addToCart(product);
-        });
+      });
 
-        // Function to clear invalid cart data
-        function clearInvalidCartData() {
+      // Function to clear invalid cart data
+      function clearInvalidCartData() {
           cart = cart.filter(item => {
-            return item && 
-                   item.id && 
-                   item.name && 
-                   !isNaN(parseFloat(item.price)) && 
-                   !isNaN(parseInt(item.qty)) &&
-                   item.price > 0 &&
-                   item.qty > 0;
+              return item && 
+                    item.product_id && // <-- CORRECTED LINE
+                    item.id &&
+                    item.name &&
+                    !isNaN(parseFloat(item.price)) &&
+                    !isNaN(parseInt(item.qty)) &&
+                    item.price > 0 &&
+                    item.qty > 0;
           });
           saveCart();
-        }
+      }
 
-        // Function to clear cart completely
-        function clearCart() {
+      // Function to clear cart completely
+      function clearCart() {
           cart = [];
           saveCart();
           renderCart();
-        }
+      }
 
-        
-        
-        // Also run immediately in case DOMContentLoaded already fired
-        clearInvalidCartData();
-        renderCart();
+      // Clear invalid cart data and render on page load
+      clearInvalidCartData();
+      renderCart();
       </script>
 
 

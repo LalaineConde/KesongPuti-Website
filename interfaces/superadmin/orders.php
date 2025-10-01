@@ -9,31 +9,35 @@ $toast_message = ''; // Initialize variable for toast message
 $orders = [];
 $owner_filter = null;
 
-if ($_SESSION['role'] === 'superadmin') {
-    $owner_filter = intval($_SESSION['super_id']);
-} elseif ($_SESSION['role'] === 'admin') {
-    $owner_filter = intval($_SESSION['admin_id']);
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'superadmin') {
+    $owner_filter = isset($_SESSION['super_id']) ? intval($_SESSION['super_id']) : null;
+} elseif (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    $owner_filter = isset($_SESSION['admin_id']) ? intval($_SESSION['admin_id']) : null;
 }
 
-// Fetch orders for this owner
 if ($owner_filter !== null) {
-    $orders_query = "SELECT o.*, c.fullname, c.phone_number, c.email, c.address
+    $orders_query = "SELECT o.o_id, o.order_date, o.order_status,
+                            o.total_amount, o.payment_method, o.proof_of_payment, 
+                            o.delivery_address, o.order_type,
+                            c.fullname, c.phone_number, c.email, c.address
                      FROM orders o 
-                     LEFT JOIN customers c ON o.c_id = c.`c_id`
+                     LEFT JOIN customers c ON o.c_id = c.c_id
                      WHERE o.owner_id = ? 
                      ORDER BY o.order_date DESC";
 
     $stmt = mysqli_prepare($connection, $orders_query);
     if ($stmt) {
-        mysqli_stmt_bind_param($stmt, 'i', $owner_filter);
+        mysqli_stmt_bind_param($stmt, "i", $owner_filter);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        while ($row = mysqli_fetch_assoc($result)) {
-            $orders[] = $row;
+        if ($result) {
+            $orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
         }
         mysqli_stmt_close($stmt);
     }
 }
+
+mysqli_close($connection);
 ?>
 
 <!DOCTYPE html>
@@ -42,8 +46,7 @@ if ($owner_filter !== null) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Orders | Kesong Puti</title>
-
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="../../css/admin.css"/>
 
   <style>
@@ -101,6 +104,7 @@ if ($owner_filter !== null) {
         </select>
       </div>
 
+
       <div class="orders-table-wrapper">
         <table class="orders-table">
           <thead>
@@ -119,39 +123,59 @@ if ($owner_filter !== null) {
             <?php if (empty($orders)): ?>
               <tr>
                 <td colspan="8" style="text-align: center; padding: 20px;">No orders found</td>
+
+
+
+
+
+
               </tr>
             <?php else: ?>
               <?php foreach ($orders as $order): ?>
-                <tr data-status="<?php echo htmlspecialchars($order['order_status']); ?>" data-type="delivery">
-                  <td>#<?php echo str_pad($order['o_id'], 5, '0', STR_PAD_LEFT); ?></td>
-                  <td>
-                    <div><?php echo htmlspecialchars($order['fullname'] ?: 'Guest Customer'); ?></div>
-                    <small style="color: #666;"><?php echo htmlspecialchars($order['email'] ?: ''); ?></small>
-                    <br><small style="color: #666;"><?php echo htmlspecialchars($order['phone_number'] ?: ''); ?></small>
-                  </td>
-                  <td><?php echo date('M d, Y', strtotime($order['order_date'])); ?></td>
-                  <td><span class="status <?php echo htmlspecialchars($order['order_status']); ?>"><?php echo ucfirst(htmlspecialchars($order['order_status'])); ?></span></td>
-                  <td><span class="type-label delivery">Delivery</span></td>
-                  <td>₱<?php echo number_format($order['total_amount'], 2); ?></td>
-                    <td>
-                      <?php if (!empty($order['proof_of_payment'])): ?>
-                        <a href="../../uploads/payment_proofs/<?php echo htmlspecialchars($order['proof_of_payment']); ?>" target="_blank">
-                          <img src="../../uploads/payment_proofs/<?php echo htmlspecialchars($order['proof_of_payment']); ?>" class="proof-thumb" alt="Proof">
-                        </a>
-                      <?php else: ?>
-                        <span style="color:#888;">None</span>
-                      <?php endif; ?>
-                    </td>
-                  <td><button class="view-btn" onclick="viewOrderDetails(<?php echo $order['o_id']; ?>)">View</button></td>
-                </tr>
+              <tr data-status="<?php echo htmlspecialchars($order['order_status']); ?>" data-type="<?php echo htmlspecialchars($order['order_type']); ?>">
+                <td>#<?php echo str_pad($order['o_id'], 5, '0', STR_PAD_LEFT); ?></td>
+                <td>
+                  <div><?php echo htmlspecialchars($order['fullname'] ?: 'Guest Customer'); ?></div>
+                  <small style="color: #666;"><?php echo htmlspecialchars($order['email'] ?: ''); ?></small>
+                  <br><small style="color: #666;"><?php echo htmlspecialchars($order['phone_number'] ?: ''); ?></small>
+                </td>
+                <td><?php echo date('M d, Y', strtotime($order['order_date'])); ?></td>
+                <td>
+                  <span class="status <?php echo htmlspecialchars($order['order_status']); ?>">
+                    <?php echo ucfirst(htmlspecialchars($order['order_status'])); ?>
+                  </span>
+                </td>
+                <td><span class="type-label <?php echo htmlspecialchars($order['order_type']); ?>">
+                    <?php echo ucfirst(htmlspecialchars($order['order_type'])); ?>
+                </span></td>
+                <td>₱<?php echo number_format($order['total_amount'], 2); ?></td>
+                <td>
+                  <?php if (!empty($order['proof_of_payment'])): ?>
+                    <a href="../../uploads/payment_proofs/<?php echo htmlspecialchars($order['proof_of_payment']); ?>" target="_blank">
+                      <img src="../../uploads/payment_proofs/<?php echo htmlspecialchars($order['proof_of_payment']); ?>" class="proof-thumb" alt="Proof">
+                    </a>
+                  <?php else: ?>
+                    <span style="color:#888;">None</span>
+                  <?php endif; ?>
+                </td>
+                <td><button class="view-btn" onclick="viewOrderDetails(<?php echo $order['o_id']; ?>)">View</button></td>
+              </tr>
               <?php endforeach; ?>
+
             <?php endif; ?>
           </tbody>
         </table>
+
+
+
+
+
+
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- Proof Image Modal -->
 <div id="imageModal" class="modal" style="display:none;">
@@ -160,6 +184,10 @@ if ($owner_filter !== null) {
     <img id="modalImage" src="" style="width:100%; border-radius:8px;"/>
   </div>
 </div>
+
+
+
+
 
 <!-- Order Details Modal -->
 <div id="orderDetailsModal" class="modal" style="display: none;">
@@ -171,6 +199,10 @@ if ($owner_filter !== null) {
     <div class="modal-body" id="orderDetailsContent"></div>
   </div>
 </div>
+
+
+
+
 
 
 <!-- FUNCTIONS -->
@@ -202,6 +234,8 @@ function viewOrderDetails(orderId) {
   document.getElementById('orderDetailsContent').innerHTML = '<div style="text-align: center; padding: 20px;">Loading order details...</div>';
   document.getElementById('orderDetailsModal').style.display = 'block';
 
+
+
   fetch('get-order-details.php?order_id=' + orderId)
     .then(response => response.json())
     .then(data => {
@@ -216,10 +250,13 @@ function viewOrderDetails(orderId) {
     });
 }
 
+
+
 function displayOrderDetails(order) {
   const orderDate = new Date(order.order_date);
   const formattedDate = orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   const formattedTime = orderDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
 
   const content = `
     <div class="order-details">
@@ -229,16 +266,8 @@ function displayOrderDetails(order) {
         <p><strong>Order Date:</strong> ${formattedDate}</p>
         <p><strong>Order Time:</strong> ${formattedTime}</p>
         <p><strong>Order Type:</strong> Delivery</p>
-        <p><strong>Order Status:</strong> 
-            <span class="status ${order.order_status}">
-                ${order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1)}
-            </span>
-        </p>
-        <p><strong>Payment Status:</strong> 
-            <span class="status ${order.payment_status}">
-                ${order.payment_status.charAt(0).toUpperCase() + order.payment_status.slice(1)}
-            </span>
-        </p>
+        <p><strong>Order Type:</strong> ${order.order_type ? order.order_type.charAt(0).toUpperCase() + order.order_type.slice(1) : 'Delivery'}</p>
+
         <p><strong>Payment Method:</strong> 
             <span class="payment-method">${order.payment_method || 'Cash on Delivery'}</span>
         </p>
@@ -260,6 +289,7 @@ function displayOrderDetails(order) {
         <p><strong>Phone Number:</strong> ${order.phone_number || 'N/A'}</p>
         <p><strong>Delivery Address:</strong> ${order.delivery_address || order.address || 'N/A'}</p>
       </div>
+
 
       <div class="order-section">
         <h3>Order Items</h3>

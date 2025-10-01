@@ -184,49 +184,113 @@ if (isset($_POST['update_product'])) {
         <?php } ?>
       </div>
 
-    <!-- MODAL Add/Edit Product -->
-      <div class="product-modal" id="productModal">
-        <div class="modal-content">
-          <span class="close-modal">&times;</span>
-          <h2 id="modalTitle">Add Product</h2>
-
-          <form method="POST" enctype="multipart/form-data" action="products.php">
-            <!-- Hidden ID (needed for edit) -->
-            <input type="hidden" name="product_id" id="product_id">
-
-            <div class="form-group">
-              <label>Product Name</label>
-              <input type="text" name="product_name" id="product_name" required>
-            </div>
-            <div class="form-group">
-              <label>Description</label>
-              <textarea name="description" id="description" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-              <label>Price</label>
-              <input type="number" name="price" id="price" step="0.01" required>
-            </div>
-            <div class="form-group">
-              <label>Stock Quantity</label>
-              <input type="number" name="stock_qty" id="stock_qty" min="0" required>
-            </div>
-            <div class="form-group">
-              <label>Category</label>
-              <select name="category" id="category" required>
-                <option value="" disabled selected>Select Category</option>
-                <option value="cheese">Cheese</option>
-                <option value="ice-cream">Ice Cream</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Image</label>
-              <input type="file" name="product_image" id="product_image">
-              <img id="previewImage" style="max-width:100px; margin-top:5px; display:none;">
-            </div>
-            <button type="submit" name="save_product" id="submitBtn" class="btn-save">Save</button>
-          </form>
+    <!-- Add/Edit Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <form id="productForm" method="POST" enctype="multipart/form-data" action="products.php">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Add Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-      </div>
+
+        <div class="modal-body">
+          <!-- Hidden ID -->
+          <input type="hidden" name="product_id" id="product_id">
+
+          <!-- Product Name -->
+          <div class="mb-3">
+            <label class="form-label">Product Name</label>
+            <input type="text" class="form-control" name="product_name" id="product_name" required>
+          </div>
+
+          <!-- Product Description -->
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+          </div>
+
+          <!-- Product Category -->
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select class="form-select" name="category" id="category" required>
+              <option value="" selected disabled>-- Select Category --</option>
+              <option value="cheese">Cheese</option>
+              <option value="ice-cream">Ice Cream</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <!-- Price -->
+          <div class="mb-3" id="mainPriceField">
+            <label class="form-label">Price</label>
+            <input type="number" class="form-control" name="price" id="price" step="0.01" min="0">
+          </div>
+
+          <!-- Has Variants -->
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" id="hasVariants" onchange="toggleVariants()">
+            <label class="form-check-label" for="hasVariants">This product has variants</label>
+          </div>
+
+          <!-- Quantity -->
+          <div class="mb-3" id="mainQuantityField">
+            <label class="form-label">Quantity</label>
+            <input type="number" class="form-control" name="stock_qty" id="stock_qty" min="0">
+          </div>
+
+          <!-- Total Stock & Price Range -->
+          <div class="mb-3 d-none" id="totalStockField">
+            <label class="form-label">Total Stock</label>
+            <input type="number" class="form-control" id="totalStock" readonly>
+          </div>
+          <div class="mb-3 d-none" id="priceRangeField">
+            <label class="form-label">Price Range</label>
+            <input type="text" class="form-control" id="priceRange" readonly>
+          </div>
+
+          <!-- Primary Image -->
+          <div class="mb-3">
+            <label class="form-label">Primary Image</label>
+            <input type="file" class="form-control" name="product_image" id="product_image" accept="image/*" onchange="previewPrimary(event)">
+            <div id="primaryPreview" class="mt-2"></div>
+          </div>
+
+          <!-- Gallery Images -->
+          <div class="mb-3">
+            <label class="form-label">Gallery Images</label>
+            <input type="file" class="form-control" accept="image/*" multiple onchange="previewGallery(event)">
+            <div id="galleryPreview" class="gallery-preview"></div>
+          </div>
+
+          <!-- Variants -->
+          <div class="mb-3 d-none" id="variantSection">
+            <label class="form-label">Variants</label>
+            <table class="table table-sm table-bordered align-middle" id="variantTable">
+              <thead class="table-light">
+                <tr>
+                  <th>Variant</th>
+                  <th>Price</th>
+                  <th>Stock</th>
+                  <th>Image</th>
+                  <th>Preview</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="addVariant()">+ Add Variant</button>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" name="save_product" id="submitBtn" class="btn btn-success">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
       
       
       <!-- View Product Modal -->
