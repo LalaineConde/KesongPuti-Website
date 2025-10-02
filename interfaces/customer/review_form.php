@@ -4,6 +4,13 @@ require '../../connection.php';
 $current_page = 'feedback';
 $isHomePage = ($current_page === 'home'); // check if this is the home page
 
+// Identify recipient
+// if ($_SESSION['role'] === 'superadmin') {
+//     $recipient = 'super_' . $_SESSION['super_id'];
+// } else {
+//     $recipient = 'admin_' . $_SESSION['admin_id'];
+// }
+
 
 $toast_message = '';
 $order_id = intval($_GET['order_id'] ?? 0);
@@ -20,9 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_reference'])) 
 // Fetch order + customer info
 if ($order_id > 0) {
     $orderQuery = mysqli_query($connection, "
-        SELECT o.o_id, c.fullname, c.email
+        SELECT o.o_id, o.owner_id, c.fullname, c.email,
+               CASE 
+                   WHEN sa.super_id IS NOT NULL THEN CONCAT('super_', sa.super_id)
+                   WHEN a.admin_id IS NOT NULL THEN CONCAT('admin_', a.admin_id)
+               END AS recipient
         FROM orders o
         INNER JOIN customers c ON o.c_id = c.c_id
+        LEFT JOIN super_admin sa ON o.owner_id = sa.super_id
+        LEFT JOIN admins a ON o.owner_id = a.admin_id
         WHERE o.o_id = $order_id
         LIMIT 1
     ");
@@ -32,6 +45,7 @@ if ($order_id > 0) {
         echo "<script>alert('Invalid order or customer not found.'); window.location='review_form.php';</script>";
         exit;
     }
+    $recipient = $orderInfo['recipient'];
 
     // Check if the order is already reviewed
     $reviewCheckQuery = mysqli_query($connection, "
@@ -93,10 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_feedback'])) {
 
         $media_json = !empty($uploadedFiles) ? json_encode($uploadedFiles) : null;
 
-        $sql = "INSERT INTO reviews (name, email, rating, feedback, recipient, media, order_item_id, created_at)
-                VALUES ('{$orderInfo['fullname']}', '{$orderInfo['email']}', '$rating', '$comment', 'Kesong Puti', " .
-                ($media_json ? "'".mysqli_real_escape_string($connection, $media_json)."'" : "NULL") .
-                ", '$item_id', NOW())";
+$sql = "INSERT INTO reviews (name, email, rating, feedback, recipient, media, order_item_id, created_at)
+        VALUES ('{$orderInfo['fullname']}', '{$orderInfo['email']}', '$rating', '$comment', '{$recipient}', " .
+        ($media_json ? "'".mysqli_real_escape_string($connection, $media_json)."'" : "NULL") .
+        ", '$item_id', NOW())";
+
+
 
         mysqli_query($connection, $sql);
     }

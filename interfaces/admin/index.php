@@ -55,6 +55,14 @@ $orders_month = $connection->query("
 ")->fetch_assoc()['total'];
 // echo "<pre>DEBUG: orders_month = $orders_month</pre>";
 
+$orders_last_month = $connection->query("
+    SELECT COUNT(*) AS total
+    FROM orders o
+    WHERE YEAR(o.order_date) = YEAR(CURDATE() - INTERVAL 1 MONTH)
+      AND MONTH(o.order_date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+      AND o.owner_id = $admin_id
+")->fetch_assoc()['total'];
+
 // SALES TOTAL (Day/Week/Month)
 $sales_day = $connection->query("
     SELECT COALESCE(SUM(total_amount), 0) AS total
@@ -83,6 +91,15 @@ $sales_month = $connection->query("
       AND owner_id = $admin_id
 ")->fetch_assoc()['total'];
 // echo "<pre>DEBUG: sales_month = $sales_month</pre>";
+
+$sales_last_month = $connection->query("
+    SELECT COALESCE(SUM(total_amount), 0) AS total
+    FROM orders
+    WHERE order_status = 'completed'
+      AND YEAR(order_date) = YEAR(CURDATE() - INTERVAL 1 MONTH)
+      AND MONTH(order_date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+      AND owner_id = $admin_id
+")->fetch_assoc()['total'];
 
 // helper to normalize statuses
 function norm_status($s) {
@@ -149,6 +166,20 @@ while ($row = $status_month_q->fetch_assoc()) {
 }
 // echo "<pre>DEBUG: statuses_month = "; print_r($statuses_month); echo "</pre>";
 
+// LAST MONTH
+$status_last_month_q = $connection->query("
+    SELECT order_status, COUNT(*) AS total 
+    FROM orders 
+    WHERE YEAR(order_date) = YEAR(CURDATE() - INTERVAL 1 MONTH)
+      AND MONTH(order_date) = MONTH(CURDATE() - INTERVAL 1 MONTH)
+      AND owner_id = $admin_id
+    GROUP BY order_status
+");
+$statuses_last_month = $all_statuses;
+while ($row = $status_last_month_q->fetch_assoc()) {
+    $statuses_last_month[norm_status($row['order_status'])] = (int)$row['total'];
+}
+
 // Close the connection
 mysqli_close($connection);
 ?>
@@ -182,11 +213,13 @@ mysqli_close($connection);
             <option value="day">This Day</option>
             <option value="week">This Week</option>
             <option value="month">This Month</option>
+            <option value="last_month">Last Month</option>
           </select>
         </div>
         <div id="orders_day" class="orders-section"><p><?= $orders_day; ?> Orders</p></div>
         <div id="orders_week" class="orders-section" style="display:none"><p><?= $orders_week; ?> Orders</p></div>
         <div id="orders_month" class="orders-section" style="display:none"><p><?= $orders_month; ?> Orders</p></div>
+        <div id="orders_last_month" class="orders-section" style="display:none"><p><?= $orders_last_month; ?> Orders</p></div>
       </div>
       <!-- Sales Dropdown -->
       <div class="card">
@@ -196,11 +229,13 @@ mysqli_close($connection);
             <option value="day">This Day</option>
             <option value="week">This Week</option>
             <option value="month">This Month</option>
+            <option value="last_month">Last Month</option>
           </select>
         </div>
         <div id="sales_day" class="sales-section"><p>₱<?= number_format($sales_day, 2); ?></p></div>
         <div id="sales_week" class="sales-section" style="display:none"><p>₱<?= number_format($sales_week, 2); ?></p></div>
         <div id="sales_month" class="sales-section" style="display:none"><p>₱<?= number_format($sales_month, 2); ?></p></div>
+        <div id="sales_last_month" class="sales-section" style="display:none"><p>₱<?= number_format($sales_last_month, 2); ?></p></div>
       </div>
     </div>
 
@@ -212,6 +247,7 @@ mysqli_close($connection);
           <option value="day">This Day</option>
           <option value="week">This Week</option>
           <option value="month">This Month</option>
+          <option value="last_month">Last Month</option>
         </select>
       </div>
       <!-- Day -->
@@ -262,6 +298,22 @@ mysqli_close($connection);
           </tbody>
         </table>
       </div>
+      <!-- Last Month -->
+      <div id="status_last_month" class="status-section" style="display:none;">
+        <table class="table-order-status">
+          <thead>
+            <tr><th>Status</th><th>Count</th></tr>
+          </thead>
+          <tbody>
+          <?php foreach ($statuses_last_month as $status => $total): ?>
+            <tr>
+              <td><?= ucwords(str_replace('-', ' ', $status)); ?></td>
+              <td><?= $total; ?></td>
+            </tr>
+          <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -272,16 +324,19 @@ function showOrders(period) {
   document.getElementById('orders_day').style.display = (period === 'day') ? 'block' : 'none';
   document.getElementById('orders_week').style.display = (period === 'week') ? 'block' : 'none';
   document.getElementById('orders_month').style.display = (period === 'month') ? 'block' : 'none';
+  document.getElementById('orders_last_month').style.display = (period === 'last_month') ? 'block' : 'none';
 }
 function showSales(period) {
   document.getElementById('sales_day').style.display = (period === 'day') ? 'block' : 'none';
   document.getElementById('sales_week').style.display = (period === 'week') ? 'block' : 'none';
   document.getElementById('sales_month').style.display = (period === 'month') ? 'block' : 'none';
+  document.getElementById('sales_last_month').style.display = (period === 'last_month') ? 'block' : 'none';
 }
 function showStatus(period) {
   document.getElementById('status_day').style.display = (period === 'day') ? 'block' : 'none';
   document.getElementById('status_week').style.display = (period === 'week') ? 'block' : 'none';
   document.getElementById('status_month').style.display = (period === 'month') ? 'block' : 'none';
+  document.getElementById('status_last_month').style.display = (period === 'last_month') ? 'block' : 'none';
 }
 </script>
 
