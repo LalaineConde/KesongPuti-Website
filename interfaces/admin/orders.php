@@ -249,7 +249,7 @@ function displayOrderDetails(order) {
                 <p><strong>Order ID:</strong> #${String(order['o_id']).padStart(5, '0')}</p>
                 <p><strong>Order Date:</strong> ${formattedDate}</p>
                 <p><strong>Order Time:</strong> ${formattedTime}</p>
-                <p><strong>Order Type:</strong> Delivery</p>
+                <p><strong>Order Type:</strong> ${order.order_type ? order.order_type.charAt(0).toUpperCase() + order.order_type.slice(1) : 'Delivery'}</p>
                 <p><strong>Order Status:</strong> 
                     <span class="status ${order.order_status}">
                         ${order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1)}
@@ -261,7 +261,7 @@ function displayOrderDetails(order) {
                 <p><strong>Proof of Payment:</strong><br>
                     ${order.proof_of_payment 
                         ? `<a href="../../uploads/payment_proof/${order.proof_of_payment}" target="_blank">
-                               <img src="../../uploads/payment_proof/${order.proof_of_payment}" 
+                               <img src="../../uploads/payment_proofs/${order.proof_of_payment}" 
                                     alt="Proof of Payment" style="max-width:200px; margin-top:8px; border:1px solid #ccc; border-radius:6px;">
                            </a>`
                         : '<span style="color:#888;">None</span>'
