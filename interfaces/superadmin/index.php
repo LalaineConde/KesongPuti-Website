@@ -192,6 +192,51 @@ while ($row = $status_last_month_q->fetch_assoc()) {
 }
 
 
+
+// RECENT ORDERS (limit 5)
+$recent_orders = [];
+$recent_orders_query = "
+    SELECT o.o_id, o.order_date, o.order_status, o.total_amount, o.order_type,
+           c.fullname, c.email
+    FROM orders o
+    LEFT JOIN customers c ON o.c_id = c.c_id
+    WHERE o.owner_id = ?
+    ORDER BY o.order_date DESC
+    LIMIT 5";
+
+$stmt = mysqli_prepare($connection, $recent_orders_query);
+if ($stmt) {
+    mysqli_stmt_bind_param($stmt, "i", $owner_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    if ($result) {
+        $recent_orders = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    }
+    mysqli_stmt_close($stmt);
+}
+
+
+
+// LOW STOCK ITEMS (limit 5)
+$low_stock_q = $connection->query("
+    SELECT product_id, product_name, variation_size, stock_qty, status, updated_at
+    FROM products
+    WHERE owner_id = $owner_id
+      AND stock_qty <= 5
+      AND status = 'available'
+    ORDER BY stock_qty ASC, updated_at DESC
+    LIMIT 5
+");
+$low_stock = [];
+$low_stock_alert = [];
+while ($row = $low_stock_q->fetch_assoc()) {
+    $low_stock[] = $row;
+    $variation = $row['variation_size'] ? " ({$row['variation_size']})" : "";
+    $low_stock_alert[] = $row['product_name'] . $variation . " - Stock: " . $row['stock_qty'];
+}
+
+
+
 // Close the connection
 mysqli_close($connection);
 ?>
@@ -328,6 +373,82 @@ mysqli_close($connection);
         </table>
         </div>
     </div>
+
+            <!-- Recent Orders -->
+<div class="table-card">
+  <div class="card-header">
+    <h2>Recent Orders</h2>
+    <a href="orders.php" style="font-size:0.9em; color:#0D8540;">View All</a>
+  </div>
+  <table class="table-order-status">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Customer</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if (empty($recent_orders)): ?>
+        <tr><td colspan="5" style="text-align:center;">No recent orders</td></tr>
+      <?php else: ?>
+        <?php foreach ($recent_orders as $order): ?>
+          <tr>
+            <td>#<?= str_pad($order['o_id'], 5, '0', STR_PAD_LEFT); ?></td>
+            <td><?= htmlspecialchars($order['fullname'] ?: 'Guest Customer'); ?><br>
+                <small><?= htmlspecialchars($order['email']); ?></small>
+            </td>
+            <td><?= date('M d, Y', strtotime($order['order_date'])); ?></td>
+            <td><span class="status <?= htmlspecialchars(strtolower($order['order_status'])); ?>">
+                <?= ucfirst($order['order_status']); ?>
+            </span></td>
+            <td>₱<?= number_format($order['total_amount'], 2); ?></td>
+          </tr>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- Low Stock Items -->
+<div class="table-card">
+  <div class="card-header">
+    <h2>Low Stock Items</h2>
+    <a href="inventory.php" style="font-size:0.9em; color:#B22222;">View Inventory</a>
+  </div>
+  <table class="table-order-status">
+    <thead>
+      <tr>
+        <th>Product ID</th>
+        <th>Name</th>
+        <th>Variation</th>
+        <th>Stock</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if (empty($low_stock)): ?>
+        <tr><td colspan="5" style="text-align:center;">No low stock items</td></tr>
+      <?php else: ?>
+        <?php foreach ($low_stock as $item): ?>
+          <tr>
+            <td>#<?= $item['product_id']; ?></td>
+            <td><?= htmlspecialchars($item['product_name']); ?></td>
+            <td><?= htmlspecialchars($item['variation_size']); ?></td>
+            <td style="color:<?= $item['stock_qty'] <= 2 ? 'red' : 'orange'; ?>; font-weight:bold;">
+                <?= $item['stock_qty']; ?>
+            </td>
+            <td><?= ucfirst($item['status']); ?></td>
+          </tr>
+        <?php endforeach; ?>
+      <?php endif; ?>
+    </tbody>
+  </table>
+</div>
+
   </div>
 </div>
 
@@ -358,14 +479,15 @@ function showStatus(period) {
 <!-- SweetAlert2 Library for Toast Messages -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-var toastMessage = "<?php echo isset($toast_message) ? $toast_message : ''; ?>";
-if (toastMessage) {
-  Swal.fire({
-    icon: 'info',
-    text: toastMessage,
-    confirmButtonColor: '#ff6b6b'
-  });
-}
+<?php if (!empty($low_stock_alert)): ?>
+    Swal.fire({
+        title: "⚠️ Low Stock Alert",
+        html: "<ul style='text-align:left; padding-left:20px;'><?php foreach ($low_stock_alert as $item) { echo "<li>" . addslashes($item) . "</li>"; } ?></ul>",
+        icon: "warning",
+        confirmButtonColor: "#ff6b6b",
+        confirmButtonText: "Got it"
+    });
+<?php endif; ?>
 </script>
 </body>
 </html>
