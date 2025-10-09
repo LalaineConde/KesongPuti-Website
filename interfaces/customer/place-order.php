@@ -60,34 +60,58 @@ try {
     mysqli_stmt_close($stmt);
 
     // --- Handle proof of payment upload
-    $payment_proof = null;
-    if (!empty($_FILES['payment_proof']['name'])) {
-        $targetDir = "../../uploads/payment_proofs/";
-        if (!is_dir($targetDir)) mkdir($targetDir, 0777, true);
+    $uploadDir = "../../uploads/payment_proofs/";
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
 
-        $ext = pathinfo($_FILES['payment_proof']['name'], PATHINFO_EXTENSION);
+    $proof_of_payment = null;
+
+    // Check e-wallet proof
+    if (!empty($_FILES['ewallet_proof']['name'])) {
+        $ext = pathinfo($_FILES['ewallet_proof']['name'], PATHINFO_EXTENSION);
         $allowed = ['jpg','jpeg','png','gif','webp'];
-
         if (in_array(strtolower($ext), $allowed)) {
-            $fileName = time() . "_" . uniqid() . "." . $ext;
-            $targetFile = $targetDir . $fileName;
-
-            if (move_uploaded_file($_FILES['payment_proof']['tmp_name'], $targetFile)) {
-                $payment_proof = $fileName;
+            $fileName = time() . "_ewallet_" . uniqid() . "." . $ext;
+            $targetFile = $uploadDir . $fileName;
+            if (move_uploaded_file($_FILES['ewallet_proof']['tmp_name'], $targetFile)) {
+                $proof_of_payment = $fileName;
+            }
+        }
+    }
+    // Check bank proof
+    elseif (!empty($_FILES['bank_proof']['name'])) {
+        $ext = pathinfo($_FILES['bank_proof']['name'], PATHINFO_EXTENSION);
+        $allowed = ['jpg','jpeg','png','gif','webp'];
+        if (in_array(strtolower($ext), $allowed)) {
+            $fileName = time() . "_bank_" . uniqid() . "." . $ext;
+            $targetFile = $uploadDir . $fileName;
+            if (move_uploaded_file($_FILES['bank_proof']['tmp_name'], $targetFile)) {
+                $proof_of_payment = $fileName;
             }
         }
     }
 
     // --- Insert order
     $stmt = mysqli_prepare($connection, 
-        "INSERT INTO orders (c_id, total_amount, payment_method, proof_of_payment, delivery_address, owner_id, order_type) 
-         VALUES (?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO orders (c_id, total_amount, payment_method, proof_of_payment, delivery_address, owner_id, order_type, reference_number) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
     );
-    mysqli_stmt_bind_param($stmt, "idsssis", 
-        $c_id, $total_amount, $payment_method, $payment_proof, $address, $owner_id, $order_type
+    mysqli_stmt_bind_param($stmt, "idssssss", 
+        $c_id, $total_amount, $payment_method, $proof_of_payment, $address, $owner_id, $order_type, $reference_number
     );
     mysqli_stmt_execute($stmt);
     $order_id = mysqli_insert_id($connection);
+    mysqli_stmt_close($stmt);
+
+     // --- Generate reference number (REF + order_id + 4 random alphanumeric)
+    $random_part = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 4);
+    $reference_number = "REF" . $order_id . $random_part;
+
+    // --- Update the order with reference number
+    $stmt = mysqli_prepare($connection, "UPDATE orders SET reference_number = ? WHERE o_id = ?");
+    mysqli_stmt_bind_param($stmt, "si", $reference_number, $order_id);
+    mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
     // --- Insert items
@@ -103,7 +127,8 @@ try {
     }
     mysqli_stmt_close($stmt);
 
-    echo json_encode(['status'=>'success','order_id'=>$order_id]);
+     // --- Return success with order ID and reference number
+    echo json_encode(['status'=>'success','order_id'=>$order_id, 'reference_number'=>$reference_number]);
 
 } catch (Exception $e) {
     echo json_encode(['status'=>'error','message'=>$e->getMessage()]);

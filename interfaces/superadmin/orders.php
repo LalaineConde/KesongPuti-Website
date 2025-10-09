@@ -16,7 +16,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'superadmin') {
 }
 
 if ($owner_filter !== null) {
-    $orders_query = "SELECT o.o_id, o.order_date, o.order_status,
+    $orders_query = "SELECT o.o_id, o.reference_number, o.order_date, o.order_status,
                             o.total_amount, o.payment_method, o.proof_of_payment, 
                             o.delivery_address, o.order_type,
                             c.fullname, c.phone_number, c.email, c.address
@@ -110,6 +110,7 @@ mysqli_close($connection);
           <thead>
             <tr>
               <th>Order ID</th>
+              <th>Reference No.</th>
               <th>Customer</th>
               <th>Date</th>
               <th>Status</th>
@@ -123,17 +124,12 @@ mysqli_close($connection);
             <?php if (empty($orders)): ?>
               <tr>
                 <td colspan="8" style="text-align: center; padding: 20px;">No orders found</td>
-
-
-
-
-
-
               </tr>
             <?php else: ?>
               <?php foreach ($orders as $order): ?>
               <tr data-status="<?php echo htmlspecialchars($order['order_status']); ?>" data-type="<?php echo htmlspecialchars($order['order_type']); ?>">
                 <td>#<?php echo str_pad($order['o_id'], 5, '0', STR_PAD_LEFT); ?></td>
+                <td><?php echo htmlspecialchars($order['reference_number'] ?: 'N/A'); ?></td>
                 <td>
                   <div><?php echo htmlspecialchars($order['fullname'] ?: 'Guest Customer'); ?></div>
                   <small style="color: #666;"><?php echo htmlspecialchars($order['email'] ?: ''); ?></small>
@@ -141,9 +137,16 @@ mysqli_close($connection);
                 </td>
                 <td><?php echo date('M d, Y', strtotime($order['order_date'])); ?></td>
                 <td>
-                  <span class="status <?php echo htmlspecialchars($order['order_status']); ?>">
-                    <?php echo ucfirst(htmlspecialchars($order['order_status'])); ?>
-                  </span>
+                  <select class="order-status" 
+                          data-order-id="<?= $order['o_id']; ?>" 
+                          data-customer-email="<?= $order['email']; ?>"
+                          data-reference-number="<?= $order['reference_number']; ?>">
+                      <option value="pending" <?= $order['order_status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                      <option value="processing" <?= $order['order_status'] == 'processing' ? 'selected' : ''; ?>>Processing</option>
+                      <option value="shipped" <?= $order['order_status'] == 'shipped' ? 'selected' : ''; ?>>Shipped</option>
+                      <option value="delivered" <?= $order['order_status'] == 'delivered' ? 'selected' : ''; ?>>Delivered</option>
+                      <option value="cancelled" <?= $order['order_status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                  </select>
                 </td>
                 <td><span class="type-label <?php echo htmlspecialchars($order['order_type']); ?>">
                     <?php echo ucfirst(htmlspecialchars($order['order_type'])); ?>
@@ -207,130 +210,248 @@ mysqli_close($connection);
 
 <!-- FUNCTIONS -->
 <script>
-// Close modals when clicking outside
-window.onclick = function(event) {
-  const orderModal = document.getElementById('orderDetailsModal');
-  const imageModal = document.getElementById('imageModal');
+      
+  const orderSearch = document.getElementById("orderSearch");
+  const orderStatusFilter = document.getElementById("orderStatusFilter");
+  const orderTypeFilter = document.getElementById("orderTypeFilter");
+  const orderRows = document.querySelectorAll("#ordersTableBody tr");
 
-  if (event.target === orderModal) {
-    orderModal.style.display = 'none';
-  }
-  if (event.target === imageModal) {
-    imageModal.style.display = 'none';
-  }
-};
+  function filterOrders() {
+    const searchTerm = orderSearch.value.toLowerCase();
+    const selectedStatus = orderStatusFilter.value;
+    const selectedType = orderTypeFilter.value;
 
-// Proof image modal
-function viewImage(src) {
-  document.getElementById('modalImage').src = src;
-  document.getElementById('imageModal').style.display = 'block';
-}
-function closeImageModal() {
-  document.getElementById('imageModal').style.display = 'none';
-}
+    orderRows.forEach((row) => {
+      const customerName = row.children[1].textContent.toLowerCase();
+      const orderId = row.children[0].textContent.toLowerCase();
+      const status = row.getAttribute("data-status")?.toLowerCase();
+      const type = row.getAttribute("data-type")?.toLowerCase();
 
-// Order details modal
-function viewOrderDetails(orderId) {
-  document.getElementById('orderDetailsContent').innerHTML = '<div style="text-align: center; padding: 20px;">Loading order details...</div>';
-  document.getElementById('orderDetailsModal').style.display = 'block';
+      // Check matches
+      const matchesSearch =
+        customerName.includes(searchTerm) || orderId.includes(searchTerm);
+      const matchesStatus =
+        selectedStatus === "all" || status === selectedStatus;
+      const matchesType =
+        selectedType === "all" || type === selectedType;
 
-
-
-  fetch('get-order-details.php?order_id=' + orderId)
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        displayOrderDetails(data.order);
-      } else {
-        document.getElementById('orderDetailsContent').innerHTML = '<div style="color:red; text-align:center;">Error: ' + data.error + '</div>';
-      }
-    })
-    .catch(err => {
-      document.getElementById('orderDetailsContent').innerHTML = '<div style="color:red; text-align:center;">Error loading order details</div>';
+      // Show only rows that match ALL conditions
+      row.style.display =
+        matchesSearch && matchesStatus && matchesType ? "" : "none";
     });
-}
+  }
+
+  // Event listeners
+  orderSearch.addEventListener("input", filterOrders);
+  orderStatusFilter.addEventListener("change", filterOrders);
+  orderTypeFilter.addEventListener("change", filterOrders);
 
 
 
-function displayOrderDetails(order) {
-  const orderDate = new Date(order.order_date);
-  const formattedDate = orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  const formattedTime = orderDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  // Close modals when clicking outside
+  window.onclick = function(event) {
+    const orderModal = document.getElementById('orderDetailsModal');
+    const imageModal = document.getElementById('imageModal');
+
+    if (event.target === orderModal) {
+      orderModal.style.display = 'none';
+    }
+    if (event.target === imageModal) {
+      imageModal.style.display = 'none';
+    }
+  };
+
+  // Proof image modal
+  function viewImage(src) {
+    document.getElementById('modalImage').src = src;
+    document.getElementById('imageModal').style.display = 'block';
+  }
+  function closeImageModal() {
+    document.getElementById('imageModal').style.display = 'none';
+  }
+
+  // Order details modal
+  function viewOrderDetails(orderId) {
+    document.getElementById('orderDetailsContent').innerHTML = '<div style="text-align: center; padding: 20px;">Loading order details...</div>';
+    document.getElementById('orderDetailsModal').style.display = 'block';
 
 
-  const content = `
-    <div class="order-details">
-      <div class="order-section">
-        <h3>Order Information</h3>
-        <p><strong>Order ID:</strong> #${String(order['o_id']).padStart(5, '0')}</p>
-        <p><strong>Order Date:</strong> ${formattedDate}</p>
-        <p><strong>Order Time:</strong> ${formattedTime}</p>
-        <p><strong>Order Type:</strong> ${order.order_type ? order.order_type.charAt(0).toUpperCase() + order.order_type.slice(1) : 'Delivery'}</p>
-        <p><strong>Order Status:</strong> 
-                    <span class="status ${order.order_status}">
-                        ${order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1)}
-                    </span>
-                </p>
-        <p><strong>Payment Method:</strong> 
-            <span class="payment-method">${order.payment_method || 'Cash on Delivery'}</span>
-        </p>
-        <p><strong>Proof of Payment:</strong><br>
-            ${order.proof_of_payment 
-              ? `<a href="../../uploads/payment_proof/${order.proof_of_payment}" target="_blank">
-                     <img src="../../uploads/payment_proofs/${order.proof_of_payment}" 
-                          alt="Proof of Payment" style="max-width:200px; margin-top:8px; border:1px solid #ccc; border-radius:6px;">
-                 </a>`
-              : '<span style="color:#888;">None</span>'
-            }
-        </p>
-      </div>
 
-      <div class="order-section">
-        <h3>Customer Information</h3>
-        <p><strong>Full Name:</strong> ${order.fullname || 'Guest Customer'}</p>
-        <p><strong>Email:</strong> ${order.email || 'N/A'}</p>
-        <p><strong>Phone Number:</strong> ${order.phone_number || 'N/A'}</p>
-        <p><strong>Delivery Address:</strong> ${order.delivery_address || order.address || 'N/A'}</p>
-      </div>
+    fetch('get-order-details.php?order_id=' + orderId)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          displayOrderDetails(data.order);
+        } else {
+          document.getElementById('orderDetailsContent').innerHTML = '<div style="color:red; text-align:center;">Error: ' + data.error + '</div>';
+        }
+      })
+      .catch(err => {
+        document.getElementById('orderDetailsContent').innerHTML = '<div style="color:red; text-align:center;">Error loading order details</div>';
+      });
+  }
 
 
-      <div class="order-section">
-        <h3>Order Items</h3>
-        <table class="order-items-table">
-          <thead>
-            <tr>
-              <th>Product Name</th>
-              <th>Quantity</th>
-              <th>Unit Price</th>
-              <th>Subtotal</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${order.items.map(item => `
+
+  function displayOrderDetails(order) {
+    const orderDate = new Date(order.order_date);
+    const formattedDate = orderDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const formattedTime = orderDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+
+    const content = `
+      <div class="order-details">
+        <div class="order-section">
+          <h3>Order Information</h3>
+          <p><strong>Order ID:</strong> #${String(order['o_id']).padStart(5, '0')}</p>
+          <p><strong>Reference Number:</strong> ${order.reference_number || 'N/A'}</p>
+          <p><strong>Order Date:</strong> ${formattedDate}</p>
+          <p><strong>Order Time:</strong> ${formattedTime}</p>
+          <p><strong>Order Type:</strong> ${order.order_type ? order.order_type.charAt(0).toUpperCase() + order.order_type.slice(1) : 'Delivery'}</p>
+          <p><strong>Order Status:</strong> 
+                      <span class="status ${order.order_status}">
+                          ${order.order_status.charAt(0).toUpperCase() + order.order_status.slice(1)}
+                      </span>
+                  </p>
+          <p><strong>Payment Method:</strong> 
+                      <span class="payment-method">${order.payment_method || 'Cash'}</span>
+                  </p>
+                  <p><strong>Proof of Payment:</strong><br>
+                      ${order.proof_of_payment 
+                          ? `<a href="../../uploads/payment_proofs/${order.proof_of_payment}" target="_blank">
+                                <img src="../../uploads/payment_proofs/${order.proof_of_payment}" 
+                                      alt="Proof of Payment" style="max-width:200px; margin-top:8px; border:1px solid #ccc; border-radius:6px;">
+                            </a>`
+                          : '<span style="color:#888;">None</span>'
+                      }
+            </p>
+        </div>
+
+        <div class="order-section">
+          <h3>Customer Information</h3>
+          <p><strong>Full Name:</strong> ${order.fullname || 'Guest Customer'}</p>
+          <p><strong>Email:</strong> ${order.email || 'N/A'}</p>
+          <p><strong>Phone Number:</strong> ${order.phone_number || 'N/A'}</p>
+          <p><strong>Delivery Address:</strong> ${order.delivery_address || order.address || 'N/A'}</p>
+        </div>
+
+
+        <div class="order-section">
+          <h3>Order Items</h3>
+          <table class="order-items-table">
+            <thead>
               <tr>
-                <td>${item.product_name || 'Unknown Product'}</td>
-                <td>${item.quantity}</td>
-                <td>₱${parseFloat(item.price_at_purchase).toFixed(2)}</td>
-                <td>₱${(parseFloat(item.price_at_purchase) * parseInt(item.quantity)).toFixed(2)}</td>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Subtotal</th>
               </tr>
-            `).join('')}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="3"><strong>Total Amount:</strong></td>
-              <td><strong>₱${parseFloat(order.total_amount).toFixed(2)}</strong></td>
-            </tr>
-          </tfoot>
-        </table>
+            </thead>
+            <tbody>
+              ${order.items.map(item => `
+                <tr>
+                  <td>${item.product_name || 'Unknown Product'}</td>
+                  <td>${item.quantity}</td>
+                  <td>₱${parseFloat(item.price_at_purchase).toFixed(2)}</td>
+                  <td>₱${(parseFloat(item.price_at_purchase) * parseInt(item.quantity)).toFixed(2)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3"><strong>Total Amount:</strong></td>
+                <td><strong>₱${parseFloat(order.total_amount).toFixed(2)}</strong></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
       </div>
-    </div>
-  `;
-  document.getElementById('orderDetailsContent').innerHTML = content;
-}
+    `;
+    document.getElementById('orderDetailsContent').innerHTML = content;
+  }
 
-function closeOrderModal() {
-  document.getElementById('orderDetailsModal').style.display = 'none';
-}
+  function closeOrderModal() {
+    document.getElementById('orderDetailsModal').style.display = 'none';
+  }
+
+
+  //Sends email for change order status
+  document.addEventListener("DOMContentLoaded", function () {
+  const dropdowns = document.querySelectorAll(".order-status");
+
+  dropdowns.forEach(select => {
+    select.addEventListener("change", async function () {
+      const orderId = this.dataset.orderId;
+      const customerEmail = this.dataset.customerEmail;
+      const referenceNumber = this.dataset.referenceNumber;
+      const newStatus = this.value;
+
+      if (!orderId || !customerEmail) {
+        alert("Missing order information!");
+        return;
+      }
+
+      const confirmChange = confirm(`Change order status to "${newStatus}"?`);
+      if (!confirmChange) {
+        this.selectedIndex = [...this.options].findIndex(opt => opt.defaultSelected);
+        return;
+      }
+
+      // Update status in database
+      try {
+        const response = await fetch("orders-email.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ order_id: orderId, new_status: newStatus })
+        });
+
+        const result = await response.json();
+
+        if (!result.success) {
+          alert("Database update failed!");
+          return;
+        }
+
+        // Build default Gmail email
+        const subject = encodeURIComponent(`Order Update: ${newStatus.toUpperCase()} - Ref #${referenceNumber}`);
+        let body = "";
+
+        switch (newStatus.toLowerCase()) {
+          case "processing":
+            body = `Good day!\n\nYour order (Ref #${referenceNumber}) is now being processed.\nOur team is preparing your items.\n\nThank you for choosing Kesong Puti!`;
+            break;
+          case "shipped":
+            body = `Good news!\n\nYour order (Ref #${referenceNumber}) has been shipped.\nIt's on its way to you!\n\nThank you for your patience.`;
+            break;
+          case "delivered":
+            body = `Hello!\n\nYour order (Ref #${referenceNumber}) has been delivered successfully.\nWe hope you enjoy your purchase!\n\nWe’d love to hear your feedback.`;
+            break;
+          case "cancelled":
+            body = `Hi,\n\nWe’re sorry to inform you that your order (Ref #${referenceNumber}) has been cancelled.\nIf you have any questions, please contact us.`;
+            break;
+          default:
+            body = `Your order (Ref #${referenceNumber}) status has been updated to "${newStatus}".`;
+            break;
+        }
+
+        // Open Gmail Compose
+        window.open(
+          `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(customerEmail)}&su=${subject}&body=${encodeURIComponent(body)}`,
+          "_blank"
+        );
+
+        alert(`Status updated successfully! Gmail will open for you to send the message.`);
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Error updating order status.");
+      }
+    });
+  });
+});
+
+
+
+
 </script>
 <!-- FUNCTIONS -->
 

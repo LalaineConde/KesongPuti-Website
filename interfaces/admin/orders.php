@@ -119,12 +119,6 @@ mysqli_close($connection);
             <?php if (empty($orders)): ?>
               <tr>
                 <td colspan="8" style="text-align: center; padding: 20px;">No orders found</td>
-
-
-
-
-
-
               </tr>
             <?php else: ?>
               <?php foreach ($orders as $order): ?>
@@ -260,7 +254,7 @@ function displayOrderDetails(order) {
                 </p>
                 <p><strong>Proof of Payment:</strong><br>
                     ${order.proof_of_payment 
-                        ? `<a href="../../uploads/payment_proof/${order.proof_of_payment}" target="_blank">
+                        ? `<a href="../../uploads/payment_proofs/${order.proof_of_payment}" target="_blank">
                                <img src="../../uploads/payment_proofs/${order.proof_of_payment}" 
                                     alt="Proof of Payment" style="max-width:200px; margin-top:8px; border:1px solid #ccc; border-radius:6px;">
                            </a>`
@@ -309,10 +303,21 @@ function displayOrderDetails(order) {
         </div>
     `;
     document.getElementById('orderDetailsContent').innerHTML = content;
-}
-function closeOrderModal() {
-  document.getElementById('orderDetailsModal').style.display = 'none';
-}
+    }
+    function closeOrderModal() {
+      document.getElementById('orderDetailsModal').style.display = 'none';
+    }
+
+  //Reference number
+    function generateReferenceNumber($orderId) {
+    $random = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"), 0, 4);
+    return "REF" . $orderId . $random;
+    }
+
+
+
+
+
 </script>
 </body>
 </html>

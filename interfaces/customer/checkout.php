@@ -137,7 +137,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'store_info') {
             <img id="ewallet-preview" alt="E-Wallet Proof Preview" style="display:none; max-width:200px;"/>
           </div>
           <!-- unified name: payment_proof -->
-          <input type="file" id="ewallet-proof" name="payment_proof" accept="image/*" />
+          <input type="file" id="ewallet-proof" name="ewallet_proof" accept="image/*" />
+          <input type="file" id="bank-proof" name="bank_proof" accept="image/*" />
           <button type="button" id="ewallet-remove" class="btn btn-sm btn-danger" style="display:none; margin-top:5px;">Delete Proof</button>
         </div>
       </div>
@@ -190,6 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       itemsEl.innerHTML='<p class="text-muted">Your cart is empty.</p>'; 
       return null;
     }
+    
     let sum=0;
     cart.forEach((p,index)=>{
       const name=p.name||p.product_name||"Unnamed";
@@ -407,7 +409,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       if (result.status === 'success') {
-        Swal.fire({ icon: 'success', title: 'Order placed!', text: 'Your order has been placed successfully.' })
+        Swal.fire({ icon: 'success', title: 'Order placed!', text: 'Your order has been placed successfully. Please kindly wait for an update status of your order. Thank you!' })
         .then(() => {
           localStorage.removeItem('cart');
           window.location.href = 'products.php';
