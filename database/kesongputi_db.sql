@@ -1,9 +1,9 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 02, 2025 at 05:33 PM
+-- Generation Time: Oct 09, 2025 at 08:52 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -225,9 +225,16 @@ INSERT INTO `customers` (`c_id`, `fullname`, `phone_number`, `email`, `address`)
 (11, 'Russell Garcia', '09234751220', 'russell@example.com', 'B-8 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
 (12, 'JB Alico', '09551223482', 'jb@example.com', 'B- 20 L-10, N/A, Anos, Los Baños, Laguna, 4030'),
 (20, 'Trisha Lopez', '09164457812', 'trisha@example.com', 'Pickup on 2025-10-11 at 16:30'),
-(21, 'lalaine conde', '09123432874', 'lalaineconde11@gmail.com', '103, bonggavilla st., brgy. bubukal, santa cruz, laguna 4009'),
-(22, 'sample sample', '09123432874', 'lalaineconde11@gmail.com', '103, bonggavilla st., brgy. bubukal, santa cruz, laguna 4009'),
-(23, 'sample sample', '09123432874', 'lalaineconde11@gmail.com', '103, bonggavilla st., brgy. bubukal, santa cruz, laguna 4009');
+(22, 'sample sample', '09445488523', 'sample@sample.com', 'Pickup on 2025-10-11 at 12:30'),
+(23, 'sample sample', '09234751220', 'sample@sample.com', 'Pickup on 2025-10-11 at 15:40'),
+(24, 'sample sample', '09234751220', 'sample@sample.com', 'Pickup on 2025-10-11 at 15:41'),
+(25, 'sample sample', '09445488523', 'sample@sample.com', 'Pickup on 2025-10-11 at 16:45'),
+(26, 'sample sample', '09445488523', 'sample@sample.com', 'Pickup on 2025-10-11 at 16:55'),
+(27, 'sample sample', '09445488523', 'sample@sample.com', 'Pickup on 2025-10-11 at 16:00'),
+(28, 'sample sample', '09123456789', 'sample@sample.com', 'Pickup on 2025-10-11 at 08:03'),
+(29, 'sample sample', '09415582331', 'sample@sample.com', '104, Gold, Anos, Los Baños, Laguna 4030'),
+(30, 'sample sample', '09445488523', 'sample@sample.com', '104, Gold, Anos, Los Baños, Laguna 4030'),
+(31, 'sample sample', '09415582331', 'sample@sample.com', '104, Gold, Anos, Los Baños, Laguna 4030');
 
 -- --------------------------------------------------------
 
@@ -248,8 +255,7 @@ CREATE TABLE `faqs` (
 
 INSERT INTO `faqs` (`id`, `question`, `answer`, `created_at`) VALUES
 (3, 'What is Kesong Puti?', 'Kesong Puti is a traditional Filipino white cheese made from carabaos milk with a delicate creamy flavor.', '2025-09-07 10:44:58'),
-(17, 'sample questions', 'sample answer', '2025-09-13 03:13:18'),
-(18, 'sample', 'sample', '2025-10-02 03:44:39');
+(17, 'sample questions', 'sample answer', '2025-09-13 03:13:18');
 
 -- --------------------------------------------------------
 
@@ -284,7 +290,7 @@ CREATE TABLE `footer_settings` (
 --
 
 INSERT INTO `footer_settings` (`id`, `logo`, `description`, `facebook_link`, `instagram_link`, `email`, `phone`, `address`, `quick_links`, `updated_at`, `bottom_text`, `background_image`, `mon_hours`, `tue_hours`, `wed_hours`, `thu_hours`, `fri_hours`, `sat_hours`, `sun_hours`) VALUES
-(1, 'logo.png', 'Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. We take pride in delivering locally made, high-quality products straight to your doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"},\r\n{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},\r\n{\"name\":\"Terms and Condition\",\"url\":\"terms-condition.php\"}]', '2025-10-02 03:44:06', 'Kesong Puti © 2026 All Rights Reserved', '1758223503_leave.png', '08:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM');
+(1, 'logo.png', 'Kesong Puti is your go-to online shop for fresh, authentic Filipino cottage cheese. We take pride in delivering locally made, high-quality products straight to your doorstep, preserving the rich tradition of our hometown delicacy.', 'https://www.facebook.com/AlohaKesorbetes', 'https://www.instagram.com/arlene_macalinao_kesongputi/', 'hernandezshy00@gmail.com', '+63 999 715 9226', '4883 Sitio 3 Brgy. Bagumbayan, Santa Cruz, Philippines, 4009', '[{\"name\":\"Home\",\"url\":\"index.php\"},{\"name\":\"Products\",\"url\":\"products.php\"},{\"name\":\"About Us\",\"url\":\"about.php\"},{\"name\":\"Feedback\",\"url\":\"feedback.php\"},\r\n{\"name\":\"FAQ\",\"url\":\"FAQ.php\"},{\"name\":\"Contact Us\",\"url\":\"contact.php\"},\r\n{\"name\":\"Terms and Condition\",\"url\":\"terms-condition.php\"}]', '2025-09-18 19:25:03', 'Kesong Puti © 2026 All Rights Reserved', '1758223503_leave.png', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM', '07:00AM - 05:00PM');
 
 -- --------------------------------------------------------
 
@@ -415,17 +421,17 @@ CREATE TABLE `home_settings` (
 --
 
 INSERT INTO `home_settings` (`id`, `setting_key`, `setting_value`) VALUES
-(1155, 'home_header_font_color_part1', '#0D8540'),
-(1156, 'home_header_font_color_part2', '#F4C40F'),
-(1157, 'home_header_font_color_part3', '#0D8540'),
-(1158, 'del_pick_font_color_title1', '#058240'),
-(1159, 'del_pick_font_color_title2', '#058240'),
-(1160, 'del_pick_font_color_title3', '#058240'),
-(1161, 'del_pick_font_color_title4', '#F4C40F'),
-(1162, 'del_pick_image', ''),
-(1163, 'home_featured_title', 'The Original & Classics'),
-(1164, 'home_reasons_heading', 'Why is it Good?'),
-(1165, 'about_heading', 'OUR FAMILY’S LEGACY OF KESONG PUTI');
+(1133, 'home_header_font_color_part1', '#0D8540'),
+(1134, 'home_header_font_color_part2', '#F4C40F'),
+(1135, 'home_header_font_color_part3', '#0D8540'),
+(1136, 'del_pick_font_color_title1', '#058240'),
+(1137, 'del_pick_font_color_title2', '#058240'),
+(1138, 'del_pick_font_color_title3', '#058240'),
+(1139, 'del_pick_font_color_title4', '#F4C40F'),
+(1140, 'del_pick_image', ''),
+(1141, 'home_featured_title', 'The Original & Classics'),
+(1142, 'home_reasons_heading', 'Why is it Good?'),
+(1143, 'about_heading', 'OUR FAMILY’S LEGACY OF KESONG PUTI');
 
 -- --------------------------------------------------------
 
@@ -473,28 +479,27 @@ CREATE TABLE `orders` (
   `order_status` enum('pending','verified','payment-failed','processing','ready-to-pick-up','out-for-delivery','completed','declined-area','cancelled','returned') DEFAULT 'pending',
   `delivery_address` varchar(255) NOT NULL,
   `owner_id` int(11) NOT NULL,
-  `order_type` enum('delivery','pickup') DEFAULT 'delivery'
+  `order_type` enum('delivery','pickup') DEFAULT 'delivery',
+  `reference_number` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`, `payment_method`, `proof_of_payment`, `order_status`, `delivery_address`, `owner_id`, `order_type`) VALUES
-(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'cash', NULL, 'pending', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1, 'delivery'),
-(2, 2, 0, '2025-09-19 17:32:55', 100.00, 'cash', NULL, 'completed', '', 3, 'delivery'),
-(3, 3, 0, '2025-09-19 17:38:40', 650.00, 'cash', NULL, 'completed', '', 3, 'delivery'),
-(4, 4, 0, '2025-09-24 02:20:19', 320.00, 'gcash', 'proof_68d2e4e37cf5c.png', 'pending', '', 1, 'delivery'),
-(10, 7, 0, '2025-10-01 01:14:59', 190.00, 'bank', '1759252499_522845871_740647665242049_262399641837452041_n.jpg', 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 0, 'delivery'),
-(11, 8, 0, '2025-10-01 01:30:01', 180.00, 'bank', '1759253401_522845871_740647665242049_262399641837452041_n.jpg', 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 0, 'delivery'),
-(12, 9, 0, '2025-10-01 02:18:08', 190.00, 'bank', NULL, 'pending', 'B-48 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(13, 10, 0, '2025-10-01 02:22:48', 160.00, 'ewallet', NULL, 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(14, 11, 0, '2025-10-01 02:36:16', 100.00, 'bank', '1759257376_68dc2320750cf.png', 'pending', 'B-8 L-10, N/A, Anos, Los Baños, Laguna, 4030', 3, 'delivery'),
-(15, 12, 0, '2025-10-02 00:52:56', 320.00, 'ewallet', '1759337576_68dd5c68c541a.jpg', 'completed', 'B- 20 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery'),
-(23, 20, 0, '2025-10-02 02:29:47', 160.00, 'ewallet', NULL, 'pending', 'Pickup on 2025-10-11 at 16:30', 1, 'pickup'),
-(24, 21, 0, '2025-10-02 10:43:12', 180.00, 'bank', '1759372992_68dde6c02857d.jpg', 'pending', '103, bonggavilla st., brgy. bubukal, santa cruz, laguna 4009', 3, 'delivery'),
-(25, 22, 0, '2025-10-02 11:46:43', 190.00, 'ewallet', NULL, 'pending', '103, bonggavilla st., brgy. bubukal, santa cruz, laguna 4009', 1, 'delivery'),
-(26, 23, 0, '2025-10-02 23:05:38', 190.00, 'bank', '1759417538_68de94c27b3dc.jpg', 'pending', '103, bonggavilla st., brgy. bubukal, santa cruz, laguna 4009', 1, 'delivery');
+INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`, `payment_method`, `proof_of_payment`, `order_status`, `delivery_address`, `owner_id`, `order_type`, `reference_number`) VALUES
+(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'cash', NULL, '', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1, 'delivery', 'REF16991'),
+(2, 2, 0, '2025-09-19 17:32:55', 100.00, 'cash', NULL, 'pending', '', 3, 'delivery', 'REF26776'),
+(3, 3, 0, '2025-09-19 17:38:40', 650.00, 'cash', NULL, 'pending', '', 3, 'delivery', 'REF32908'),
+(4, 4, 0, '2025-09-24 02:20:19', 320.00, 'gcash', 'proof_68d2e4e37cf5c.png', 'pending', '', 1, 'delivery', 'REF44212'),
+(10, 7, 0, '2025-10-01 01:14:59', 190.00, 'bank', '1759252499_522845871_740647665242049_262399641837452041_n.jpg', 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 0, 'delivery', 'REF102339'),
+(11, 8, 0, '2025-10-01 01:30:01', 180.00, 'bank', '1759253401_522845871_740647665242049_262399641837452041_n.jpg', 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 0, 'delivery', 'REF119057'),
+(12, 9, 0, '2025-10-01 02:18:08', 190.00, 'bank', NULL, 'pending', 'B-48 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery', 'REF128273'),
+(13, 10, 0, '2025-10-01 02:22:48', 160.00, 'ewallet', NULL, 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery', 'REF134195'),
+(14, 11, 0, '2025-10-01 02:36:16', 100.00, 'bank', '1759257376_68dc2320750cf.png', 'pending', 'B-8 L-10, N/A, Anos, Los Baños, Laguna, 4030', 3, 'delivery', 'REF146153'),
+(15, 12, 0, '2025-10-02 00:52:56', 320.00, 'ewallet', '1759337576_68dd5c68c541a.jpg', 'pending', 'B- 20 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery', 'REF158183'),
+(27, 26, 0, '2025-10-02 16:54:15', 180.00, 'bank', '1759395255_68de3db70e37d.jpg', 'pending', 'Pickup on 2025-10-11 at 16:55', 3, 'pickup', 'REF272460'),
+(32, 31, 0, '2025-10-03 01:23:59', 190.00, 'ewallet', '1759425839_ewallet_68deb52fb7d89.jpg', 'pending', '104, Gold, Anos, Los Baños, Laguna 4030', 1, 'delivery', 'REF327747');
 
 -- --------------------------------------------------------
 
@@ -525,10 +530,8 @@ INSERT INTO `order_items` (`order_item_id`, `o_id`, `product_id`, `quantity`, `p
 (210, 13, 19, 1, 160.00),
 (211, 14, 22, 1, 100.00),
 (212, 15, 20, 1, 320.00),
-(220, 23, 19, 1, 160.00),
-(221, 24, 35, 1, 180.00),
-(222, 25, 34, 1, 190.00),
-(223, 26, 34, 1, 190.00);
+(224, 27, 35, 1, 180.00),
+(229, 32, 34, 1, 190.00);
 
 -- --------------------------------------------------------
 
@@ -663,9 +666,7 @@ INSERT INTO `reviews` (`review_id`, `name`, `email`, `rating`, `feedback`, `crea
 (11, 'JB Alico', 'jaironbartalico@gmail.com', '★★★☆☆', 'Hello this is just a sample feedback message!!', '2025-08-27 08:27:40', 'admin_3', NULL, NULL, NULL),
 (12, 'Russell Garcia', 'jonrussell@gmail.com', '★★★☆☆', 'Hello, sample feedback message!', '2025-08-27 18:22:14', 'admin_1', NULL, NULL, NULL),
 (198, 'Lara Fremista', 'larafremista21@gmail.com', '5', 'keso', '2025-09-23 16:57:47', 'super_1', NULL, '[\"uploads\\/reviews\\/1758646667_0_0_528149698_2466653143708497_6422652806459652480_n.jpg\"]', 101),
-(199, 'Lara Fremista', 'larafremista21@gmail.com', '3', 'sorbetes', '2025-09-23 16:57:47', 'super_1', NULL, '[\"uploads\\/reviews\\/1758646667_1_0_gallon.png\",\"uploads\\/reviews\\/1758646667_1_1_half gallon.png\",\"uploads\\/reviews\\/1758646667_1_2_liter.png\",\"uploads\\/reviews\\/1758646667_1_3_med tub.png\",\"uploads\\/reviews\\/1758646667_1_4_pint.png\",\"uploads\\/reviews\\/1758646667_1_5_small cup.png\",\"uploads\\/reviews\\/1758646667_1_6_small tub.png\"]', 102),
-(206, 'lalaine conde', 'lalaineconde11@gmail.com', '5', 'sa', '2025-10-02 14:42:46', 'admin_3', NULL, '[\"uploads\\/reviews\\/1759416166_0_0_522845871_740647665242049_262399641837452041_n.jpg\"]', 221),
-(207, 'Trisha Lopez', 'trisha@example.com', '4', 'sa', '2025-10-02 14:43:09', 'super_1', NULL, '[\"uploads\\/reviews\\/1759416189_0_0_med tub.png\"]', 220);
+(199, 'Lara Fremista', 'larafremista21@gmail.com', '3', 'sorbetes', '2025-09-23 16:57:47', 'super_1', NULL, '[\"uploads\\/reviews\\/1758646667_1_0_gallon.png\",\"uploads\\/reviews\\/1758646667_1_1_half gallon.png\",\"uploads\\/reviews\\/1758646667_1_2_liter.png\",\"uploads\\/reviews\\/1758646667_1_3_med tub.png\",\"uploads\\/reviews\\/1758646667_1_4_pint.png\",\"uploads\\/reviews\\/1758646667_1_5_small cup.png\",\"uploads\\/reviews\\/1758646667_1_6_small tub.png\"]', 102);
 
 -- --------------------------------------------------------
 
@@ -941,6 +942,7 @@ ALTER TABLE `inbox_messages`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`o_id`),
+  ADD UNIQUE KEY `reference_number` (`reference_number`),
   ADD KEY `fk_orders_customer` (`c_id`);
 
 --
@@ -1053,13 +1055,13 @@ ALTER TABLE `cta_sections`
 -- AUTO_INCREMENT for table `customers`
 --
 ALTER TABLE `customers`
-  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `c_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT for table `faqs`
 --
 ALTER TABLE `faqs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `footer_settings`
@@ -1101,7 +1103,7 @@ ALTER TABLE `home_reasons`
 -- AUTO_INCREMENT for table `home_settings`
 --
 ALTER TABLE `home_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1167;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1145;
 
 --
 -- AUTO_INCREMENT for table `inbox_messages`
@@ -1113,19 +1115,19 @@ ALTER TABLE `inbox_messages`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `o_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=224;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=230;
 
 --
 -- AUTO_INCREMENT for table `page_headers`
 --
 ALTER TABLE `page_headers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=431;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=426;
 
 --
 -- AUTO_INCREMENT for table `payment_methods`
@@ -1143,7 +1145,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=208;
+  MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
 -- AUTO_INCREMENT for table `store`
