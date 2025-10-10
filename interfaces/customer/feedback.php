@@ -91,7 +91,7 @@ $reviewResult = mysqli_query($connection, $reviewQuery);
     <?php endif; ?>
   </div>
 
-  <a href="review_form.php" class="review-btn btn btn-primary mt-3">Leave a Review</a>
+  <a href="review_form.php" class="review-btn">Leave a Review</a>
 </section>
 
 <!-- Media Carousel Modal -->

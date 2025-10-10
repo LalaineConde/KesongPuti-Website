@@ -17,17 +17,19 @@ $order_id = intval($_GET['order_id'] ?? 0);
 $orderInfo = null;
 $alreadyReviewed = false;
 
-// Handle order reference input if no order_id in URL
+// Handle order reference input if no reference_number in URL
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_reference'])) {
-    $order_id = intval($_POST['order_id']);
-    header("Location: review_form.php?order_id=$order_id");
+    $reference_number = mysqli_real_escape_string($connection, $_POST['reference_number']);
+    header("Location: review_form.php?reference_number=$reference_number");
     exit;
 }
 
+
 // Fetch order + customer info
-if ($order_id > 0) {
+$reference_number = $_GET['reference_number'] ?? '';
+if (!empty($reference_number)) {
     $orderQuery = mysqli_query($connection, "
-        SELECT o.o_id, o.owner_id, c.fullname, c.email,
+        SELECT o.o_id, o.reference_number, o.owner_id, c.fullname, c.email,
                CASE 
                    WHEN sa.super_id IS NOT NULL THEN CONCAT('super_', sa.super_id)
                    WHEN a.admin_id IS NOT NULL THEN CONCAT('admin_', a.admin_id)
@@ -36,9 +38,10 @@ if ($order_id > 0) {
         INNER JOIN customers c ON o.c_id = c.c_id
         LEFT JOIN super_admin sa ON o.owner_id = sa.super_id
         LEFT JOIN admins a ON o.owner_id = a.admin_id
-        WHERE o.o_id = $order_id
+        WHERE o.reference_number = '$reference_number'
         LIMIT 1
     ");
+
     $orderInfo = mysqli_fetch_assoc($orderQuery);
 
     if (!$orderInfo) {
@@ -47,16 +50,17 @@ if ($order_id > 0) {
     }
     $recipient = $orderInfo['recipient'];
 
-    // Check if the order is already reviewed
-    $reviewCheckQuery = mysqli_query($connection, "
-        SELECT COUNT(*) as review_count
-        FROM reviews
-        WHERE order_item_id IN (
-            SELECT order_item_id
-            FROM order_items
-            WHERE o_id = {$orderInfo['o_id']}
-        )
-    ");
+// Check if the order is already reviewed
+$reviewCheckQuery = mysqli_query($connection, "
+    SELECT COUNT(*) as review_count
+    FROM reviews
+    WHERE order_item_id IN (
+        SELECT order_item_id
+        FROM order_items
+        WHERE o_id = {$orderInfo['o_id']}
+    )
+");
+
     $reviewCheck = mysqli_fetch_assoc($reviewCheckQuery);
     $alreadyReviewed = $reviewCheck['review_count'] > 0;
 
@@ -145,7 +149,8 @@ include('../../includes/customer-dashboard.php');
             <h4>Enter Order Reference</h4>
             <form method="post">
                 <div class="mb-3">
-                    <input type="number" name="order_id" class="form-control" placeholder="Enter your Order ID" required>
+                    <input type="text" name="reference_number" class="form-control" placeholder="Enter your Reference Number" required>
+
                 </div>
                 <button type="submit" name="submit_reference" class="btn-review btn-primary">Go to Review Form</button>
             </form>

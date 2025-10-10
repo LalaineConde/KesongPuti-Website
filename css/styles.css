@@ -2168,7 +2168,7 @@ input[type="checkbox"]:hover {
 
 .review-btn {
   font-family: var(--primary-font) !important;
-  background-color: var(--button1-color) !important;
+  background-color: var(--button3-color) !important;
   color: var(--black);
   font-weight: bold;
   padding: 10px 25px;
@@ -2180,9 +2180,9 @@ input[type="checkbox"]:hover {
   text-decoration: none;
 }
 
-.review-btn:hover {
-  background-color: #241510;
-}
+.review-btn:hover{
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+ }
 
 
 
