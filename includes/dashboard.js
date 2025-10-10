@@ -84,8 +84,8 @@ window.addEventListener("load", function () {
         text: "Are you sure you want to logout?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#ff6b6b",
-        cancelButtonColor: "#6c757d",
+        confirmButtonColor: "#dc3545",
+        cancelButtonColor: "#3085d6",
         confirmButtonText: "Yes, logout",
         cancelButtonText: "Cancel"
       }).then((result) => {

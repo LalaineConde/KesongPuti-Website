@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Swal.fire({
             icon: 'success',
             text: toastMessage,
-            confirmButtonColor: '#dc3545'
+            confirmButtonColor: '#058240'
         });
     }
 

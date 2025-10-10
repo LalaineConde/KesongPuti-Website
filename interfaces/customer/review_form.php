@@ -385,7 +385,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Swal.fire({
             icon: 'success',
             text: toastMessage,
-            confirmButtonColor: '#28a745'
+            confirmButtonColor: '#058240'
         }).then((result) => {
             // Redirect to feedback.php after clicking OK
             if (result.isConfirmed) {

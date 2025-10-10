@@ -64,10 +64,10 @@ $quickLinks = json_decode($footer['quick_links'], true);
 
         <p class="small mt-2"><?php echo htmlspecialchars($footer['description']); ?></p>
 
-        <div class="social-icons d-flex justify-content-center gap-2 mt-2">
+        <!-- <div class="social-icons d-flex justify-content-center gap-2 mt-2">
           <a href="<?php echo htmlspecialchars($footer['facebook_link']); ?>" target="_blank" class="social-circle facebook"><i class="bi bi-facebook"></i></a>
           <a href="<?php echo htmlspecialchars($footer['instagram_link']); ?>" target="_blank" class="social-circle instagram"><i class="bi bi-instagram"></i></a>
-        </div>
+        </div> -->
       </div>
 
       <!-- Column 2: Quick Links & Contact Info -->
