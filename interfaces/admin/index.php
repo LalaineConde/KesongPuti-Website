@@ -12,7 +12,7 @@ $toast_message = ''; // Initialize variable for toast message
 
 // Check if the user is logged in as admin
 if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../../login.php');
+    header('Location: ../../index.php');
     exit();
 }
 

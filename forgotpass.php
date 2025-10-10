@@ -102,7 +102,7 @@ if (isset($_POST['set_password'])) {
             $toast_message = "Password changed successfully. You may now log in.";
             // Clear session
             unset($_SESSION['reset_email'], $_SESSION['reset_otp'], $_SESSION['otp_verified'], $_SESSION['otp_sent'], $_SESSION['reset_table']);
-            header("Location: login.php");
+            header("Location: index.php");
             exit();
         }
     } else {
@@ -135,7 +135,7 @@ if (isset($_POST['set_password'])) {
 <main>
     <section class="form-section">
         
-    <a href="login.php">
+    <a href="index.php">
         <img src="assets/logo.png" alt="NU Laguna Logo" class="logo-container"/>
     </a>
     
@@ -170,7 +170,7 @@ if (isset($_POST['set_password'])) {
             </form>
             <?php endif; ?>
             <p>
-                Back to <a href="login.php">Log In</a>
+                Back to <a href="index.php">Log In</a>
             </p>
         </div>
     </section>

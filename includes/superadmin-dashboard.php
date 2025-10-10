@@ -2,7 +2,7 @@
 
 if (!isset($_SESSION['email'])) {
     // If no session, force login
-    header('Location: ../login.php');
+    header('Location: ../index.php');
     exit();
 }
 
@@ -204,7 +204,7 @@ $admin_name = $row ? $row['username'] : 'Admin';
             </a>
           </li>
           <li>
-            <a href="../../login.php" id="logout-button">
+            <a href="../../index.php" id="logout-button">
               <i class="bi bi-box-arrow-right"></i>
               <span class="nav-item">Logout</span>
             </a>
