@@ -494,7 +494,7 @@ if (toastMessage) {
     Swal.fire({
         icon: 'success',
         text: toastMessage,
-        confirmButtonColor: '#0D8540'
+        confirmButtonColor: '#dc3545'
     });
 }
 
@@ -555,7 +555,7 @@ document.getElementById('del_pick_image').addEventListener('change', function(){
 
 
 <script>
-// ✅ Preview + remove newly selected images (before saving)
+// Preview + remove newly selected images (before saving)
 document.getElementById('about_images').addEventListener('change', function(){
     const previewContainer = document.getElementById('about-preview');
     previewContainer.innerHTML = ""; // clear old previews

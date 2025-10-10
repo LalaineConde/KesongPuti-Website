@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         Swal.fire({
             icon: 'success',
             text: toastMessage,
-            confirmButtonColor: '#28a745'
+            confirmButtonColor: '#dc3545'
         });
     }
 
@@ -123,8 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 text: "This FAQ will be deleted permanently.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#6c757d",
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#3085d6",
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
                 if (result.isConfirmed) {

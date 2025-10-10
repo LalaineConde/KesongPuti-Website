@@ -484,7 +484,7 @@ function showStatus(period) {
         title: "⚠️ Low Stock Alert",
         html: "<ul style='text-align:left; padding-left:20px;'><?php foreach ($low_stock_alert as $item) { echo "<li>" . addslashes($item) . "</li>"; } ?></ul>",
         icon: "warning",
-        confirmButtonColor: "#ff6b6b",
+        confirmButtonColor: "#dc3545",
         confirmButtonText: "Got it"
     });
 <?php endif; ?>

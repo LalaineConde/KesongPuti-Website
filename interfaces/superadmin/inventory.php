@@ -130,7 +130,7 @@ mysqli_close($connection);
         Swal.fire({
             icon: 'info', // can be 'success', 'error', 'warning', 'info', 'question'
             text: toastMessage,
-            confirmButtonColor: '#ff6b6b'
+            confirmButtonColor: '#dc3545'
         });
     }
     </script>   

@@ -351,7 +351,7 @@ if (isset($_POST['update_product'])) {
               Swal.fire({
                   icon: 'info',
                   text: toastMessage,
-                  confirmButtonColor: '#ff6b6b'
+                  confirmButtonColor: '#dc3545'
               });
           }
       </script> 
@@ -365,8 +365,8 @@ if (isset($_POST['update_product'])) {
                       text: "This product will be permanently deleted.",
                       icon: 'warning',
                       showCancelButton: true,
-                      confirmButtonColor: '#d33',
-                      cancelButtonColor: '#6c757d',
+                      confirmButtonColor: '#dc3545',
+                      cancelButtonColor: '#3085d6',
                       confirmButtonText: 'Yes, delete it!'
                   }).then((result) => {
                       if (result.isConfirmed) {

@@ -256,7 +256,7 @@ mysqli_close($connection);
         Swal.fire({
             icon: 'info', // can be 'success', 'error', 'warning', 'info', 'question'
             text: toastMessage,
-            confirmButtonColor: '#ff6b6b'
+            confirmButtonColor: '#dc3545'
         });
     }
     </script>   
@@ -322,7 +322,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 text: "This admin will be deleted permanently.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#d33",
+                confirmButtonColor: "#dc3545",
                 cancelButtonColor: "#3085d6",
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {

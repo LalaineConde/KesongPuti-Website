@@ -217,8 +217,8 @@ document.querySelectorAll(".delete-btn").forEach(btn => {
       text: "This payment method will be permanently deleted.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#ff6b6b",
-      cancelButtonColor: "#6c757d",
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#3085d6",
       confirmButtonText: "Yes, delete it!"
     }).then(result => {
       if (result.isConfirmed) {
@@ -244,15 +244,16 @@ document.querySelectorAll(".update-btn").forEach(btn => {
           <input type="hidden" name="edit_method_id" value="${id}">
 
           <div style="margin-bottom:12px;">
-            <label style="font-weight:bold;">Method Name</label>
-            <input class="swal2-input" style="width:95%;" name="edit_method_name" value="${method}" required>
+            <label style="font-weight:bold;text-decoration:none;border-bottom:none;">Method Name</label>
+            <input class="swal2-input" style="width:95%;margin:0;padding:8px 10px;display:block;" name="edit_method_name" value="${method}" required>
           </div>
 
           <div style="margin-bottom:12px;">
-            <label style="font-weight:bold;">Method Type</label>
+            <label style="font-weight:bold;text-decoration:none;border-bottom:none;">Method Type</label>
             <select class="swal2-select" name="edit_method_type" style="
               width:95%;
-              padding:0.625em;
+              margin:0;padding:8px 10px;
+              display:block;
               border:1px solid #d9d9d9;
               border-radius:0.25em;
               font-size:1.1em;
@@ -265,25 +266,42 @@ document.querySelectorAll(".update-btn").forEach(btn => {
           </div>
 
           <div style="margin-bottom:12px;">
-            <label style="font-weight:bold;">Account Name</label>
-            <input class="swal2-input" style="width:95%;" name="edit_account_name" value="${account}">
+            <label style="font-weight:bold;text-decoration:none;border-bottom:none;">Account Name</label>
+            <input class="swal2-input" style="width:95%;margin:0;padding:8px 10px;display:block;" name="edit_account_name" value="${account}">
           </div>
 
           <div style="margin-bottom:12px;">
-            <label style="font-weight:bold;">Account Number</label>
-            <input class="swal2-input" style="width:95%;" name="edit_account_number" value="${number}">
+            <label style="font-weight:bold;text-decoration:none;border-bottom:none;">Account Number</label>
+            <input class="swal2-input" style="width:95%;margin:0;padding:8px 10px;display:block;" name="edit_account_number" value="${number}">
           </div>
 
           <div style="margin-bottom:12px;text-align:center;">
             ${qr 
-              ? `<img src='../../uploads/payment_qr/${qr}' style='max-width:120px;margin:10px auto;display:block;border:1px solid #ddd;border-radius:8px;padding:4px;background:#fff;'>`
+              ? `<img src='../../uploads/payment_qr/${qr}' style='max-width:120px;margin:0;padding:8px 10px;display:block;border:1px solid #ddd;border-radius:8px;padding:4px;background:#fff;'>`
               : "<p style='color:#777;'>No QR uploaded</p>"}
             <input type="hidden" name="existing_qr_code" value="${qr}">
           </div>
 
           <div style="margin-bottom:12px;">
-            <label style="font-weight:bold;">Replace QR Code</label>
-            <input type="file" class="swal2-input" style="width:95%;" name="edit_qr_code" accept="image/*">
+            <label style="font-weight:bold;text-decoration:none;border-bottom:none;">Replace QR Code</label>
+            <input type="file" class="swal2-input" style="width:95%;margin:0;padding:8px 10px;display:block;" name="edit_qr_code" accept="image/*">
+          </div>
+
+
+          <div style="margin-bottom:12px;">
+            <label style="font-weight:bold;text-decoration:none;border-bottom:none;">Status</label>
+            <select class="swal2-select" name="edit_status" style="
+              width:95%;
+              margin:0;padding:8px 10px;
+              display:block;
+              border:1px solid #d9d9d9;
+              border-radius:0.25em;
+              font-size:1.1em;
+              color:#545454;
+            ">
+              <option value="published" ${status==="published"?"selected":""}>Published</option>
+              <option value="unpublished" ${status==="unpublished"?"selected":""}>Unpublished</option>
+            </select>
           </div>
         </form>
       `,
@@ -291,7 +309,8 @@ document.querySelectorAll(".update-btn").forEach(btn => {
       showCancelButton: true,
       confirmButtonText: "Save Changes",
       cancelButtonText: "Cancel",
-      confirmButtonColor: "#ff6b6b",
+      cancelButtonColor: '#3085d6',
+      confirmButtonColor: "#dc3545",
       width: "600px",
       preConfirm: () => {
         return new Promise(resolve => {
@@ -309,7 +328,7 @@ document.querySelectorAll(".update-btn").forEach(btn => {
         Swal.fire({
           icon: "success",
           text: "Payment method updated!",
-          confirmButtonColor: "#ff6b6b"
+          confirmButtonColor: "#dc3545"
         }).then(() => location.reload());
       }
     });

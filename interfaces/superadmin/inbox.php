@@ -161,7 +161,7 @@ $result = mysqli_query($connection, $sql);
         Swal.fire({
             icon: 'info', // can be 'success', 'error', 'warning', 'info', 'question'
             text: toastMessage,
-            confirmButtonColor: '#ff6b6b'
+            confirmButtonColor: '#dc3545'
         });
     }
     </script>   
@@ -235,8 +235,8 @@ $result = mysqli_query($connection, $sql);
               text: "This message will be deleted permanently!",
               icon: "warning",
               showCancelButton: true,
-              confirmButtonColor: "#ff6b6b",
-              cancelButtonColor: "#6c757d",
+              confirmButtonColor: "#dc3545",
+              cancelButtonColor: "#3085d6",
               confirmButtonText: "Yes, delete it!",
             }).then((result) => {
               if (result.isConfirmed) {
