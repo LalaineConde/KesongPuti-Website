@@ -87,7 +87,11 @@ $result = $stmt->get_result();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Method | Kesong Puti</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+      <!-- BOOTSTRAP ICONS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+    />
   <link rel="stylesheet" href="../../css/admin.css"/>
 </head>
 <body>
@@ -310,7 +314,7 @@ document.querySelectorAll(".update-btn").forEach(btn => {
       confirmButtonText: "Save Changes",
       cancelButtonText: "Cancel",
       cancelButtonColor: '#3085d6',
-      confirmButtonColor: "#dc3545",
+      confirmButtonColor: "#f4c400",
       width: "600px",
       preConfirm: () => {
         return new Promise(resolve => {

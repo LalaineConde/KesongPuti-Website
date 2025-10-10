@@ -274,11 +274,18 @@ document.querySelectorAll(".update-super-btn").forEach(button => {
         Swal.fire({
             title: "Update Super Admin",
             html: `
-                <input id="swal-super-username" class="swal2-input" placeholder="Username" value="${currentUsername}">
-                <input id="swal-super-store" class="swal2-input" placeholder="Store Name" value="${currentStore}">
-                <input id="swal-super-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}">
-            `,
+            <div style="text-align:left;">
+                <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Username</label>
+                <input id="swal-super-username" class="swal2-input" placeholder="Username" value="${currentUsername}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
+                <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Store Name</label>
+                <input id="swal-super-store" class="swal2-input" placeholder="Store Name" value="${currentStore}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
+                <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Email</label>
+                <input id="swal-super-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
+            </div>
+                `,
             confirmButtonText: "Update",
+            confirmButtonColor: "#f4c400",
+            cancelButtonColor: "#3085d6",
             showCancelButton: true,
             preConfirm: () => {
                 return {
@@ -353,11 +360,18 @@ document.addEventListener("DOMContentLoaded", function() {
             Swal.fire({
                 title: "Update Admin",
                 html: `
-                    <input id="swal-username" class="swal2-input" placeholder="Username" value="${currentUsername}">
-                    <input id="swal-store" class="swal2-input" placeholder="Store Name" value="${currentStore}">
-                    <input id="swal-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}">
-                `,
+                <div style="text-align:left;">
+                    <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Username</label>
+                    <input id="swal-username" class="swal2-input" placeholder="Username" value="${currentUsername}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
+                    <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Store Name</label>
+                    <input id="swal-store" class="swal2-input" placeholder="Store Name" value="${currentStore}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
+                    <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Email</label>
+                    <input id="swal-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
+                </div>
+                    `,
                 confirmButtonText: "Update",
+                confirmButtonColor: "#f4c400",
+                cancelButtonColor: "#3085d6",
                 showCancelButton: true,
                 preConfirm: () => {
                     return {
