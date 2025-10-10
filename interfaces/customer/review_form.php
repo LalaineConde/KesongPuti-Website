@@ -111,10 +111,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_feedback'])) {
 
         $media_json = !empty($uploadedFiles) ? json_encode($uploadedFiles) : null;
 
+// Check if the user chose anonymous
+$is_anonymous = isset($_POST['anonymous']) ? 1 : 0;
+
+// Determine name and email to store
+$reviewer_name = $is_anonymous ? 'Anonymous' : $orderInfo['fullname'];
+$reviewer_email = $is_anonymous ? null : $orderInfo['email'];
+
 $sql = "INSERT INTO reviews (name, email, rating, feedback, recipient, media, order_item_id, created_at)
-        VALUES ('{$orderInfo['fullname']}', '{$orderInfo['email']}', '$rating', '$comment', '{$recipient}', " .
-        ($media_json ? "'".mysqli_real_escape_string($connection, $media_json)."'" : "NULL") .
-        ", '$item_id', NOW())";
+        VALUES ('{$reviewer_name}', " . 
+        ($reviewer_email ? "'{$reviewer_email}'" : "''") . ",
+        '$rating', '$comment', '{$recipient}', " .
+        ($media_json ? "'".mysqli_real_escape_string($connection, $media_json)."'" : "NULL") . ",
+        '$item_id', NOW())";
+
 
 
 
@@ -176,9 +186,17 @@ include('../../includes/customer-dashboard.php');
             <form method="post" enctype="multipart/form-data" class="card p-4">
 
             <h4>Leave a Review</h4>
+
+            <div class="form-check mt-3">
+  <input class="form-check-input" type="checkbox" name="anonymous" id="anonymousCheck" value="1">
+  <label class="form-check-label" for="anonymousCheck">
+    Post review anonymously
+  </label>
+</div>
                 <div class="mb-3">
-                    <strong>Customer:</strong> <?= htmlspecialchars($orderInfo['fullname']) ?><br>
-                    <strong>Email:</strong> <?= htmlspecialchars($orderInfo['email']) ?>
+                    <strong>Customer:</strong> <?= htmlspecialchars($orderInfo['fullname']) ?>
+                    <br>
+                   
                 </div>
               
             <!-- Ordered Products -->

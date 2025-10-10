@@ -39,7 +39,7 @@ $reviewResult = mysqli_query($connection, $reviewQuery);
       <?php while ($row = mysqli_fetch_assoc($reviewResult)): ?>
         <div class="feedback-box border p-3 mb-3 rounded">
           <h5><?= htmlspecialchars($row['fullname'] ?? 'Anonymous') ?></h5>
-          <small class="text-muted"><?= htmlspecialchars($row['email'] ?? '') ?></small>
+          <!-- <small class="text-muted"><?= htmlspecialchars($row['email'] ?? '') ?></small> -->
           <div class="feedback-stars mb-2">
             <?php for ($i=1; $i<=5; $i++): ?>
               <span style="color:<?= ($i <= $row['rating']) ? 'gold' : '#ccc' ?>">&#9733;</span>
