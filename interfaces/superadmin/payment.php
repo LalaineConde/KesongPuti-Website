@@ -174,7 +174,7 @@ $result = $stmt->get_result();
               </td>
               <td><span class="status <?= $row['status'] ?>"><?= ucfirst($row['status']) ?></span></td>
               <td>
-                <button class="update-btn"
+                <a class="update-btn"
                   data-id="<?= $row['method_id'] ?>"
                   data-method="<?= htmlspecialchars($row['method_name']) ?>"
                   data-type="<?= htmlspecialchars($row['method_type']) ?>"
@@ -183,10 +183,10 @@ $result = $stmt->get_result();
                   data-status="<?= htmlspecialchars($row['status']) ?>"
                   data-qr="<?= htmlspecialchars($row['qr_code']) ?>">
                   <i class="bi bi-pencil-square"></i>
-                </button>
-                <button class="delete-btn" data-id="<?= $row['method_id'] ?>">
+                </a>
+                <a class="delete-btn" data-id="<?= $row['method_id'] ?>">
                   <i class="bi bi-trash-fill"></i>
-                </button>
+                </a>
               </td>
             </tr>
           <?php endwhile; ?>
@@ -332,7 +332,7 @@ document.querySelectorAll(".update-btn").forEach(btn => {
         Swal.fire({
           icon: "success",
           text: "Payment method updated!",
-          confirmButtonColor: "#dc3545"
+          confirmButtonColor: "#058240"
         }).then(() => location.reload());
       }
     });

@@ -79,6 +79,8 @@ mysqli_close($connection);
   <!-- BOOTSTRAP ICONS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"/>
   <link rel="stylesheet" href="../../css/admin.css"/>
+  
+
 </head>
 <body>
 <div class="box" id="contact-content">
@@ -211,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // ✅ Edit Contact
+    // Edit Contact
     document.querySelectorAll(".update-btn").forEach(btn => {
         btn.addEventListener("click", function() {
             const id = this.getAttribute("data-id");
@@ -239,6 +241,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: "Save",
+                confirmButtonColor: "#f4c400",
+                cancelButtonColor: "#3085d6",
                 preConfirm: () => {
                     const store = document.getElementById("swal-store").value;
                     const owner = document.getElementById("swal-owner").value;

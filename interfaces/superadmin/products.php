@@ -123,34 +123,30 @@ if (isset($_POST['update_product'])) {
           
         </div>
 
-        
-        <div class="filter-bar 2">
-                  <select id="categoryFilter">
-                    <option value="all">All Categories</option>
-                    <option value="cheese">Cheese</option>
-                    <option value="ice-cream">Ice Cream</option>
-                  </select>
-
-
-        <div class="filter-bar 3">
-          <select id="storeFilter">
-            <option value="all">All Stores</option>
-            <?php
-              $storeQuery = "SELECT store_name FROM store ORDER BY store_name ASC";
-              $storeResult = mysqli_query($connection, $storeQuery);
-              while ($storeRow = mysqli_fetch_assoc($storeResult)) {
-                  echo '<option value="' . htmlspecialchars(strtolower($storeRow['store_name'])) . '">' 
-                      . htmlspecialchars($storeRow['store_name']) . 
-                      '</option>';
-              }
-            ?>
-          </select>
-        </div>
-
-                <button id="openAddProduct" class="btn-add">
-                    <i class="bi bi-plus-circle"></i> Add Product
-                  </button>
-        </div>    
+            <div class="filter-bar 2">
+              <select id="categoryFilter">
+                <option value="all">All Categories</option>
+                <option value="cheese">Cheese</option>
+                <option value="ice-cream">Ice Cream</option>
+              </select>
+            
+              <select id="storeFilter">
+                <option value="all">All Stores</option>
+                <?php
+                  $storeQuery = "SELECT store_name FROM store ORDER BY store_name ASC";
+                  $storeResult = mysqli_query($connection, $storeQuery);
+                  while ($storeRow = mysqli_fetch_assoc($storeResult)) {
+                      echo '<option value="' . htmlspecialchars(strtolower($storeRow['store_name'])) . '">' 
+                          . htmlspecialchars($storeRow['store_name']) . 
+                          '</option>';
+                  }
+                ?>
+              </select>
+            
+              <button id="openAddProduct" class="btn-add">
+                <i class="bi bi-plus-circle"></i> Add Product
+              </button>
+            </div>   
 
      <!-- PRODUCTS -->
       <div class="product-grid" id="productGrid">

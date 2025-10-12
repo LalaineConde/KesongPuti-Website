@@ -51,10 +51,7 @@ if (isset($storeQuery)) {
       />
 
       <link rel="stylesheet" href="../../css/admin.css"/>
-<style>
 
-
-</style>
   </head>
   <body>
 

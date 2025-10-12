@@ -71,12 +71,12 @@ $result = $connection->query("SELECT * FROM faqs ORDER BY id DESC");
                         <td><?= htmlspecialchars($row['question']) ?></td>
                         <td><?= nl2br(htmlspecialchars($row['answer'])) ?></td>
                         <td>
-                            <button class="update-btn" 
+                            <a class="update-btn" 
                                     data-id="<?= $row['id'] ?>" 
                                     data-question="<?= htmlspecialchars($row['question'], ENT_QUOTES) ?>" 
                                     data-answer="<?= htmlspecialchars($row['answer'], ENT_QUOTES) ?>">
                                 <i class="bi bi-pencil-square"></i>
-                            </button>
+                            </a>
 
                             <a href="delete-faq.php?id=<?= $row['id'] ?>" 
                             class="delete-btn" 
@@ -150,6 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonText: "Save",
+                confirmButtonColor: "#f4c400",
+                cancelButtonColor: "#3085d6",
                 preConfirm: () => {
                     const question = document.getElementById("swal-question").value;
                     const answer = document.getElementById("swal-answer").value;
