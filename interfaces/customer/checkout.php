@@ -14,7 +14,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'store_info') {
 
     if ($storeName !== '') {
         // Get the recipient + owner_id for this store
-        $storeStmt = mysqli_prepare($connection, 'SELECT recipient, owner_id FROM store WHERE store_name = ? LIMIT 1');
+        $storeStmt = mysqli_prepare($connection, 'SELECT recipient, store_id AS owner_id FROM store WHERE store_name = ? LIMIT 1');
         $recipient = null;
         $ownerId = null;
         if ($storeStmt) {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 09, 2025 at 08:52 AM
+-- Generation Time: Oct 16, 2025 at 01:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -119,9 +119,9 @@ CREATE TABLE `admins` (
 --
 
 INSERT INTO `admins` (`admin_id`, `username`, `store_name`, `email`, `password`) VALUES
-(1, 'lalaine conde', 'Noel Lucena Kesong Puti', 'lalainecondes23@gmail.com', '$2y$10$9Dy/b9srwpwLGt6.BEbVGOZdWo4vY5SeUjaXuMTQ8Os09KOcHl7My'),
 (3, 'lara danielle', 'Garin Kesong Puti', 'larafremista21@gmail.com', '$2y$10$79rq0jOVXhyYsyvodZ7cO.iFhO5dTwadoMy97Bo6RiOsCr3PnWQFi'),
-(7, 'JB Alico', 'Mommy Lodie Kesong Puti', 'jaironbartalico@gmail.com', '$2y$10$RTJTk4ja/R7Agmm3ZBgAC.EmEadBa7p/XoKhGgxx3CwfYAawpFxcq');
+(7, 'JB Alico', 'Mommy Lodie Kesong Puti', 'jaironbartalico@gmail.com', '$2y$10$RTJTk4ja/R7Agmm3ZBgAC.EmEadBa7p/XoKhGgxx3CwfYAawpFxcq'),
+(15, 'lalaine conde', 'Noel Lucena Kesong Puti', 'lalaineconde19@gmail.com', '$2y$10$8SOOD6/h4FVWVTaVGzAwY.UD1pag1A9WJbAnHhlzLB67K91EGUwTy');
 
 -- --------------------------------------------------------
 
@@ -159,19 +159,19 @@ CREATE TABLE `categories` (
   `description` text DEFAULT NULL,
   `owner_id` int(11) NOT NULL,
   `owner_type` enum('admin','superadmin') NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `store_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `categories`
 --
 
-INSERT INTO `categories` (`category_id`, `category_name`, `description`, `owner_id`, `owner_type`, `created_at`) VALUES
-(1, 'Dairy Products', NULL, 1, 'admin', '2025-09-23 07:58:32'),
-(10, 'Dairy Products', NULL, 1, 'admin', '2025-09-23 07:59:14'),
-(30, 'Dairy Products', NULL, 1, 'admin', '2025-09-23 07:59:31'),
-(51, 'cheese', NULL, 1, 'admin', '2025-09-23 08:00:24'),
-(101, 'cheese', NULL, 1, 'admin', '2025-09-23 08:00:59');
+INSERT INTO `categories` (`category_id`, `category_name`, `description`, `owner_id`, `owner_type`, `created_at`, `store_id`) VALUES
+(103, 'Ice Cream', NULL, 1, 'superadmin', '2025-10-14 18:46:41', NULL),
+(104, 'Dairy', NULL, 1, 'superadmin', '2025-10-15 05:13:46', NULL),
+(107, 'Cheese', NULL, 1, 'superadmin', '2025-10-15 17:53:20', NULL),
+(108, 'Ice Cream', NULL, 3, 'admin', '2025-10-16 09:22:59', NULL);
 
 -- --------------------------------------------------------
 
@@ -488,7 +488,7 @@ CREATE TABLE `orders` (
 --
 
 INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`, `payment_method`, `proof_of_payment`, `order_status`, `delivery_address`, `owner_id`, `order_type`, `reference_number`) VALUES
-(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'cash', NULL, '', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1, 'delivery', 'REF16991'),
+(1, 1, 0, '2025-09-19 13:19:01', 190.00, 'cash', NULL, 'processing', 'B-48 L-10, N/A, Dila, Santa Rosa, Laguna, 4026', 1, 'delivery', 'REF16991'),
 (2, 2, 0, '2025-09-19 17:32:55', 100.00, 'cash', NULL, 'pending', '', 3, 'delivery', 'REF26776'),
 (3, 3, 0, '2025-09-19 17:38:40', 650.00, 'cash', NULL, 'pending', '', 3, 'delivery', 'REF32908'),
 (4, 4, 0, '2025-09-24 02:20:19', 320.00, 'gcash', 'proof_68d2e4e37cf5c.png', 'pending', '', 1, 'delivery', 'REF44212'),
@@ -498,7 +498,7 @@ INSERT INTO `orders` (`o_id`, `c_id`, `handled_by`, `order_date`, `total_amount`
 (13, 10, 0, '2025-10-01 02:22:48', 160.00, 'ewallet', NULL, 'pending', 'B-4 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery', 'REF134195'),
 (14, 11, 0, '2025-10-01 02:36:16', 100.00, 'bank', '1759257376_68dc2320750cf.png', 'pending', 'B-8 L-10, N/A, Anos, Los Baños, Laguna, 4030', 3, 'delivery', 'REF146153'),
 (15, 12, 0, '2025-10-02 00:52:56', 320.00, 'ewallet', '1759337576_68dd5c68c541a.jpg', 'pending', 'B- 20 L-10, N/A, Anos, Los Baños, Laguna, 4030', 1, 'delivery', 'REF158183'),
-(27, 26, 0, '2025-10-02 16:54:15', 180.00, 'bank', '1759395255_68de3db70e37d.jpg', 'pending', 'Pickup on 2025-10-11 at 16:55', 3, 'pickup', 'REF272460'),
+(27, 26, 0, '2025-10-02 16:54:15', 180.00, 'bank', '1759395255_68de3db70e37d.jpg', 'processing', 'Pickup on 2025-10-11 at 16:55', 3, 'pickup', 'REF272460'),
 (32, 31, 0, '2025-10-03 01:23:59', 190.00, 'ewallet', '1759425839_ewallet_68deb52fb7d89.jpg', 'pending', '104, Gold, Anos, Los Baños, Laguna 4030', 1, 'delivery', 'REF327747');
 
 -- --------------------------------------------------------
@@ -606,8 +606,8 @@ CREATE TABLE `products` (
   `category` varchar(100) NOT NULL,
   `product_image` varchar(255) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
-  `owner_id` int(11) NOT NULL,
   `store_id` int(11) DEFAULT NULL,
+  `owner_id` int(11) NOT NULL,
   `owner_type` enum('admin','superadmin') NOT NULL,
   `date_added` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -618,24 +618,57 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `product_name`, `variation_size`, `description`, `price`, `stock_qty`, `category`, `product_image`, `category_id`, `owner_id`, `store_id`, `owner_type`, `date_added`, `updated_at`, `status`) VALUES
-(1, 'Kesong Puti', NULL, NULL, 120.00, 0, '', NULL, NULL, 0, NULL, 'admin', '2025-09-23 07:53:17', '2025-09-23 07:53:17', 'available'),
-(2, 'Kesorbetes', NULL, NULL, 80.00, 0, '', NULL, NULL, 0, NULL, 'admin', '2025-09-23 07:53:17', '2025-09-23 07:53:17', 'available'),
-(3, 'Kesong Puti', 'pint', 'Fresh white cheese made from carabao milk.', 120.00, 50, 'Dairy', 'kesong_puti.jpg', 1, 1, 1, 'admin', '2025-09-23 07:58:32', '2025-09-23 13:30:46', 'available'),
-(4, 'Kesorbetes', 'tub', 'Homemade cheese ice cream.', 80.00, 30, 'Dessert', 'kesorbetes.jpg', 1, 1, 1, 'admin', '2025-09-23 07:58:32', '2025-09-23 13:30:56', 'available'),
-(9, 'Kesong Puti', NULL, 'Cheese wrapped in banana leaf', 140.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-08-21 23:52:50', '2025-08-27 15:07:59', 'available'),
-(17, 'Kesorbetes (Pint)', NULL, 'ice cream', 260.00, 15, 'ice-cream', '/assets/pint.png', NULL, 1, NULL, 'admin', '2025-08-22 04:37:29', '2025-09-05 22:50:49', 'available'),
-(19, 'Kesorbetes (Med Tub)', NULL, 'ice cream', 160.00, 15, 'ice-cream', '/assets/med tub.png', NULL, 1, NULL, 'admin', '2025-08-22 04:42:13', '2025-09-05 22:50:58', 'available'),
-(20, 'Kesorbetes (Liter)', NULL, 'ice cream', 320.00, 15, 'ice-cream', '/assets/liter.png', NULL, 1, NULL, 'admin', '2025-08-22 10:19:46', '2025-09-05 22:51:04', 'available'),
-(21, 'Kesong Puti', NULL, 'cheese', 110.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-08-22 10:20:16', '2025-08-22 10:27:12', 'available'),
-(22, 'Kesorbetes (Small Tub)', NULL, 'ice cream', 100.00, 15, 'ice-cream', '/assets/small tub.png', NULL, 3, NULL, 'admin', '2025-08-22 10:31:19', '2025-09-05 22:52:39', 'available'),
-(30, 'Kesorbetes (1 Gallon)', NULL, 'ice cream', 870.00, 15, 'ice-cream', '/assets/gallon.png', NULL, 3, NULL, 'admin', '2025-09-03 06:20:19', '2025-09-05 22:52:19', 'available'),
-(31, 'Kesorbetes (Half Gallon)', NULL, 'ice cream', 650.00, 15, 'ice-cream', '/assets/half gallon.png', NULL, 3, NULL, 'admin', '2025-09-03 06:22:07', '2025-09-05 22:52:13', 'available'),
-(34, 'Kesong Puti', NULL, 'cheese', 190.00, 15, 'Cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 1, NULL, 'admin', '2025-09-03 07:18:17', '2025-09-03 07:18:17', 'available'),
-(35, 'Kesong Puti', NULL, 'cheese', 180.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 07:23:18', '2025-09-03 07:23:18', 'available'),
-(36, 'Kesong Puti', NULL, 'cheese', 200.00, 15, 'cheese', '/assets/528149698_2466653143708497_6422652806459652480_n.jpg', NULL, 3, NULL, 'admin', '2025-09-03 11:12:51', '2025-09-03 11:12:51', 'available'),
-(101, 'Kesong Puti', 'pint', 'Fresh white cheese made from carabao milk.', 120.00, 50, 'Dairy', 'kesong_puti.jpg', 1, 1, 1, 'admin', '2025-09-23 08:00:59', '2025-09-23 13:22:17', 'available'),
-(102, 'Kesorbetes', 'tub', 'Homemade cheese ice cream.', 80.00, 30, 'Dessert', 'kesorbetes.jpg', 1, 1, 1, 'admin', '2025-09-23 08:00:59', '2025-09-23 13:23:57', 'available');
+INSERT INTO `products` (`product_id`, `product_name`, `variation_size`, `description`, `price`, `stock_qty`, `category`, `product_image`, `category_id`, `store_id`, `owner_id`, `owner_type`, `date_added`, `updated_at`, `status`) VALUES
+(153, 'Kesong Puti', NULL, 'cheese', 120.00, 15, '', 'assets/prod_68f0b4db7116d_528149698_2466653143708497_6422652806459652480_n.jpg', 107, NULL, 1, 'superadmin', '2025-10-16 09:03:23', '2025-10-16 09:03:23', 'available'),
+(155, 'Kesorbetes', NULL, 'ice cream', 0.00, 0, '', 'assets/prod_68f0b9c2435f2_featured-2.png', 108, NULL, 3, 'admin', '2025-10-16 09:24:18', '2025-10-16 09:24:18', 'available');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_gallery`
+--
+
+CREATE TABLE `product_gallery` (
+  `gallery_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `image_path` varchar(255) NOT NULL,
+  `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_gallery`
+--
+
+INSERT INTO `product_gallery` (`gallery_id`, `product_id`, `image_path`, `uploaded_at`) VALUES
+(67, 153, 'uploads/products/gallery/1760605403_528149698_2466653143708497_6422652806459652480_n.jpg', '2025-10-16 09:03:23'),
+(68, 153, 'uploads/products/gallery/1760605403_kesong_puti.png', '2025-10-16 09:03:23'),
+(69, 155, 'uploads/products/gallery/1760606658_gallon.png', '2025-10-16 09:24:18'),
+(70, 155, 'uploads/products/gallery/1760606658_half_gallon.png', '2025-10-16 09:24:18'),
+(71, 155, 'uploads/products/gallery/1760606658_liter.png', '2025-10-16 09:24:18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_variations`
+--
+
+CREATE TABLE `product_variations` (
+  `variation_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `size` varchar(50) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `stock_qty` int(11) NOT NULL DEFAULT 0,
+  `variant_image` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `product_variations`
+--
+
+INSERT INTO `product_variations` (`variation_id`, `product_id`, `size`, `price`, `stock_qty`, `variant_image`) VALUES
+(6, 155, 'Gallon', 800.00, 15, 'uploads/products/variants/1760606658_gallon.png'),
+(7, 155, 'Half Gallon', 750.00, 15, 'uploads/products/variants/1760606658_half_gallon.png'),
+(8, 155, 'Liter', 220.00, 15, 'uploads/products/variants/1760606658_liter.png');
 
 -- --------------------------------------------------------
 
@@ -769,9 +802,19 @@ CREATE TABLE `store` (
 
 INSERT INTO `store` (`store_id`, `store_name`, `recipient`, `owner_id`, `super_id`) VALUES
 (1, 'Arlene Macalinao Kesong Puti', 'super_1', 1, 1),
-(2, 'Noel Lucena Kesong Puti', 'admin_1', 1, NULL),
 (3, 'Garin Kesong Puti', 'admin_3', 3, NULL),
-(4, 'Mommy Lodie Kesong Puti', 'admin_7', 7, NULL);
+(4, 'Mommy Lodie Kesong Puti', 'admin_7', 4, NULL),
+(5, 'Noel Lucena Kesong Puti', '', 0, NULL);
+
+--
+-- Triggers `store`
+--
+DELIMITER $$
+CREATE TRIGGER `set_owner_id_before_insert` BEFORE INSERT ON `store` FOR EACH ROW BEGIN
+    SET NEW.owner_id = NEW.store_id;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -974,6 +1017,20 @@ ALTER TABLE `products`
   ADD KEY `fk_store` (`store_id`);
 
 --
+-- Indexes for table `product_gallery`
+--
+ALTER TABLE `product_gallery`
+  ADD PRIMARY KEY (`gallery_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
+-- Indexes for table `product_variations`
+--
+ALTER TABLE `product_variations`
+  ADD PRIMARY KEY (`variation_id`),
+  ADD KEY `product_id` (`product_id`);
+
+--
 -- Indexes for table `reviews`
 --
 ALTER TABLE `reviews`
@@ -1031,7 +1088,7 @@ ALTER TABLE `about_team`
 -- AUTO_INCREMENT for table `admins`
 --
 ALTER TABLE `admins`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `branding_sections_products`
@@ -1043,7 +1100,7 @@ ALTER TABLE `branding_sections_products`
 -- AUTO_INCREMENT for table `categories`
 --
 ALTER TABLE `categories`
-  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT for table `cta_sections`
@@ -1139,7 +1196,19 @@ ALTER TABLE `payment_methods`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
+
+--
+-- AUTO_INCREMENT for table `product_gallery`
+--
+ALTER TABLE `product_gallery`
+  MODIFY `gallery_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+
+--
+-- AUTO_INCREMENT for table `product_variations`
+--
+ALTER TABLE `product_variations`
+  MODIFY `variation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `reviews`
@@ -1151,7 +1220,7 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `store`
 --
 ALTER TABLE `store`
-  MODIFY `store_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `store_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `store_contacts`
@@ -1189,10 +1258,21 @@ ALTER TABLE `products`
   ADD CONSTRAINT `fk_store` FOREIGN KEY (`store_id`) REFERENCES `store` (`store_id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `product_gallery`
+--
+ALTER TABLE `product_gallery`
+  ADD CONSTRAINT `product_gallery_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `product_variations`
+--
+ALTER TABLE `product_variations`
+  ADD CONSTRAINT `product_variations_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `store`
 --
 ALTER TABLE `store`
-  ADD CONSTRAINT `store_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `admins` (`admin_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `store_ibfk_2` FOREIGN KEY (`super_id`) REFERENCES `super_admin` (`super_id`) ON DELETE CASCADE;
 COMMIT;
 

@@ -12,31 +12,55 @@ $page_header = 'Product Details';
 $page_breadcrumb_html = '<span>Home</span>  -  <span>Product Details</span>';
 $current_page = 'products';
 
-// Fetch product
+// Fetch product, gallery, and variations
 $product = null;
-$store_contact = null;
+$gallery = [];
+$variations = [];
+
 if (isset($_GET['id']) && ctype_digit($_GET['id'])) {
   $id = (int) $_GET['id'];
-$stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Superadmin') AS recipient, st.store_id AS store_id FROM products p LEFT JOIN store st ON p.owner_id = st.owner_id OR p.owner_id = st.super_id WHERE p.product_id = ? LIMIT 1");
+
+  // Fetch product
+  $stmt = mysqli_prepare($connection, "
+    SELECT p.*, COALESCE(st.store_name, 'Superadmin') AS recipient, st.store_id
+    FROM products p
+    LEFT JOIN store st ON p.owner_id = st.owner_id OR p.owner_id = st.super_id
+    WHERE p.product_id = ? LIMIT 1
+  ");
   if ($stmt) {
     mysqli_stmt_bind_param($stmt, 'i', $id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $product = mysqli_fetch_assoc($result);
     mysqli_stmt_close($stmt);
-    
-    // Fetch store contact information if product exists
-    if ($product) {
-      $store_name = $product['recipient'];
-      $contact_stmt = mysqli_prepare($connection, "SELECT * FROM store_contacts WHERE store_name = ? LIMIT 1");
-      if ($contact_stmt) {
-        mysqli_stmt_bind_param($contact_stmt, 's', $store_name);
-        mysqli_stmt_execute($contact_stmt);
-        $contact_result = mysqli_stmt_get_result($contact_stmt);
-        $store_contact = mysqli_fetch_assoc($contact_result);
-        mysqli_stmt_close($contact_stmt);
-      }
+
+    // Fetch gallery images
+    $gal_stmt = mysqli_prepare($connection, "
+      SELECT * FROM product_gallery WHERE product_id = ? ORDER BY gallery_id ASC
+    ");
+    mysqli_stmt_bind_param($gal_stmt, 'i', $id);
+    mysqli_stmt_execute($gal_stmt);
+    $gal_result = mysqli_stmt_get_result($gal_stmt);
+    while ($row = mysqli_fetch_assoc($gal_result)) {
+      $gallery[] = $row;
     }
+    mysqli_stmt_close($gal_stmt);
+
+    // Fetch variations
+    $var_stmt = mysqli_prepare($connection, "
+      SELECT variation_id, size, price, stock_qty, variant_image
+      FROM product_variations
+      WHERE product_id = ?
+      ORDER BY variation_id ASC
+    ");
+
+    mysqli_stmt_bind_param($var_stmt, 'i', $id);
+    mysqli_stmt_execute($var_stmt);
+    $var_result = mysqli_stmt_get_result($var_stmt);
+    while ($row = mysqli_fetch_assoc($var_result)) {
+      $variations[] = $row;
+    }
+    mysqli_stmt_close($var_stmt);
   }
 }
 
@@ -72,52 +96,48 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
 
   <body>
 
+
     <!-- PRODUCT DETAILS -->
     <div class="container py-5">
       <div class="row g-4 align-items-start">
         <!-- Product Image -->
         <div class="col-md-6">
-          <img
-            src="<?= $product ? '../../' . htmlspecialchars($product['product_image']) : '../../assets/banana-leaf.png' ?>"
-            alt="Product Image"
-            class="img-fluid rounded-4 shadow product-image"
-            id="mainImage"
-          />
+        <img
+          src="../../<?= htmlspecialchars($product['product_image']) ?>"
+          alt="<?= htmlspecialchars($product['product_name']) ?>"
+          class="img-fluid rounded-4 shadow product-image"
+          id="mainImage"
+          data-default="../../<?= htmlspecialchars($product['product_image']) ?>"
+        />
+
+
 
           <div class="row mt-3">
+            <?php foreach ($gallery as $g): ?>
             <div class="col-3">
               <img
-                src="<?= $product ? '../../' . htmlspecialchars($product['product_image']) : '../../assets/banana-leaf.png' ?>"
-                class="thumb-image"
-                onclick="changeImage(this)"
+                src="../../<?= htmlspecialchars($g['image_path']) ?>"
+                class="thumb-image gallery-thumb"
+                data-type="gallery"
+                data-src="../../<?= htmlspecialchars($g['image_path']) ?>"
               />
             </div>
-
-            <div class="col-3">
-              <img
-                src="<?= $product ? '../../' . htmlspecialchars($product['product_image']) : '../../assets/banana-leaf.png' ?>"
-                class="thumb-image"
-                onclick="changeImage(this)"
-              />
-            </div>
-
-            <div class="col-3">
-              <img
-                src="<?= $product ? '../../' . htmlspecialchars($product['product_image']) : '../../assets/banana-leaf.png' ?>"
-                class="thumb-image"
-                onclick="changeImage(this)"
-              />
-            </div>
-
-            <div class="col-3">
-              <img
-                src="<?= $product ? '../../' . htmlspecialchars($product['product_image']) : '../../assets/banana-leaf.png' ?>"
-                class="thumb-image"
-                onclick="changeImage(this)"
-              />
+              <?php endforeach; ?>
+              <?php foreach ($variations as $v): ?>
+                <?php if (!empty($v['variant_image'])): ?>
+                  <div class="col-3">
+                    <img
+                      src="../../<?= htmlspecialchars($v['variant_image']) ?>"
+                      class="thumb-image variant-thumb"
+                      data-type="variant"
+                      data-src="../../<?= htmlspecialchars($v['variant_image']) ?>"
+                    />
+                  </div>
+                <?php endif; ?>
+              <?php endforeach; ?>
             </div>
           </div>
-        </div>
+
       
 
         <!-- Product Details -->
@@ -145,48 +165,53 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
           </div>
 
           <div class="d-flex align-items-center mb-3">
-            <span class="product-price">₱<?= $product ? number_format((float)$product['price'], 2) : '0.00' ?></span>
-            <?php if ($product && !empty($product['old_price'])) { ?>
-            <span class="old-price">₱<?= number_format((float)$product['old_price'], 2) ?></span>
-            <?php } ?>
+            <p><strong><span class="product-price" id="productPrice">
+              ₱<?= $variations ? number_format($variations[0]['price'], 2) : number_format($product['price'], 2) ?></strong>
+            </span><p>
           </div>
+          <p id="stockInfo" class="text-muted mb-3">
+          <?= $variations ? "Stock: " . htmlspecialchars($variations[0]['stock_qty']) : "Stock: " . htmlspecialchars($product['stock_qty'] ?? 0) ?>
+        </p>
 
           <!-- Quantity & Variation -->
-          <div class="d-flex mb-3">
+          <div class="d-flex mb-3 align-items-center gap-3">
             <div class="qty-box">
               <button class="qty-btn" onclick="changeQty(-1)">−</button>
-              <input
-                type="text"
-                id="quantity"
-                class="qty-input"
-                value="1"
-                readonly
-              />
+              <input type="text" id="quantity" class="qty-input" value="1" readonly />
               <button class="qty-btn" onclick="changeQty(1)">+</button>
             </div>
 
-            <select class="variation form-select w-auto shadow-none">
-              <option selected>Variation Size</option>
-              <option value="1">Small</option>
-              <option value="2">Medium</option>
-              <option value="3">Large</option>
+            <select id="variationSelect" class="variation form-select w-auto shadow-none">
+              <option disabled selected>Select Size</option>
+              <?php foreach ($variations as $index => $var): ?>
+                <option value="<?= $index ?>">
+                  <?= htmlspecialchars($var['size']) ?>
+                </option>
+              <?php endforeach; ?>
             </select>
+
           </div>
 
-          <!-- Add to Cart Button -->
-           <div class="d-flex flex-column gap-3 mt-4">
-          <button 
-            class="btn-add add-to-cart"
-            data-id="<?= $product ? $product['product_id'] : '' ?>"
-            data-name="<?= $product ? htmlspecialchars($product['product_name']) : '' ?>"
-            data-price="<?= $product ? htmlspecialchars($product['price']) : '' ?>"
-            data-image="<?= $product ? '../../' . htmlspecialchars($product['product_image']) : '' ?>"
-            data-store="<?= $product ? htmlspecialchars($product['recipient']) : '' ?>"
-            data-store-id="<?= $product ? htmlspecialchars($product['store_id'] ?? '') : '' ?>"
-            data-qty-target="#quantity"
-          ><i class="bi bi-bag-plus"></i> Add To Cart</button>
-          <button class="btn-buy" onclick="buyNow()">Buy Now</button>
-            </div>
+
+           <!-- Add to Cart Button -->
+          <div class="d-flex flex-column gap-3 mt-4">
+            <button 
+              class="btn-add add-to-cart"
+              data-id="<?= $product['product_id'] ?>"
+              data-product_id="<?= $product['product_id'] ?>"
+              data-name="<?= htmlspecialchars($product['product_name']) ?>"
+              data-price="<?= $variations ? $variations[0]['price'] : $product['price'] ?>"
+              data-store="<?= htmlspecialchars($product['recipient']) ?>"
+              data-image="<?= $gallery ? '../../' . htmlspecialchars($gallery[0]['image_path']) : '../../' . htmlspecialchars($product['product_image']) ?>"
+              data-qty-target="#quantity"
+              data-variation-select="#variationSelect"
+            >
+              <i class="bi bi-bag-plus"></i> Add To Cart
+            </button>
+
+
+            <button class="btn-buy" onclick="buyNow()">Buy Now</button>
+          </div>
         </div>
       </div>
       
@@ -208,18 +233,7 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
                 <div class="content active">
                   <?php if ($product): ?>
                     <div class="product-details-content">
-                      <h5><strong>Product Information</strong></h5>
-                      <p><strong>Name:</strong> <?= htmlspecialchars($product['product_name']) ?></p>
-                      <p><strong>Description:</strong> <?= htmlspecialchars($product['description']) ?></p>
-                      <p><strong>Price:</strong> ₱<?= number_format((float)$product['price'], 2) ?></p>
-                      <p><strong>Stock Quantity:</strong> <?= $product['stock_qty'] ?> pieces</p>
-                      <p><strong>Status:</strong> 
-                        <span class="badge <?= $product['status'] === 'available' ? 'bg-success' : 'bg-danger' ?>">
-                          <?= ucfirst($product['status']) ?>
-                        </span>
-                      </p>
-                      <p><strong>Store:</strong> <?= htmlspecialchars($product['recipient']) ?></p>
-                      <p><strong>Date Added:</strong> <?= date('F j, Y', strtotime($product['date_added'])) ?></p>
+                      <p> <?= htmlspecialchars($product['description']) ?></p>
                     </div>
                   <?php else: ?>
                     <p>Product information not available.</p>
@@ -385,46 +399,118 @@ $stmt = mysqli_prepare($connection, "SELECT p.*, COALESCE(st.store_name, 'Supera
         // Add-to-cart handled globally in customer-dashboard include
       });
 
-      // Buy Now function
-      function buyNow() {
-        <?php if ($product): ?>
-          const productId = <?= $product['product_id'] ?>;
-          const quantity = document.getElementById('quantity').value;
-          const productName = '<?= addslashes($product['product_name']) ?>';
-          const price = <?= $product['price'] ?>;
-          const image = '<?= addslashes($product['product_image']) ?>';
-          const store = '<?= addslashes($product['recipient']) ?>';
-          const storeId = '<?= $product['store_id'] ?? '' ?>';
-          
-          // Add item to cart first
-          const cartItem = {
-            id: productId,
-            name: productName,
-            price: price,
-            image: '../../' + image,
-            store: store,
-            storeId: storeId,
-            quantity: parseInt(quantity)
-          };
-          
-          // Add to localStorage cart
-          let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-          const existingItemIndex = cart.findIndex(item => item.id === productId && item.storeId === storeId);
-          
-          if (existingItemIndex > -1) {
-            cart[existingItemIndex].quantity += parseInt(quantity);
-          } else {
-            cart.push(cartItem);
-          }
-          
-          localStorage.setItem('cart', JSON.stringify(cart));
-          
-          // Redirect to checkout page
-          window.location.href = 'checkout.php';
-        <?php else: ?>
-          alert('Product not available');
-        <?php endif; ?>
+
+// Variations
+document.addEventListener("DOMContentLoaded", function () {
+
+  // 1. Prepare variations from PHP
+  const variations = <?= json_encode($variations) ?> || [];
+  const mainImage = document.getElementById("mainImage");
+  const priceTag = document.getElementById("productPrice");
+  const stockInfo = document.getElementById("stockInfo");
+  const variationSelect = document.getElementById("variationSelect");
+  const qtyInput = document.getElementById("quantity");
+  const defaultImage = mainImage.dataset.default || mainImage.src;
+
+  // 2. Change main image when a variation is selected
+  if (variationSelect) {
+    variationSelect.addEventListener("change", () => {
+      const idx = parseInt(variationSelect.value);
+      if (isNaN(idx)) return;
+      const selected = variations[idx];
+      if (!selected) return;
+
+      mainImage.style.opacity = "0";
+      setTimeout(() => {
+        mainImage.src = selected.variant_image ? "../../" + selected.variant_image : defaultImage;
+        mainImage.style.opacity = "1";
+      }, 200);
+
+      // Update price and stock
+      priceTag.textContent = "₱" + parseFloat(selected.price).toFixed(2);
+      stockInfo.textContent = "Stock: " + selected.stock_qty;
+    });
+  }
+
+  // 3. Thumbnail click
+  document.querySelectorAll(".thumb-image").forEach(img => {
+    img.addEventListener("click", () => {
+      const src = img.dataset.src;
+      mainImage.style.opacity = "0";
+      setTimeout(() => {
+        mainImage.src = src;
+        mainImage.style.opacity = "1";
+      }, 200);
+    });
+  });
+
+  // 4. Quantity buttons
+  window.changeQty = function (val) {
+    let current = parseInt(qtyInput.value) || 1;
+    if (current + val >= 1) qtyInput.value = current + val;
+  };
+
+  // 5. Add to Cart
+  const addToCartBtn = document.querySelector(".add-to-cart");
+  if (addToCartBtn) {
+    addToCartBtn.addEventListener("click", () => {
+      const productId = parseInt(addToCartBtn.dataset.id);
+      const productName = addToCartBtn.dataset.name;
+      const storeName = addToCartBtn.dataset.store;
+      const quantity = parseInt(qtyInput.value) || 1;
+
+      // Determine selected variation
+      let selectedVariation = null;
+      if (variationSelect && variationSelect.value !== "" && !isNaN(variationSelect.value)) {
+        selectedVariation = variations[parseInt(variationSelect.value)];
       }
+
+      const item = {
+        id: productId,
+        name: productName,
+        store: storeName,
+        image: selectedVariation?.variant_image ? "../../" + selectedVariation.variant_image : addToCartBtn.dataset.image,
+        quantity: quantity,
+        price: selectedVariation ? parseFloat(selectedVariation.price) : parseFloat(addToCartBtn.dataset.price),
+        size: selectedVariation ? selectedVariation.size : null
+      };
+
+      // Get existing cart
+      let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+      // Merge if same product + variation exists
+      const existIdx = cart.findIndex(c => c.id === item.id && c.size === item.size);
+      if (existIdx > -1) {
+        cart[existIdx].quantity += item.quantity;
+      } else {
+        cart.push(item);
+      }
+
+      // Save to localStorage
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      // Success alert
+      Swal.fire({
+        icon: "success",
+        title: "Added to cart!",
+        text: `${item.name}${item.size ? " (" + item.size + ")" : ""} x${item.quantity} has been added to your cart.`,
+        timer: 1500,
+        showConfirmButton: false
+      });
+    });
+  }
+
+  // 6. Buy Now
+  window.buyNow = function () {
+    addToCartBtn.click(); // Add to cart first
+    window.location.href = "checkout.php";
+  };
+
+});
+
+</script>
+
+
     </script>
 
 

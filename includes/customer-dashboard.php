@@ -288,7 +288,7 @@ body {
           <span>Total:</span>
           <strong id="cartTotal">₱0.00</strong>
         </div>
-        <a href="checkout.php"><button class="checkout-btn">Checkout</button></a>
+        <button class="checkout-btn" id="checkoutBtn">Checkout</button>
       </div>
     </div>
     <!-- overlay -->
@@ -336,217 +336,245 @@ body {
     <!-- CART SIDEBAR -->
     <script>
       // --- Cart Sidebar Functionality ---
-      const cartBtn = document.getElementById("cartBtn");
-      const cartSidebar = document.getElementById("cartSidebar");
-      const closeCart = document.getElementById("closeCart");
-      const overlay = document.getElementById("overlay");
+     // --- GLOBAL VARIATIONS (from PHP) ---
+  const variations = <?= json_encode($variations ?? []) ?>;
 
-      if (cartBtn) {
-          cartBtn.addEventListener("click", () => {
-              cartSidebar.classList.add("active");
-              overlay.classList.add("active");
-          });
-      }
-      closeCart.addEventListener("click", () => {
-          cartSidebar.classList.remove("active");
-          overlay.classList.remove("active");
-      });
-      overlay.addEventListener("click", () => {
-          cartSidebar.classList.remove("active");
-          overlay.classList.remove("active");
-      });
+  // --- CART ELEMENTS ---
+  const cartBtn = document.getElementById("cartBtn");
+const cartSidebar = document.getElementById("cartSidebar");
+const closeCart = document.getElementById("closeCart");
+const overlay = document.getElementById("overlay");
+const cartContainer = document.getElementById("cartItems");
+const cartTotalEl = document.getElementById("cartTotal");
+const cartBadge = document.getElementById("cartCount");
 
-      // --- Cart Logic ---
-      const cartContainer = document.getElementById("cartItems");
-      const cartTotalEl = document.getElementById("cartTotal");
-      const cartBadge = document.getElementById("cartCount");
+// --- LOAD CART FROM LOCALSTORAGE ---
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-      // Load cart from localStorage or empty array
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+// --- SAVE CART ---
+function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
 
-      // Save to localStorage
-      function saveCart() {
-          localStorage.setItem("cart", JSON.stringify(cart));
-      }
+// --- UPDATE CART BADGE ---
+function updateCartBadge() {
+    const totalQty = cart.reduce((sum, p) => sum + p.qty, 0);
+    if (cartBadge) cartBadge.textContent = totalQty;
+}
 
-      // Update cart badge (icon number)
-      function updateCartBadge() {
-          let totalQty = cart.reduce((sum, p) => sum + p.qty, 0);
-          if (cartBadge) cartBadge.textContent = totalQty;
-      }
+// --- RENDER CART SIDEBAR ---
+function renderCart() {
+    cartContainer.innerHTML = "";
 
-      // Render cart items
-      function renderCart() {
-          cartContainer.innerHTML = "";
-          if (cart.length === 0) {
-              cartContainer.innerHTML += `<p class="text-muted empty-message">Your cart is empty.</p>`;
-              cartTotalEl.textContent = "₱0.00";
-              updateCartBadge();
-              return;
-          }
-          cart.forEach(product => {
-              const item = document.createElement("div");
-              item.classList.add("cart-item", "d-flex", "align-items-center", "border-bottom", "py-2");
-              item.setAttribute("data-id", product.id);
-              item.innerHTML = `
-                  <input type="checkbox" class="cart-check me-2" checked />
-                  <img src="${product.image}" alt="${product.name}" class="cart-img me-2" width="50"/>
-                  <div class="flex-grow-1">
-                      <h6 class="mb-1">${product.name}</h6>
-                      <div class="d-flex align-items-center">
-                          <button class="btn-qty minus">−</button>
-                          <span class="qty mx-2">${product.qty}</span>
-                          <button class="btn-qty plus">+</button>
-                      </div>
-                      <strong class="item-price d-block mt-1" data-price="${product.price}">
-                          ₱${(product.price * product.qty).toFixed(2)}
-                      </strong>
-                      <span class="cart-branch">${product.store}</span>
-                  </div>
-                  <button class="btn-delete"><i class="bi bi-trash"></i></button>
-              `;
-              cartContainer.appendChild(item);
-          });
-          updateCartTotal();
-          updateCartBadge();
-      }
+    if (cart.length === 0) {
+        cartContainer.innerHTML = `<p class="text-muted empty-message">Your cart is empty.</p>`;
+        cartTotalEl.textContent = "₱0.00";
+        updateCartBadge();
+        return;
+    }
 
-      // Update total
-      function updateCartTotal() {
-          let total = cart.reduce((sum, p) => sum + (p.price * p.qty), 0);
-          cartTotalEl.textContent = `₱${total.toFixed(2)}`;
-      }
+    cart.forEach(product => {
+        const item = document.createElement("div");
+        item.classList.add("cart-item", "d-flex", "align-items-center", "border-bottom", "py-2");
+        item.setAttribute("data-id", product.id);
+        item.setAttribute("data-size", product.size || "");
 
-      // Add to cart function - CORRECTED!
-      function addToCart(product) {
-          // Validate and sanitize product data, INCLUDE product_id!
-          const validatedProduct = {
-              id: String(product.id || ''),
-              product_id: String(product.product_id || product.id || ''), // <-- CORRECTED LINE
-              name: String(product.name || 'Unknown Product'),
-              price: parseFloat(product.price) || 0,
-              image: String(product.image || '../../assets/kesong puti.png'),
-              store: String(product.store || 'Unknown Store'),
-              recipient: String(product.recipient || ''),
-              storeId: String(product.storeId || ''),
-              qty: Math.max(1, parseInt(product.qty) || 1)
-          };
+        item.innerHTML = `
+            <input type="checkbox" class="cart-check me-2" checked />
+            <img src="${product.image}" alt="${product.name}" class="cart-img me-2" width="50"/>
+            <div class="flex-grow-1">
+                <h6 class="mb-1">${product.name}</h6>
+                ${product.size ? `<p class="cart-size">Size: ${product.size}</p>` : ""}
+                <div class="d-flex align-items-center">
+                    <button class="btn-qty minus">−</button>
+                    <span class="qty mx-2">${product.qty}</span>
+                    <button class="btn-qty plus">+</button>
+                </div>
+                <strong class="item-price d-block mt-1" data-price="${product.price}">
+                    ₱${(product.price * product.qty).toFixed(2)}
+                </strong>
+                ${product.store ? `<span class="cart-branch">${product.store}</span>` : ""}
+            </div>
+            <button class="btn-delete"><i class="bi bi-trash"></i></button>
+        `;
+        cartContainer.appendChild(item);
+    });
 
-          // Single-store cart
-          if (cart.length > 0) {
-              const currentStore = cart[0].store || '';
-              if (validatedProduct.store !== currentStore) {
-                  if (window.Swal) {
-                      Swal.fire({
-                          icon: 'warning',
-                          title: 'Single-store cart',
-                          text: 'You can only add items from one store per cart. Please checkout or clear your cart to add from a different store.',
-                          confirmButtonColor: '#ff6b6b'
-                      });
-                  } else {
-                      alert('You can only add items from one store per cart. Please checkout or clear your cart to add from a different store.');
-                  }
-                  return; 
-              }
-          }
+    updateCartTotal();
+    updateCartBadge();
+}
 
-          let existing = cart.find(p => p.id === validatedProduct.id);
-          if (existing) {
-              existing.qty += validatedProduct.qty;
+// --- UPDATE TOTAL ---
+function updateCartTotal() {
+    let total = 0;
+    document.querySelectorAll(".cart-item").forEach(item => {
+        const checkbox = item.querySelector(".cart-check");
+        if (!checkbox.checked) return;
+
+        const priceEl = item.querySelector(".item-price");
+        const qty = parseInt(item.querySelector(".qty").textContent || 0);
+        const price = parseFloat(priceEl.dataset.price || 0);
+
+        total += price * qty;
+    });
+    cartTotalEl.textContent = `₱${total.toFixed(2)}`;
+}
+
+// --- ADD TO CART ---
+function addToCart(product) {
+    // SINGLE-STORE RESTRICTION
+    if (cart.length > 0 && product.store !== cart[0].store) {
+        if (window.Swal) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Single-store cart',
+                text: 'You can only add items from one store per cart. Please checkout or clear your cart first.',
+                confirmButtonColor: '#ff6b6b'
+            });
+        } else {
+            alert('You can only add items from one store per cart.');
+        }
+        return;
+    }
+
+    // CHECK FOR EXISTING ITEM WITH SAME SIZE
+    let existing = cart.find(p => p.id === product.id && p.size === product.size);
+    if (existing) {
+        existing.qty += product.qty;
+    } else {
+        cart.push(product);
+    }
+
+    saveCart();
+    renderCart();
+}
+
+// --- CART SIDEBAR TOGGLE ---
+if (cartBtn) cartBtn.addEventListener("click", () => {
+    cartSidebar.classList.add("active");
+    overlay.classList.add("active");
+});
+
+closeCart.addEventListener("click", () => {
+    cartSidebar.classList.remove("active");
+    overlay.classList.remove("active");
+});
+
+overlay.addEventListener("click", () => {
+    cartSidebar.classList.remove("active");
+    overlay.classList.remove("active");
+});
+
+// --- EVENT DELEGATION: PLUS, MINUS, DELETE ---
+document.addEventListener("click", e => {
+    const itemEl = e.target.closest(".cart-item");
+    if (!itemEl) return;
+
+    const id = itemEl.dataset.id;
+    const size = itemEl.dataset.size || null;
+    const product = cart.find(p => p.id === id && p.size === size);
+    if (!product) return;
+
+    if (e.target.classList.contains("plus")) product.qty++;
+    if (e.target.classList.contains("minus")) {
+        product.qty--;
+        if (product.qty <= 0) cart = cart.filter(p => p.id !== id || p.size !== size);
+    }
+    if (e.target.closest(".btn-delete")) cart = cart.filter(p => p.id !== id || p.size !== size);
+
+    saveCart();
+    renderCart();
+});
+
+// --- CHECKBOX HANDLING ---
+document.addEventListener("change", e => {
+    if (e.target.classList.contains("cart-check")) updateCartTotal();
+    if (e.target.id === "selectAll") {
+        const checked = e.target.checked;
+        document.querySelectorAll(".cart-check").forEach(cb => cb.checked = checked);
+        updateCartTotal();
+    }
+});
+
+// --- ADD TO CART BUTTONS ---
+document.addEventListener("click", e => {
+    const btn = e.target.closest(".add-to-cart");
+    if (!btn) return;
+
+    // Quantity
+    const qtyTarget = btn.dataset.qtyTarget ? document.querySelector(btn.dataset.qtyTarget) : null;
+    const chosenQty = qtyTarget ? parseInt(qtyTarget.value || "1") : 1;
+
+    // Variation / size
+    const variationSelect = btn.dataset.variationSelect ? document.querySelector(btn.dataset.variationSelect) : null;
+    let chosenSize = null;
+    if (variationSelect && variationSelect.value !== "") {
+        // Use selected option text instead of value
+        chosenSize = variationSelect.options[variationSelect.selectedIndex].text;
+    }
+
+    const product = {
+        id: String(btn.dataset.id || ""),
+        product_id: String(btn.dataset.product_id || btn.dataset.id || ""),
+        name: btn.dataset.name || "",
+        price: parseFloat(btn.dataset.price || "0"),
+        image: btn.dataset.image || "../../assets/kesong puti.png",
+        store: btn.dataset.store || "",
+        size: chosenSize,  // <-- now text like "Medium" or "Large"
+        qty: Math.max(1, chosenQty)
+    };
+
+    addToCart(product);
+});
+
+// --- CLEAR INVALID CART & INITIAL RENDER ---
+cart = cart.filter(item => item && item.id && item.name && !isNaN(item.price) && !isNaN(item.qty) && item.price >= 0 && item.qty > 0);
+saveCart();
+renderCart();
+
+ 
+
+
+      document.getElementById('checkoutBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+          title: 'Data Privacy Agreement',
+          html: `
+            <p style="text-align: left; font-size: 15px;">
+              Before proceeding, please read and agree to our <strong>Data Privacy Policy</strong>.
+              Your personal information and order details will be collected and processed solely
+              for transaction and record purposes.
+            </p>
+            <p style="text-align: left; font-size: 15px;">
+              By clicking <strong>"I Agree"</strong>, you consent to the collection and use of your
+              data as stated in our policy.
+            </p>
+          `,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: 'I Agree',
+          cancelButtonText: 'Cancel',
+          confirmButtonColor: '#0D8540',
+          cancelButtonColor: '#3085d6',
+          allowOutsideClick: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirect to checkout
+            window.location.href = 'checkout.php';
           } else {
-              cart.push(validatedProduct);
+            // Stay on the same page (do nothing)
+            Swal.fire({
+              icon: 'info',
+              title: 'Cancelled',
+              text: 'You must agree to the data privacy policy to continue.',
+              confirmButtonColor: '#0D8540'
+            });
           }
-          saveCart();
-          renderCart();
-      }
-
-      // Event delegation for plus/minus/delete
-      document.addEventListener("click", e => {
-          let itemEl = e.target.closest(".cart-item");
-          if (!itemEl) return;
-          let id = itemEl.dataset.id;
-          let product = cart.find(p => p.id === id);
-
-          if (e.target.classList.contains("plus")) {
-              product.qty++;
-          }
-          if (e.target.classList.contains("minus")) {
-              if (product.qty > 1) {
-                  product.qty--;
-              } else {
-                  cart = cart.filter(p => p.id !== id);
-              }
-          }
-          if (e.target.closest(".btn-delete")) {
-              cart = cart.filter(p => p.id !== id);
-          }
-
-          saveCart();
-          renderCart();
+        });
       });
 
-      // Checkbox updates
-      document.addEventListener("change", function (e) {
-          if (e.target.classList.contains("cart-check")) {
-              updateCartTotal();
-          }
-          if (e.target.id === "selectAll") {
-              let checked = e.target.checked;
-              document.querySelectorAll(".cart-check").forEach((cb) => {
-                  cb.checked = checked;
-              });
-              updateCartTotal();
-          }
-      });
 
-      // Global handler for "Add to Cart" buttons
-      document.addEventListener("click", function (e) {
-          const btn = e.target.closest(".add-to-cart");
-          if (!btn) return;
-
-          const qtyTarget = btn.dataset.qtyTarget ? document.querySelector(btn.dataset.qtyTarget) : null;
-          const chosenQty = qtyTarget ? parseInt(qtyTarget.value || "1") : 1;
-
-          const product = {
-              id: String(btn.dataset.id || ""),
-              product_id: String(btn.dataset.product_id || btn.dataset.id || ""), // <-- CORRECTED LINE
-              name: btn.dataset.name || "",
-              price: parseFloat(btn.dataset.price || "0"),
-              image: btn.dataset.image || "",
-              store: btn.dataset.store || "",
-              recipient: btn.dataset.recipient || "",
-              storeId: btn.dataset.storeId || "",
-              qty: isNaN(chosenQty) ? 1 : Math.max(1, chosenQty)
-          };
-
-          addToCart(product);
-      });
-
-      // Function to clear invalid cart data
-      function clearInvalidCartData() {
-          cart = cart.filter(item => {
-              return item && 
-                    item.product_id && // <-- CORRECTED LINE
-                    item.id &&
-                    item.name &&
-                    !isNaN(parseFloat(item.price)) &&
-                    !isNaN(parseInt(item.qty)) &&
-                    item.price > 0 &&
-                    item.qty > 0;
-          });
-          saveCart();
-      }
-
-      // Function to clear cart completely
-      function clearCart() {
-          cart = [];
-          saveCart();
-          renderCart();
-      }
-
-      // Clear invalid cart data and render on page load
-      clearInvalidCartData();
-      renderCart();
       </script>
 
 

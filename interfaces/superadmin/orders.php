@@ -168,12 +168,6 @@ mysqli_close($connection);
             <?php endif; ?>
           </tbody>
         </table>
-
-
-
-
-
-
       </div>
     </div>
   </div>
@@ -209,8 +203,12 @@ mysqli_close($connection);
 
 
 <!-- FUNCTIONS -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-      
+
+  // Search & Filter
   const orderSearch = document.getElementById("orderSearch");
   const orderStatusFilter = document.getElementById("orderStatusFilter");
   const orderTypeFilter = document.getElementById("orderTypeFilter");
@@ -219,7 +217,7 @@ mysqli_close($connection);
   function filterOrders() {
     const searchTerm = orderSearch.value.toLowerCase();
     const selectedStatus = orderStatusFilter.value;
-    const selectedType = orderTypeFilter.value;
+    const selectedType = orderTypeFilter  .value;
 
     orderRows.forEach((row) => {
       const customerName = row.children[1].textContent.toLowerCase();
@@ -378,26 +376,73 @@ mysqli_close($connection);
   //Sends email for change order status
   document.addEventListener("DOMContentLoaded", function () {
   const dropdowns = document.querySelectorAll(".order-status");
-
+  const loggedInAdminEmail = "<?php echo $_SESSION['email']; ?>"; 
   dropdowns.forEach(select => {
     select.addEventListener("change", async function () {
       const orderId = this.dataset.orderId;
       const customerEmail = this.dataset.customerEmail;
-      const referenceNumber = this.dataset.referenceNumber;
+      const reference = this.dataset.referenceNumber;
       const newStatus = this.value;
 
+      const row = this.closest("tr");
+      const customerName = row.querySelector("td:nth-child(3) div")?.innerText.trim() || "Valued Customer";
+      const totalText = row.querySelector("td:nth-child(7)")?.innerText.trim() || "₱0.00";
+      const total = totalText.replace("₱", "").trim();
+
       if (!orderId || !customerEmail) {
-        alert("Missing order information!");
+        Swal.fire({
+          icon: "error",
+          title: "Missing Data",
+          text: "Missing order or customer information!",
+        });
         return;
       }
 
-      const confirmChange = confirm(`Change order status to "${newStatus}"?`);
-      if (!confirmChange) {
+      // Confirm status change
+      const confirmResult = await Swal.fire({
+        title: `Update order status to "${newStatus}"?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, update it",
+        cancelButtonText: "Cancel"
+      });
+
+      if (!confirmResult.isConfirmed) {
+        // Revert dropdown selection
         this.selectedIndex = [...this.options].findIndex(opt => opt.defaultSelected);
         return;
       }
 
-      // Update status in database
+      // --- Build Gmail message ---
+      let subject = "";
+      let body = "";
+
+      switch (newStatus.toLowerCase()) {
+        case "processing":
+          subject = "Your Order is Now Being Processed";
+          body = `Good Day, ${customerName}!\n\nYour order (Ref #${reference}) is now being processed. Our team is preparing your items for shipment.\n\nTotal: ₱${total}\n\nThank you for choosing Kesong Puti!\n\nBest regards,\n${loggedInAdminEmail}\nKesong Puti Admin`;
+          break;
+        case "shipped":
+          subject = "Your Order Has Been Shipped!";
+          body = `Good Day, ${customerName}!\n\nYour order (Ref #${reference}) has been shipped and is on its way to you!\n\nTotal: ₱${total}\n\nWe appreciate your patience and support.\n\nBest regards,\n${loggedInAdminEmail}\nKesong Puti Admin`;
+          break;
+        case "delivered":
+          subject = "Your Order Has Been Delivered";
+          body = `Good Day, ${customerName}!\n\nYour order (Ref #${reference}) has been successfully delivered.\n\nTotal: ₱${total}\n\nWe hope you enjoy your purchase! Don’t forget to leave feedback on our website.\n\nThank you for trusting Kesong Puti!\n\nBest regards,\n${loggedInAdminEmail}\nKesong Puti Admin`;
+          break;
+        case "cancelled":
+          subject = "Your Order Has Been Cancelled";
+          body = `Good Day, ${customerName}!\n\nWe're sorry to inform you that your order (Ref #${reference}) has been cancelled.\n\nTotal: ₱${total}\n\nIf this was a mistake or you have any concerns, please contact us for assistance.\n\nBest regards,\n${loggedInAdminEmail}\nKesong Puti Admin`;
+          break;
+        default:
+          subject = "Order Status Updated";
+          body = `Hi ${customerName},\n\nYour order (Ref #${reference}) status has been updated to "${newStatus}".\n\nTotal: ₱${total}\n\nThank you for shopping with Kesong Puti!\n\nBest regards,\n${loggedInAdminEmail}\nKesong Puti Admin`;
+          break;
+      }
+
+      // --- Update database first ---
       try {
         const response = await fetch("orders-email.php", {
           method: "POST",
@@ -407,48 +452,37 @@ mysqli_close($connection);
 
         const result = await response.json();
 
-        if (!result.success) {
-          alert("Database update failed!");
-          return;
+        if (result.success) {
+          // --- Open Gmail compose after successful DB update ---
+          const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(customerEmail)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+          window.open(gmailUrl, "_blank");
+
+          Swal.fire({
+            icon: "success",
+            title: "Status Updated!",
+            text: "The order status has been successfully updated.",
+            confirmButtonColor: "#3085d6",
+            confirmButtonText: "OK"
+          });
+
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Update Failed",
+            text: result.error || "Failed to update order status.",
+          });
         }
-
-        // Build default Gmail email
-        const subject = encodeURIComponent(`Order Update: ${newStatus.toUpperCase()} - Ref #${referenceNumber}`);
-        let body = "";
-
-        switch (newStatus.toLowerCase()) {
-          case "processing":
-            body = `Good day!\n\nYour order (Ref #${referenceNumber}) is now being processed.\nOur team is preparing your items.\n\nThank you for choosing Kesong Puti!`;
-            break;
-          case "shipped":
-            body = `Good news!\n\nYour order (Ref #${referenceNumber}) has been shipped.\nIt's on its way to you!\n\nThank you for your patience.`;
-            break;
-          case "delivered":
-            body = `Hello!\n\nYour order (Ref #${referenceNumber}) has been delivered successfully.\nWe hope you enjoy your purchase!\n\nWe’d love to hear your feedback.`;
-            break;
-          case "cancelled":
-            body = `Hi,\n\nWe’re sorry to inform you that your order (Ref #${referenceNumber}) has been cancelled.\nIf you have any questions, please contact us.`;
-            break;
-          default:
-            body = `Your order (Ref #${referenceNumber}) status has been updated to "${newStatus}".`;
-            break;
-        }
-
-        // Open Gmail Compose
-        window.open(
-          `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(customerEmail)}&su=${subject}&body=${encodeURIComponent(body)}`,
-          "_blank"
-        );
-
-        alert(`Status updated successfully! Gmail will open for you to send the message.`);
       } catch (error) {
-        console.error("Error:", error);
-        alert("Error updating order status.");
+        Swal.fire({
+          icon: "error",
+          title: "Server Error",
+          text: "There was an error updating the order.",
+        });
+        console.error(error);
       }
     });
   });
 });
-
 
 
 

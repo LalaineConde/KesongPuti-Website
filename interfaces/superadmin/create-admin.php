@@ -5,20 +5,26 @@ include ('../../includes/superadmin-dashboard.php');
 
 $toast_message = ''; // Initialize variable for toast message
 
+
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = isset($_POST['username']) ? mysqli_real_escape_string($connection, $_POST['username']) : '';
-    $store_name = isset($_POST['store_name']) ? mysqli_real_escape_string($connection, $_POST['store_name']) : '';
-    $email = isset($_POST['email']) ? mysqli_real_escape_string($connection, $_POST['email']) : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
-    $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
-    $loggedInAdminId = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
+$username = isset($_POST['username']) ? mysqli_real_escape_string($connection, $_POST['username']) : '';
+$store_name = isset($_POST['store_name']) ? mysqli_real_escape_string($connection, $_POST['store_name']) : '';
+$email = isset($_POST['email']) ? mysqli_real_escape_string($connection, $_POST['email']) : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
+$confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
+$loggedInAdminId = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
+
 
     // Check if passwords match
     if ($password !== $confirm_password) {
         $toast_message = "Passwords do not match.";
+       
     } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/', $password)) {
         $toast_message = "Password must be at least 6 characters and contain a lowercase letter, uppercase letter, number, and special character.";
-    } else {
+
+      } else {
         // Hash the password
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
@@ -27,41 +33,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $result = mysqli_query($connection, $email_check_query);
         if (mysqli_num_rows($result) > 0) {
             $toast_message = "Email is already registered.";
+
         } else {
-            if ($role === 'admin') {
-                // Insert into admins table
-                $sql = "INSERT INTO admins (username, email, password, store_name)
-                        VALUES ('$username', '$email', '$hashed_password', '$store_name')";
-                if (mysqli_query($connection, $sql)) {
-                    $new_admin_id = mysqli_insert_id($connection);
+            // Insert the new admin into the admins table
+            $sql = "INSERT INTO admins (username, email, password, store_name)
+                    VALUES ('$username', '$email', '$hashed_password', '$store_name')";
 
-                    // Insert into store and link to this admin
-                    $store_sql = "INSERT INTO store (store_name, owner_id) 
-                                  VALUES ('$store_name', '$new_admin_id')";
-                    mysqli_query($connection, $store_sql);
+            if (mysqli_query($connection, $sql)) {
+                // Get the newly created admin ID
+                $new_admin_id = mysqli_insert_id($connection);
 
-                    $toast_message = "Admin and store created successfully!";
+                // Insert the store into the store table and link to admin
+                $store_sql = "INSERT INTO store (store_name, owner_id) VALUES ('$store_name', '$new_admin_id')";
+                if (mysqli_query($connection, $store_sql)) {
+                    $toast_message = "Admin and store added successfully!";
                 } else {
-                    $toast_message = "Error creating admin: " . mysqli_error($connection);
-                }
-            } elseif ($role === 'superadmin') {
-                // Insert into super_admin table
-                $sql = "INSERT INTO super_admin (username, email, password, store_name)
-                        VALUES ('$username', '$email', '$hashed_password', '$store_name')";
-                if (mysqli_query($connection, $sql)) {
-                    $new_super_id = mysqli_insert_id($connection);
-
-                    // Insert into store and link to this superadmin
-                    $store_sql = "INSERT INTO store (store_name, owner_id) 
-                                  VALUES ('$store_name', '$new_super_id')";
-                    mysqli_query($connection, $store_sql);
-
-                    $toast_message = "Superadmin and store created successfully!";
-                } else {
-                    $toast_message = "Error creating superadmin: " . mysqli_error($connection);
+                    $toast_message = "Admin added, but failed to create store: " . mysqli_error($connection);
                 }
             } else {
-                $toast_message = "Invalid role selected!";
+                $toast_message = "Error: " . mysqli_error($connection);
             }
         }
     }
@@ -77,6 +67,8 @@ $super_admins_result = mysqli_query($connection, $super_admins_query);
 
 // Close the connection
 mysqli_close($connection);
+
+
 ?>
 
 
@@ -256,7 +248,7 @@ mysqli_close($connection);
         Swal.fire({
             icon: 'info', // can be 'success', 'error', 'warning', 'info', 'question'
             text: toastMessage,
-            confirmButtonColor: '#dc3545'
+            confirmButtonColor: '#ff6b6b'
         });
     }
     </script>   
@@ -274,18 +266,11 @@ document.querySelectorAll(".update-super-btn").forEach(button => {
         Swal.fire({
             title: "Update Super Admin",
             html: `
-            <div style="text-align:left;">
-                <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Username</label>
-                <input id="swal-super-username" class="swal2-input" placeholder="Username" value="${currentUsername}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
-                <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Store Name</label>
-                <input id="swal-super-store" class="swal2-input" placeholder="Store Name" value="${currentStore}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
-                <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Email</label>
-                <input id="swal-super-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
-            </div>
-                `,
+                <input id="swal-super-username" class="swal2-input" placeholder="Username" value="${currentUsername}">
+                <input id="swal-super-store" class="swal2-input" placeholder="Store Name" value="${currentStore}">
+                <input id="swal-super-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}">
+            `,
             confirmButtonText: "Update",
-            confirmButtonColor: "#f4c400",
-            cancelButtonColor: "#3085d6",
             showCancelButton: true,
             preConfirm: () => {
                 return {
@@ -329,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 text: "This admin will be deleted permanently.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#dc3545",
+                confirmButtonColor: "#d33",
                 cancelButtonColor: "#3085d6",
                 confirmButtonText: "Yes, delete it!"
             }).then((result) => {
@@ -360,18 +345,11 @@ document.addEventListener("DOMContentLoaded", function() {
             Swal.fire({
                 title: "Update Admin",
                 html: `
-                <div style="text-align:left;">
-                    <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Username</label>
-                    <input id="swal-username" class="swal2-input" placeholder="Username" value="${currentUsername}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
-                    <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Store Name</label>
-                    <input id="swal-store" class="swal2-input" placeholder="Store Name" value="${currentStore}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
-                    <label style="font-weight:bold;text-decoration:none;border-bottom:none; text-align:left;">Email</label>
-                    <input id="swal-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}" style="width:95%;margin:8px auto;padding:8px 10px;display:block;">
-                </div>
-                    `,
+                    <input id="swal-username" class="swal2-input" placeholder="Username" value="${currentUsername}">
+                    <input id="swal-store" class="swal2-input" placeholder="Store Name" value="${currentStore}">
+                    <input id="swal-email" type="email" class="swal2-input" placeholder="Email" value="${currentEmail}">
+                `,
                 confirmButtonText: "Update",
-                confirmButtonColor: "#f4c400",
-                cancelButtonColor: "#3085d6",
                 showCancelButton: true,
                 preConfirm: () => {
                     return {
@@ -407,6 +385,3 @@ document.addEventListener("DOMContentLoaded", function() {
     <!-- FUNCTIONS -->
 </body>
 </html>
-
-
-

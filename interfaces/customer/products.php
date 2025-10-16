@@ -225,7 +225,27 @@ $branding_result = mysqli_query($connection, "SELECT * FROM branding_sections_pr
         <!-- product list -->
           <div class="row g-4 mt-2">
           <?php if (mysqli_num_rows($result) > 0) { ?>
-            <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+            <?php while ($row = mysqli_fetch_assoc($result)) { 
+                // Fetch variant price range for this product
+                $product_id = (int)$row['product_id'];
+                $variant_sql = "SELECT MIN(price) AS min_price, MAX(price) AS max_price FROM product_variations WHERE product_id = $product_id";
+                $variant_result = mysqli_query($connection, $variant_sql);
+                $variant_data = mysqli_fetch_assoc($variant_result);
+
+                $min_price = $variant_data['min_price'];
+                $max_price = $variant_data['max_price'];
+
+                // Determine displayed price
+                if ($min_price !== null && $max_price !== null) {
+                    if ($min_price == $max_price) {
+                        $display_price = '₱' . number_format($min_price, 2);
+                    } else {
+                        $display_price = '₱' . number_format($min_price, 2) . ' - ₱' . number_format($max_price, 2);
+                    }
+                } else {
+                    $display_price = '₱' . number_format($row['price'] ?? 0, 2);
+                }
+            ?>
               <div class="col-md-3 col-sm-6">
                 <div class="card product-card">
                   <img 
@@ -236,7 +256,7 @@ $branding_result = mysqli_query($connection, "SELECT * FROM branding_sections_pr
                   <div class="card-body d-flex flex-column">
                     <p class="admin-label">Store: <?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?></p>
                     <h5 class="card-title"><?= htmlspecialchars($row['product_name']) ?></h5>
-                    <p class="product-price">₱<?= number_format($row['price'], 2) ?></p>
+                    <p class="product-price"><?= $display_price ?></p>
                      <!-- text-muted flex-grow-1 -->
                       
                     <!-- View / Add to Bag Buttons -->
@@ -246,23 +266,7 @@ $branding_result = mysqli_query($connection, "SELECT * FROM branding_sections_pr
                       View
                     </a>
 
-                    <form method="POST" action="add-to-cart.php" class="cart-form-btn">
-                      <input type="hidden" name="product_id" value="<?= $row['product_id'] ?>">
-
-                      <button 
-                        type="button" 
-                        class="btn-add-to-cart add-to-cart"
-                        data-id="<?= $row['product_id'] ?>"
-                        data-name="<?= htmlspecialchars($row['product_name']) ?>"
-                        data-price="<?= htmlspecialchars($row['price']) ?>"
-                        data-image="../../<?= htmlspecialchars($row['product_image'] ?: 'assets/default.png') ?>"
-                        data-store="<?= htmlspecialchars($row['recipient'] ?? 'Unknown') ?>"
-                        data-recipient="<?= htmlspecialchars($row['recipient_code'] ?? '') ?>"
-                        data-store-id="<?= htmlspecialchars($row['store_id'] ?? '') ?>">
-                        Add to Bag
-                      </button>
-
-                    </form>
+          
                   </div>
                 </div>
               </div>
