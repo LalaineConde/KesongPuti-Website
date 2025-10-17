@@ -2814,5 +2814,57 @@ input[type="checkbox"]:hover {
 }
 
 
+/* ======================================== TERMS AND CONDITION PAGE ======================================== */
+ /* ======================================== TERMS AND CONDITION PAGE ======================================== */
+
+ .terms {
+     max-width: 900px;
+     margin: 50px auto;
+     padding: 40px 30px;
+     background-color: var(--white);
+     border-radius: 12px;
+     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+     line-height: 1.7;
+ }
+
+ .terms h1,
+ .terms h2 {
+     font-family: 'Poppins', sans-serif;
+     color: var(--black);
+ }
+
+ .terms h1 {
+     text-align: center;
+     font-size: 2em;
+     margin-bottom: 20px;
+ }
+
+ .terms h2 {
+     margin-top: 30px;
+     font-size: 1.3em;
+ }
+
+ .terms p {
+     margin-bottom: 15px;
+ }
+
+ .terms ul {
+     margin: 10px 0 20px 20px;
+ }
+
+ .terms strong {
+     color: var(--green);
+ }
+
+ .terms a {
+     color: var(--green);
+     font-weight: bold;
+     text-decoration: none;
+ }
+
+ /* ======================================== TERMS AND CONDITION PAGE ======================================== */
+ /* ======================================== TERMS AND CONDITION PAGE ======================================== */
+
+
 
 
