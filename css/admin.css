@@ -377,7 +377,7 @@ body {
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  flex-wrap: wrap; /* ✅ wrap header elements */
+  /* flex-wrap: wrap;  */
   gap: 10px;
 }
 
